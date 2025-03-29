@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
         QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
         QVBoxLayout, QWidget
 )
-from styles.styles import data_menu_superior
+from styles.styles import data_menu_superior, hora_menu_superior, nome_menu_superior
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -39,25 +39,26 @@ class Ui_MainWindow(object):
         # -----------------------------------------------------------------------
     
         # Frame superior ---------------------------------------------------------
-        self.frame = QFrame(self.centralwidget)
-        self.frame.setObjectName("frame")
-        self.frame.setMinimumSize(QSize(0, 50))
-        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_superior = QFrame(self.centralwidget)
+        self.frame_superior.setObjectName("frame_superior")
+        self.frame_superior.setMinimumSize(QSize(0, 50))
+        self.frame_superior.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_superior.setFrameShadow(QFrame.Shadow.Raised)
     
         # Layout horizontal do frame superior
-        self.horizontalLayout_2 = QHBoxLayout(self.frame)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.layout_frame_superior = QHBoxLayout(self.frame_superior)
+        self.layout_frame_superior.setObjectName("layout_frame_superior")
     
         # Elementos do frame superior
-        self.label_horizonte_prime = QLabel(self.frame)
+        self.label_horizonte_prime = QLabel(self.frame_superior)
         self.label_horizonte_prime.setObjectName("label_horizonte_prime")
         self.label_horizonte_prime.setText("Horizonte Prime")
+        self.label_horizonte_prime.setStyleSheet(nome_menu_superior())
         self.label_horizonte_prime.setMaximumHeight(45)
-        self.horizontalLayout_2.addWidget(self.label_horizonte_prime)    
+        self.layout_frame_superior.addWidget(self.label_horizonte_prime)    
         # Espaçador horizontal
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        self.horizontalLayout_2.addItem(self.horizontalSpacer)
+        self.layout_frame_superior.addItem(self.horizontalSpacer)
 
         # Label com data e hora
 
@@ -83,17 +84,17 @@ class Ui_MainWindow(object):
         self.atualizar_relogio()
 
 
-        self.horizontalLayout_2.addWidget(self.label_data)
-        self.horizontalLayout_2.addWidget(self.label_hora)
+        self.layout_frame_superior.addWidget(self.label_data)
+        self.layout_frame_superior.addWidget(self.label_hora)
     
-        self.button_sair = QPushButton(self.frame)
+        self.button_sair = QPushButton(self.frame_superior)
         self.button_sair.setObjectName("button_sair")
         self.button_sair.setText("Sair")
         self.button_sair.setMinimumSize(QSize(0, 45))
         self.button_sair.setMaximumSize(QSize(50, 16777215))
-        self.horizontalLayout_2.addWidget(self.button_sair)
+        self.layout_frame_superior.addWidget(self.button_sair)
     
-        self.verticalLayout.addWidget(self.frame)
+        self.verticalLayout.addWidget(self.frame_superior)
         # -----------------------------------------------------------------------
     
         # Layout principal horizontal
@@ -171,29 +172,32 @@ class Ui_MainWindow(object):
         self.label_relatorios.setObjectName("label_relatorios")
         self.label_relatorios.text = "Relatórios"
         self.label_relatorios.setGeometry(QRect(20, 20, 111, 31))
-        self.stackedWidget.addWidget(self.page_relatorios)        
+        self.stackedWidget.addWidget(self.page_relatorios)  
+
+        # Adiciona o stackedWidget ao horizontalLayout      
         self.horizontalLayout.addWidget(self.stackedWidget)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-    
+
+        # Definindo a página inicial do stackedWidget
         self.stackedWidget.setCurrentIndex(0)
+
+        # 
         QMetaObject.connectSlotsByName(MainWindow)
 
     
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
         # Textos do menu lateral
-        __sortingEnabled = self.MenuLateral.isSortingEnabled()
-        self.MenuLateral.setSortingEnabled(False)
     
         menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios"]
         for i, text in enumerate(menu_items):
-            self.MenuLateral.item(i).setText(QCoreApplication.translate("MainWindow", text, None))
-        
-        self.MenuLateral.setSortingEnabled(__sortingEnabled)
+            self.MenuLateral.item(i).setText(text)
+
         
     def atualizar_relogio(self):
         agora = QDateTime.currentDateTime()
         
-        # Formata a data (ex: "Segunda-feira, 15 de Janeiro de 2024")
-        data_formatada = agora.toString("d'/'M'/'yyyy")
+        # Formata a data (ex: "Segunda-Feira 15/01/2024")
+        data_formatada = agora.toString("dddd '-' d'/'MM'/'yyyy").replace("Monday", "Segunda-feira").replace("Tuesday", "Terça-feira").replace("Wednesday", "Quarta-feira").replace("Thursday", "Quinta-feira").replace("Friday", "Sexta-feira").replace("Saturday", "Sábado").replace("Sunday", "Domingo")
         data_formatada = data_formatada[0].upper() + data_formatada[1:]  # Capitaliza o dia da semana
         
         # Formata a hora (ex: "14:30:45")
