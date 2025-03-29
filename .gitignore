@@ -1,4 +1,3 @@
-.gitignore
 *.db
 .venv
 # Ignorar cache do Python
