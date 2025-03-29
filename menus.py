@@ -27,10 +27,12 @@ def menu_usuarios():
 def menu_quartos():
     print('-' * 30, 'MENU QUARTOS', '-' * 30)
     print("1. Cadastrar quarto")
-    print("2. Listar quartos")
-    print("3. Atualizar tipo de quarto")
-    print("4. Excluir quarto")
-    # print("5. Atualizar status do quarto") # Não está sendo utilizado
+    print("2. Listar todos os quartos")
+    print("3. Listar quartos disponíveis")
+    print("4. Listar quartos ocupados")
+    print("5. Atualizar tipo de quarto")
+    print("6. Excluir quarto")
+    # print("7. Atualizar status do quarto") # Não está sendo utilizado
     print('-' * 50)
     print("0. Voltar ao menu principal")
     print('-' * 50)

@@ -1,6 +1,6 @@
 from operations.hospedes_operations  import cadastrar_hospede, listar_hospedes, atualizar_hospede, excluir_hospede
 from operations.funcionarios_operations import cadastrar_funcionario, listar_funcionarios, atualizar_funcionario, excluir_funcionario
-from operations.quartos_operations import cadastrar_quarto, listar_quartos, atualiza_tipo, excluir_quarto
+from operations.quartos_operations import cadastrar_quarto, listar_quartos,listar_quartos_disponiveis, listar_quartos_ocupados, atualiza_tipo, excluir_quarto
 from operations.usuarios_operations import criar_usuario, listar_usuarios, atualizar_usuario, excluir_usuario
 from operations.hospedagem_operations import abrir_hospedagem, listar_hospedagens, fechar_hospedagem
 from operations.relatorios_operations import relatorio_hospedagem, relatorio_hospedes
@@ -38,11 +38,15 @@ if __name__ == "__main__":
                     cadastrar_quarto()
                 elif opcao_quarto == "2": # Listar quartos
                     listar_quartos()
-                elif opcao_quarto == "3": # Atualizar tipo de quarto
+                elif opcao_quarto == "3": # Listar quartos disponíveis
+                    listar_quartos_disponiveis()
+                elif opcao_quarto == "4": # Listar quartos ocupados
+                    listar_quartos_ocupados()
+                elif opcao_quarto == "5": # Atualizar tipo de quarto
                     atualiza_tipo()
-                elif opcao_quarto == "4": # Excluir quarto
+                elif opcao_quarto == "6": # Excluir quarto
                     excluir_quarto()
-                # elif opcao_quarto == "5": # Atualizar status do quarto
+                # elif opcao_quarto == "7": # Atualizar status do quarto
                 #     atualiza_status()
                 elif opcao_quarto == "0":
                     break
