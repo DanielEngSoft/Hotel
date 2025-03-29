@@ -1,7 +1,8 @@
 from PySide6.QtCore import (
         QCoreApplication, QDate, QDateTime, QLocale,
         QMetaObject, QObject, QPoint, QRect,
-        QSize, QTime, QUrl, Qt
+        QSize, QTime, QUrl, Qt,
+        QTimer, QDateTime
 )
 from PySide6.QtGui import (
         QBrush, QColor, QConicalGradient, QCursor,
@@ -17,153 +18,194 @@ from PySide6.QtWidgets import (
 )
 
 class Ui_MainWindow(object):
-        def setupUi(self, MainWindow):
-            # Configuração inicial da janela
-            if not MainWindow.objectName():
-                MainWindow.setObjectName("MainWindow")
-            MainWindow.resize(1108, 706)
-        
-            # Widget central
-            self.centralwidget = QWidget(MainWindow)
-            self.centralwidget.setObjectName("centralwidget")
-        
-            # Layout principal vertical
-            self.verticalLayout = QVBoxLayout(self.centralwidget)
-            self.verticalLayout.setObjectName("verticalLayout")
-        
-            # Frame superior
-            self.frame = QFrame(self.centralwidget)
-            self.frame.setObjectName("frame")
-            self.frame.setMinimumSize(QSize(0, 50))
-            self.frame.setFrameShape(QFrame.Shape.StyledPanel)
-            self.frame.setFrameShadow(QFrame.Shadow.Raised)
-        
-            # Layout horizontal do frame superior
-            self.horizontalLayout_2 = QHBoxLayout(self.frame)
-            self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        
-            # Elementos do frame superior
-            self.label = QLabel(self.frame)
-            self.label.setObjectName("label")
-            self.horizontalLayout_2.addWidget(self.label)
-        
-            self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-            self.horizontalLayout_2.addItem(self.horizontalSpacer)
-        
-            self.label_2 = QLabel(self.frame)
-            self.label_2.setObjectName("label_2")
-            self.horizontalLayout_2.addWidget(self.label_2)
-        
-            self.pushButton = QPushButton(self.frame)
-            self.pushButton.setObjectName("pushButton")
-            self.pushButton.setMinimumSize(QSize(0, 45))
-            self.pushButton.setMaximumSize(QSize(50, 16777215))
-            self.horizontalLayout_2.addWidget(self.pushButton)
-        
-            self.verticalLayout.addWidget(self.frame)
-        
-            # Layout principal horizontal
-            self.horizontalLayout = QHBoxLayout()
-            self.horizontalLayout.setObjectName("horizontalLayout")
-        
-            # Menu lateral
-            self.MenuLateral = QListWidget(self.centralwidget)
-            self.MenuLateral.setObjectName("MenuLateral")
-            self.MenuLateral.setMinimumSize(QSize(0, 50))
-            self.MenuLateral.setMaximumSize(QSize(200, 16777215))
-        
-            # Configuração da fonte do menu
-            font = QFont()
-            font.setFamilies(["Consolas"])
-            font.setPointSize(14)
-            font.setUnderline(False)
-            font.setStrikeOut(False)
-            font.setKerning(True)
-            self.MenuLateral.setFont(font)
-        
-            # Configurações adicionais do menu
-            self.MenuLateral.viewport().setProperty("cursor", QCursor(Qt.CursorShape.PointingHandCursor))
-            self.MenuLateral.setLayoutMode(QListView.LayoutMode.SinglePass)
-            self.MenuLateral.setSpacing(15)
-        
-            # Adiciona itens ao menu
-            for _ in range(5):
-                QListWidgetItem(self.MenuLateral)
-            
-            self.horizontalLayout.addWidget(self.MenuLateral)
-        
-            # Widget empilhado (páginas)
-            self.stackedWidget = QStackedWidget(self.centralwidget)
-            self.stackedWidget.setObjectName("stackedWidget")
-        
-            # Página 1 - Hospedagem
-            self.page = QWidget()
-            self.page.setObjectName("page")
-            self.label_3 = QLabel(self.page)
-            self.label_3.setObjectName("label_3")
-            self.label_3.setGeometry(QRect(20, 20, 111, 31))
-            self.stackedWidget.addWidget(self.page)
-        
-            # Página 2 - Reservas
-            self.page_2 = QWidget()
-            self.page_2.setObjectName("page_2")
-            self.label_4 = QLabel(self.page_2)
-            self.label_4.setObjectName("label_4")
-            self.label_4.setGeometry(QRect(20, 70, 111, 31))
-            self.stackedWidget.addWidget(self.page_2)
-        
-            # Página 3 - Quartos
-            self.page_3 = QWidget()
-            self.page_3.setObjectName("page_3")
-            self.label_5 = QLabel(self.page_3)
-            self.label_5.setObjectName("label_5")
-            self.label_5.setGeometry(QRect(20, 120, 111, 31))
-            self.stackedWidget.addWidget(self.page_3)
-        
-            # Página 4 - Hóspedes
-            self.page_4 = QWidget()
-            self.page_4.setObjectName("page_4")
-            self.label_6 = QLabel(self.page_4)
-            self.label_6.setObjectName("label_6")
-            self.label_6.setGeometry(QRect(20, 180, 111, 31))
-            self.stackedWidget.addWidget(self.page_4)
-        
-            # Página 5 - Relatórios
-            self.page_5 = QWidget()
-            self.page_5.setObjectName("page_5")
-            self.label_7 = QLabel(self.page_5)
-            self.label_7.setObjectName("label_7")
-            self.label_7.setGeometry(QRect(20, 230, 111, 31))
-            self.stackedWidget.addWidget(self.page_5)
-        
-            self.horizontalLayout.addWidget(self.stackedWidget)
-            self.verticalLayout.addLayout(self.horizontalLayout)
-        
-            MainWindow.setCentralWidget(self.centralwidget)
-            self.retranslateUi(MainWindow)
-            self.stackedWidget.setCurrentIndex(0)
-            QMetaObject.connectSlotsByName(MainWindow)
+    def setupUi(self, MainWindow):
+        # Configuração inicial da janela
+        if not MainWindow.objectName():
+            MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1108, 706)
+        MainWindow.setWindowTitle("Horizonte Prime")
+    
+        # Widget central
+        self.centralwidget = QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        MainWindow.setCentralWidget(self.centralwidget)
+    
+        # Layout principal vertical
+        self.verticalLayout = QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName("verticalLayout")
+    
+        # Frame superior
+        self.frame = QFrame(self.centralwidget)
+        self.frame.setObjectName("frame")
+        self.frame.setMinimumSize(QSize(0, 50))
+        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+    
+        # Layout horizontal do frame superior
+        self.horizontalLayout_2 = QHBoxLayout(self.frame)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+    
+        # Elementos do frame superior
+        self.label_horizonte_prime = QLabel(self.frame)
+        self.label_horizonte_prime.setObjectName("label_horizonte_prime")
+        self.label_horizonte_prime.setText("Horizonte Prime")
+        self.label_horizonte_prime.setMaximumHeight(45)
+        self.horizontalLayout_2.addWidget(self.label_horizonte_prime)    
+        # Espaçador horizontal
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
-        def retranslateUi(self, MainWindow):
-            # Textos da interface
-            MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", "MainWindow", None))
-            self.label.setText(QCoreApplication.translate("MainWindow", "Horizonte Prime", None))
-            self.label_2.setText(QCoreApplication.translate("MainWindow", "29/03/2025 12:24", None))
-            self.pushButton.setText(QCoreApplication.translate("MainWindow", "Sair", None))
+        # Label com data e hora
+
+            # Cria os labels
+        self.label_data = QLabel()
+        self.label_hora = QLabel()
         
-            # Textos do menu lateral
-            __sortingEnabled = self.MenuLateral.isSortingEnabled()
-            self.MenuLateral.setSortingEnabled(False)
+        # Estilização
+        self.label_data.setStyleSheet("""
+            font-size: 14px;
+            font-weight: bold;
+            qproperty-alignment: AlignCenter;
+            min-height: 45px;
+            max-height: 45px;
+        """)
         
-            menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios"]
-            for i, text in enumerate(menu_items):
-                self.MenuLateral.item(i).setText(QCoreApplication.translate("MainWindow", text, None))
-            
-            self.MenuLateral.setSortingEnabled(__sortingEnabled)
+        self.label_hora.setStyleSheet("""
+            font-size: 14px;
+            font-weight: bold;
+            qproperty-alignment: AlignCenter;
+            min-height: 45px;
+            max-height: 45px;
+        """)        
+        # Layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.label_data)
+        layout.addWidget(self.label_hora)
+        self.setLayout(layout)
         
-            # Textos das páginas
-            self.label_3.setText(QCoreApplication.translate("MainWindow", "Hospedagem", None))
-            self.label_4.setText(QCoreApplication.translate("MainWindow", "Reservas", None))
-            self.label_5.setText(QCoreApplication.translate("MainWindow", "Quartos", None))
-            self.label_6.setText(QCoreApplication.translate("MainWindow", "Hospedes", None))
-            self.label_7.setText(QCoreApplication.translate("MainWindow", "Relatorios", None))
+        # Configura o timer
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.atualizar_relogio)
+        self.timer.start(1000)  # Atualiza a cada 1 segundo
+        
+        # Atualiza imediatamente
+        self.atualizar_relogio()
+
+
+        self.horizontalLayout_2.addWidget(self.label_data)
+        self.horizontalLayout_2.addWidget(self.label_hora)
+    
+        self.button_sair = QPushButton(self.frame)
+        self.button_sair.setObjectName("button_sair")
+        self.button_sair.setText("Sair")
+        self.button_sair.setMinimumSize(QSize(0, 45))
+        self.button_sair.setMaximumSize(QSize(50, 16777215))
+        self.horizontalLayout_2.addWidget(self.button_sair)
+    
+        self.verticalLayout.addWidget(self.frame)
+    
+        # Layout principal horizontal
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+    
+        # Menu lateral
+        self.MenuLateral = QListWidget(self.centralwidget)
+        self.MenuLateral.setObjectName("MenuLateral")
+        self.MenuLateral.setMinimumSize(QSize(0, 50))
+        self.MenuLateral.setMaximumSize(QSize(200, 1900))
+    
+        # Configuração da fonte do menu
+        font = QFont()
+        font.setFamilies(["Consolas"])
+        font.setPointSize(14)
+        font.setKerning(True)
+        self.MenuLateral.setFont(font)
+    
+        # Configurações adicionais do menu
+        self.MenuLateral.viewport().setProperty("cursor", QCursor(Qt.CursorShape.PointingHandCursor))
+        self.MenuLateral.setLayoutMode(QListView.LayoutMode.SinglePass)
+        self.MenuLateral.setSpacing(15)
+    
+        # Adiciona itens ao menu
+        for _ in range(5):
+            QListWidgetItem(self.MenuLateral)
+        
+        self.horizontalLayout.addWidget(self.MenuLateral)
+    
+        # Widget empilhado (páginas)
+        self.stackedWidget = QStackedWidget(self.centralwidget)
+        self.stackedWidget.setObjectName("stackedWidget")
+    
+        # Página 1 - Hospedagem
+        self.page_hospedagem = QWidget()
+        self.page_hospedagem.setObjectName("page_hospedagem")
+        self.label_hospedagem = QLabel(self.page_hospedagem)
+        self.label_hospedagem.setObjectName("label_hospedagem")
+        self.label_hospedagem.text = "Hospedagem"
+        self.label_hospedagem.setGeometry(QRect(20, 20, 111, 31))
+        self.stackedWidget.addWidget(self.page_hospedagem)
+    
+        # Página 2 - Reservas
+        self.page_reservas = QWidget()
+        self.page_reservas.setObjectName("page_reservas")
+        self.label_reservas = QLabel(self.page_reservas)
+        self.label_reservas.setObjectName("label_reservas")
+        self.label_reservas.text = "Reservas"
+        self.label_reservas.setGeometry(QRect(20, 20, 111, 31))
+        self.stackedWidget.addWidget(self.page_reservas)
+    
+        # Página 3 - Quartos
+        self.page_quartos = QWidget()
+        self.page_quartos.setObjectName("page_quartos")
+        self.label_quartos = QLabel(self.page_quartos)
+        self.label_quartos.setObjectName("label_quartos")
+        self.label_quartos.text = "Quartos"
+        self.label_quartos.setGeometry(QRect(20, 20, 111, 31))
+        self.stackedWidget.addWidget(self.page_quartos)
+    
+        # Página 4 - Hóspedes
+        self.page_hospedes = QWidget()
+        self.page_hospedes.setObjectName("page_hospedes")
+        self.label_hospedes = QLabel(self.page_hospedes)
+        self.label_hospedes.setObjectName("label_hospedes")
+        self.label_hospedes.text = "Hóspedes"
+        self.label_hospedes.setGeometry(QRect(20, 20, 111, 31))
+        self.stackedWidget.addWidget(self.page_hospedes)
+    
+        # Página 5 - Relatórios
+        self.page_relatorios = QWidget()
+        self.page_relatorios.setObjectName("page_relatorios")
+        self.label_relatorios = QLabel(self.page_relatorios)
+        self.label_relatorios.setObjectName("label_relatorios")
+        self.label_relatorios.text = "Relatórios"
+        self.label_relatorios.setGeometry(QRect(20, 20, 111, 31))
+        self.stackedWidget.addWidget(self.page_relatorios)        
+        self.horizontalLayout.addWidget(self.stackedWidget)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+    
+        self.stackedWidget.setCurrentIndex(0)
+        QMetaObject.connectSlotsByName(MainWindow)
+
+    
+        # Textos do menu lateral
+        __sortingEnabled = self.MenuLateral.isSortingEnabled()
+        self.MenuLateral.setSortingEnabled(False)
+    
+        menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios"]
+        for i, text in enumerate(menu_items):
+            self.MenuLateral.item(i).setText(QCoreApplication.translate("MainWindow", text, None))
+        
+        self.MenuLateral.setSortingEnabled(__sortingEnabled)
+        
+    def atualizar_relogio(self):
+        agora = QDateTime.currentDateTime()
+        
+        # Formata a data (ex: "Segunda-feira, 15 de Janeiro de 2024")
+        data_formatada = agora.toString("d'/'M'/'yyyy")
+        data_formatada = data_formatada[0].upper() + data_formatada[1:]  # Capitaliza o dia da semana
+        
+        # Formata a hora (ex: "14:30:45")
+        hora_formatada = agora.toString("HH:mm:ss")
+        
+        self.label_data.setText(data_formatada)
+        self.label_hora.setText(hora_formatada)

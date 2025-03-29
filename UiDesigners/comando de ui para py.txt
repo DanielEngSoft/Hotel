@@ -4,7 +4,7 @@ Na pasta que criou o arquivo .ui execultar no terminal o comando:
 
 Depois de criar um arquivo .py com o seguinte codigo:
 
-    from PyQt5 import QtWidgets
+    from PySide6 import QtWidgets
     from arquivo import Ui_MainWindow  # Substitua "arquivo" pelo nome do seu arquivo
 
     class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
