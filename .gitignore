@@ -1,4 +1,6 @@
 .gitignore
 *.db
 .venv
-__pycache__
+# Ignorar cache do Python
+__pycache__/
+*.py[cod]  # Ignora arquivos .pyc, .pyo, .pyd
