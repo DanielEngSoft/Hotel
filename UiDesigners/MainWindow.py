@@ -16,25 +16,29 @@ from PySide6.QtWidgets import (
         QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
         QVBoxLayout, QWidget
 )
+from styles.styles import data_menu_superior
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        # Configuração inicial da janela
+        # Configuração inicial da janela ----------------------------------------
         if not MainWindow.objectName():
             MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1108, 706)
         MainWindow.setWindowTitle("Horizonte Prime")
+        # -----------------------------------------------------------------------
     
-        # Widget central
+        # Widget central---------------------------------------------------------
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
-    
-        # Layout principal vertical
+        # -----------------------------------------------------------------------
+
+        # Layout principal vertical ---------------------------------------------
         self.verticalLayout = QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
+        # -----------------------------------------------------------------------
     
-        # Frame superior
+        # Frame superior ---------------------------------------------------------
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName("frame")
         self.frame.setMinimumSize(QSize(0, 50))
@@ -62,26 +66,13 @@ class Ui_MainWindow(object):
         self.label_hora = QLabel()
         
         # Estilização
-        self.label_data.setStyleSheet("""
-            font-size: 14px;
-            font-weight: bold;
-            qproperty-alignment: AlignCenter;
-            min-height: 45px;
-            max-height: 45px;
-        """)
+        self.label_data.setStyleSheet(data_menu_superior())
+        self.label_hora.setStyleSheet(data_menu_superior())
         
-        self.label_hora.setStyleSheet("""
-            font-size: 14px;
-            font-weight: bold;
-            qproperty-alignment: AlignCenter;
-            min-height: 45px;
-            max-height: 45px;
-        """)        
         # Layout
         layout = QVBoxLayout()
         layout.addWidget(self.label_data)
         layout.addWidget(self.label_hora)
-        self.setLayout(layout)
         
         # Configura o timer
         self.timer = QTimer()
@@ -103,6 +94,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.button_sair)
     
         self.verticalLayout.addWidget(self.frame)
+        # -----------------------------------------------------------------------
     
         # Layout principal horizontal
         self.horizontalLayout = QHBoxLayout()

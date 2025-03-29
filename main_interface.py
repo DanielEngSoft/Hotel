@@ -1,5 +1,5 @@
 from PySide6 import QtWidgets
-from MainWindow import Ui_MainWindow as ui  # Substitua "arquivo" pelo nome do seu arquivo
+from UiDesigners.MainWindow import Ui_MainWindow as ui  
 
 class MyApp(QtWidgets.QMainWindow, ui):
     def __init__(self):
