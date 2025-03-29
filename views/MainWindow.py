@@ -16,7 +16,12 @@ from PySide6.QtWidgets import (
         QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
         QVBoxLayout, QWidget
 )
-from styles.styles import data_menu_superior, hora_menu_superior, nome_menu_superior
+from styles.styles import data_menu_superior, hora_menu_superior, nome_menu_superior, style_label_menu_lateral
+from views.pages.hospedagem import PageHospedagem
+from views.pages.relatorios import PageRelatorios
+from views.pages.reservas import PageReservas
+from views.pages.quartos import PageQuartos
+from views.pages.hospedes import PageHospedes
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -92,12 +97,12 @@ class Ui_MainWindow(object):
         self.button_sair.setText("Sair")
         self.button_sair.setMinimumSize(QSize(0, 45))
         self.button_sair.setMaximumSize(QSize(50, 16777215))
-        self.layout_frame_superior.addWidget(self.button_sair)
-    
+        self.button_sair.clicked.connect(QApplication.instance().quit)
+        self.layout_frame_superior.addWidget(self.button_sair)    
         self.verticalLayout.addWidget(self.frame_superior)
         # -----------------------------------------------------------------------
     
-        # Layout principal horizontal
+        # Layout principal horizontal[menu lateral | stacked] ---------------------------------------------
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
     
@@ -107,91 +112,51 @@ class Ui_MainWindow(object):
         self.MenuLateral.setMinimumSize(QSize(0, 50))
         self.MenuLateral.setMaximumSize(QSize(200, 1900))
     
-        # Configuração da fonte do menu
-        font = QFont()
-        font.setFamilies(["Consolas"])
-        font.setPointSize(14)
-        font.setKerning(True)
-        self.MenuLateral.setFont(font)
-    
+        self.MenuLateral.setStyleSheet(style_label_menu_lateral())
+
         # Configurações adicionais do menu
-        self.MenuLateral.viewport().setProperty("cursor", QCursor(Qt.CursorShape.PointingHandCursor))
-        self.MenuLateral.setLayoutMode(QListView.LayoutMode.SinglePass)
         self.MenuLateral.setSpacing(15)
     
         # Adiciona itens ao menu
         for _ in range(5):
             QListWidgetItem(self.MenuLateral)
+            
+        # Adiciona texto aos itens do menu
+        menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios"]
+        for i, text in enumerate(menu_items):
+            self.MenuLateral.item(i).setText(text)
+        self.MenuLateral.currentRowChanged.connect(self.mudar_pagina)
         
         self.horizontalLayout.addWidget(self.MenuLateral)
     
         # Widget empilhado (páginas)
-        self.stackedWidget = QStackedWidget(self.centralwidget)
-        self.stackedWidget.setObjectName("stackedWidget")
+        self.pages = QStackedWidget(self.centralwidget)
+        self.pages.setObjectName("pages")
     
         # Página 1 - Hospedagem
-        self.page_hospedagem = QWidget()
-        self.page_hospedagem.setObjectName("page_hospedagem")
-        self.label_hospedagem = QLabel(self.page_hospedagem)
-        self.label_hospedagem.setObjectName("label_hospedagem")
-        self.label_hospedagem.text = "Hospedagem"
-        self.label_hospedagem.setGeometry(QRect(20, 20, 111, 31))
-        self.stackedWidget.addWidget(self.page_hospedagem)
+        self.pages.addWidget(PageHospedagem())
     
         # Página 2 - Reservas
-        self.page_reservas = QWidget()
-        self.page_reservas.setObjectName("page_reservas")
-        self.label_reservas = QLabel(self.page_reservas)
-        self.label_reservas.setObjectName("label_reservas")
-        self.label_reservas.text = "Reservas"
-        self.label_reservas.setGeometry(QRect(20, 20, 111, 31))
-        self.stackedWidget.addWidget(self.page_reservas)
+        self.pages.addWidget(PageReservas())
     
         # Página 3 - Quartos
-        self.page_quartos = QWidget()
-        self.page_quartos.setObjectName("page_quartos")
-        self.label_quartos = QLabel(self.page_quartos)
-        self.label_quartos.setObjectName("label_quartos")
-        self.label_quartos.text = "Quartos"
-        self.label_quartos.setGeometry(QRect(20, 20, 111, 31))
-        self.stackedWidget.addWidget(self.page_quartos)
+        self.pages.addWidget(PageQuartos())
     
         # Página 4 - Hóspedes
-        self.page_hospedes = QWidget()
-        self.page_hospedes.setObjectName("page_hospedes")
-        self.label_hospedes = QLabel(self.page_hospedes)
-        self.label_hospedes.setObjectName("label_hospedes")
-        self.label_hospedes.text = "Hóspedes"
-        self.label_hospedes.setGeometry(QRect(20, 20, 111, 31))
-        self.stackedWidget.addWidget(self.page_hospedes)
+        self.pages.addWidget(PageHospedes())
     
         # Página 5 - Relatórios
-        self.page_relatorios = QWidget()
-        self.page_relatorios.setObjectName("page_relatorios")
-        self.label_relatorios = QLabel(self.page_relatorios)
-        self.label_relatorios.setObjectName("label_relatorios")
-        self.label_relatorios.text = "Relatórios"
-        self.label_relatorios.setGeometry(QRect(20, 20, 111, 31))
-        self.stackedWidget.addWidget(self.page_relatorios)  
+        self.pages.addWidget(PageRelatorios())
 
         # Adiciona o stackedWidget ao horizontalLayout      
-        self.horizontalLayout.addWidget(self.stackedWidget)
+        self.horizontalLayout.addWidget(self.pages)
 
         # Definindo a página inicial do stackedWidget
-        self.stackedWidget.setCurrentIndex(0)
+        self.pages.setCurrentIndex(0)
 
-        # 
         QMetaObject.connectSlotsByName(MainWindow)
 
-    
         self.verticalLayout.addLayout(self.horizontalLayout)
-
-        # Textos do menu lateral
-    
-        menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios"]
-        for i, text in enumerate(menu_items):
-            self.MenuLateral.item(i).setText(text)
-
         
     def atualizar_relogio(self):
         agora = QDateTime.currentDateTime()
@@ -205,3 +170,6 @@ class Ui_MainWindow(object):
         
         self.label_data.setText(data_formatada)
         self.label_hora.setText(hora_formatada)
+    
+    def mudar_pagina(self, index):
+        self.pages.setCurrentIndex(index)
