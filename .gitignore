@@ -1,5 +1,5 @@
 *.db
 .venv
-# Ignorar cache do Python
+# Ignorar pastas __pycache__ do Python
 __pycache__/
-*.py[cod]  # Ignora arquivos .pyc, .pyo, .pyd
+*/__pycache__/
