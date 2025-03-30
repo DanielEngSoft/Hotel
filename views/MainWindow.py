@@ -19,11 +19,11 @@ from styles.styles import (
     data_menu_superior, hora_menu_superior, 
     nome_menu_superior, style_label_menu_lateral
 )
-from views.pages.hospedagem import PageHospedagem
-from views.pages.hospedes import PageHospedes
-from views.pages.quartos import PageQuartos
-from views.pages.relatorios import PageRelatorios
-from views.pages.reservas import PageReservas
+from views.pagesMenu.hospedagem import PageHospedagem
+from views.pagesMenu.hospedes import PageHospedes
+from views.pagesMenu.quartos import PageQuartos
+from views.pagesMenu.relatorios import PageRelatorios
+from views.pagesMenu.reservas import PageReservas
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
