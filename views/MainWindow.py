@@ -1,49 +1,52 @@
 from PySide6.QtCore import (
-        QCoreApplication, QDate, QDateTime, QLocale,
-        QMetaObject, QObject, QPoint, QRect,
-        QSize, QTime, QUrl, Qt,
-        QTimer, QDateTime
+    QCoreApplication, QDate, QDateTime, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QTimer, QUrl, Qt
 )
 from PySide6.QtGui import (
-        QBrush, QColor, QConicalGradient, QCursor,
-        QFont, QFontDatabase, QGradient, QIcon,
-        QImage, QKeySequence, QLinearGradient, QPainter,
-        QPalette, QPixmap, QRadialGradient, QTransform
+    QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform
 )
 from PySide6.QtWidgets import (
-        QApplication, QFrame, QHBoxLayout, QLabel,
-        QListView, QListWidget, QListWidgetItem, QMainWindow,
-        QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
-        QVBoxLayout, QWidget
+    QApplication, QFrame, QHBoxLayout, QLabel,
+    QListView, QListWidget, QListWidgetItem, QMainWindow,
+    QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
+    QVBoxLayout, QWidget
 )
-from styles.styles import data_menu_superior, hora_menu_superior, nome_menu_superior, style_label_menu_lateral
+from styles.styles import (
+    data_menu_superior, hora_menu_superior, 
+    nome_menu_superior, style_label_menu_lateral
+)
 from views.pages.hospedagem import PageHospedagem
+from views.pages.hospedes import PageHospedes
+from views.pages.quartos import PageQuartos
 from views.pages.relatorios import PageRelatorios
 from views.pages.reservas import PageReservas
-from views.pages.quartos import PageQuartos
-from views.pages.hospedes import PageHospedes
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         # Configuração inicial da janela ----------------------------------------
         if not MainWindow.objectName():
             MainWindow.setObjectName("MainWindow")
+
         MainWindow.resize(1108, 706)
         MainWindow.setWindowTitle("Horizonte Prime")
         # -----------------------------------------------------------------------
     
-        # Widget central---------------------------------------------------------
+        # Criando o widget central------------------------------------------------
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
         # -----------------------------------------------------------------------
 
-        # Layout principal vertical ---------------------------------------------
+        # Layout vertical [frame superior | (menu latetral | stackedwidgat)] ----
         self.verticalLayout = QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
         # -----------------------------------------------------------------------
     
-        # Frame superior ---------------------------------------------------------
+        # Frame superior --------------------------------------------------------
         self.frame_superior = QFrame(self.centralwidget)
         self.frame_superior.setObjectName("frame_superior")
         self.frame_superior.setMinimumSize(QSize(0, 50))
@@ -65,15 +68,14 @@ class Ui_MainWindow(object):
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.layout_frame_superior.addItem(self.horizontalSpacer)
 
-        # Label com data e hora
-
-            # Cria os labels
+        # Label com data e hora---------------------------------------------------
+        # Cria os labels
         self.label_data = QLabel()
         self.label_hora = QLabel()
         
         # Estilização
         self.label_data.setStyleSheet(data_menu_superior())
-        self.label_hora.setStyleSheet(data_menu_superior())
+        self.label_hora.setStyleSheet(hora_menu_superior())
         
         # Layout
         layout = QVBoxLayout()
@@ -88,7 +90,6 @@ class Ui_MainWindow(object):
         # Atualiza imediatamente
         self.atualizar_relogio()
 
-
         self.layout_frame_superior.addWidget(self.label_data)
         self.layout_frame_superior.addWidget(self.label_hora)
     
@@ -102,7 +103,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.frame_superior)
         # -----------------------------------------------------------------------
     
-        # Layout principal horizontal[menu lateral | stacked] ---------------------------------------------
+        # Layout horizontal[menu lateral | stackedwidget] -------------
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
     
@@ -162,14 +163,24 @@ class Ui_MainWindow(object):
         agora = QDateTime.currentDateTime()
         
         # Formata a data (ex: "Segunda-Feira 15/01/2024")
-        data_formatada = agora.toString("dddd '-' d'/'MM'/'yyyy").replace("Monday", "Segunda-feira").replace("Tuesday", "Terça-feira").replace("Wednesday", "Quarta-feira").replace("Thursday", "Quinta-feira").replace("Friday", "Sexta-feira").replace("Saturday", "Sábado").replace("Sunday", "Domingo")
-        data_formatada = data_formatada[0].upper() + data_formatada[1:]  # Capitaliza o dia da semana
+        data_formatada = (
+            agora.toString("dddd '-' d'/'MM'/'yyyy")
+            .replace("Monday", "Segunda-feira")
+            .replace("Tuesday", "Terça-feira")
+            .replace("Wednesday", "Quarta-feira")
+            .replace("Thursday", "Quinta-feira")
+            .replace("Friday", "Sexta-feira")
+            .replace("Saturday", "Sábado")
+            .replace("Sunday", "Domingo")
+        )
+        data_formatada = data_formatada[0].upper() + data_formatada[1:]
         
         # Formata a hora (ex: "14:30:45")
         hora_formatada = agora.toString("HH:mm:ss")
         
+        # Atualiza os labels
         self.label_data.setText(data_formatada)
         self.label_hora.setText(hora_formatada)
-    
+        
     def mudar_pagina(self, index):
         self.pages.setCurrentIndex(index)
