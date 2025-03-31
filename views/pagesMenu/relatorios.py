@@ -84,13 +84,13 @@ class PageRelatorios(QWidget):
 
             # Criando as páginas
             self.page_geral = QWidget()
-            self.page_geral.setObjectName(u"page_abrir")
+            self.page_geral.setObjectName(u"page_geral")
             self.pages.addWidget(self.page_geral)
             self.page_hospede = QWidget()
-            self.page_hospede.setObjectName(u"page_listar")
+            self.page_hospede.setObjectName(u"page_hospede")
             self.pages.addWidget(self.page_hospede)
             self.page_data = QWidget()
-            self.page_data.setObjectName(u"page_fechar")
+            self.page_data.setObjectName(u"page_data")
             self.pages.addWidget(self.page_data)
 
             # Adicionando o QStackedWidget ao layout principal
@@ -99,4 +99,4 @@ class PageRelatorios(QWidget):
             self.pages.setCurrentIndex(0)
 
 
-            QMetaObject.connectSlotsByName(Form)
+        #     QMetaObject.connectSlotsByName(Form)

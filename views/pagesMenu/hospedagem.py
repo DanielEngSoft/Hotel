@@ -19,7 +19,7 @@ class PageHospedagem(QWidget):
         if not Form.objectName():
             Form.setObjectName(u"Form")
 
-        # Cria um layout vertical
+        # Criando o layout principal
         self.layout_principal = QVBoxLayout(Form)
         self.layout_principal.setObjectName(u"verticalLayout_2")
 
