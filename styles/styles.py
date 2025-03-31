@@ -37,8 +37,5 @@ def style_label_menu_lateral():
         font-weight: bold;
         min-height: 45px;
         max-height: 1200px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        letter-spacing: 0.5px;
-        padding: 5px;
         """
     return style

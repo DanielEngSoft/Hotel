@@ -70,6 +70,7 @@ class PageHospedes(QWidget):
             self.page_abrir = QWidget()
             self.page_abrir.setObjectName(u"page_abrir")
             self.pages.addWidget(self.page_abrir)
+            
             self.page_listar = QWidget()
             self.page_listar.setObjectName(u"page_listar")
             self.pages.addWidget(self.page_listar)

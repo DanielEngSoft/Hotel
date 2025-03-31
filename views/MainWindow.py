@@ -33,7 +33,7 @@ class Ui_MainWindow(object):
 
         MainWindow.resize(1108, 706)
         MainWindow.setWindowTitle("Horizonte Prime")
-        # -----------------------------------------------------------------------
+        MainWindow.setWindowIcon(QIcon("imgs/icons/hotel.png"))        # -----------------------------------------------------------------------
     
         # Criando o widget central------------------------------------------------
         self.centralwidget = QWidget(MainWindow)

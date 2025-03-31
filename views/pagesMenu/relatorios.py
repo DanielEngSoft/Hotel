@@ -17,74 +17,86 @@ class PageRelatorios(QWidget):
         def setupUi(self, Form):
             if not Form.objectName():
                 Form.setObjectName(u"Form")
-            Form.resize(773, 808)
-            self.verticalLayout_2 = QVBoxLayout(Form)
-            self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+
+            # Definindo o layout principal
+            self.layout_principal = QVBoxLayout(Form)
+            self.layout_principal.setObjectName(u"layout_principal")
+
+            # Criando e configurando o frame superior
             self.menu_superior_page_hospedagem = QFrame(Form)
             self.menu_superior_page_hospedagem.setObjectName(u"menu_superior_page_hospedagem")
             self.menu_superior_page_hospedagem.setMinimumSize(QSize(600, 0))
             self.menu_superior_page_hospedagem.setMaximumSize(QSize(1800, 1200))
             self.menu_superior_page_hospedagem.setFrameShape(QFrame.Shape.StyledPanel)
             self.menu_superior_page_hospedagem.setFrameShadow(QFrame.Shadow.Raised)
+
+            # Criando o layout horizontal para o menu superior
             self.horizontalLayout = QHBoxLayout(self.menu_superior_page_hospedagem)
             self.horizontalLayout.setObjectName(u"horizontalLayout")
+
+            # Adicionando um espaçador horizontal
             self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
             self.horizontalLayout.addItem(self.horizontalSpacer)
+            
+            # Criando o botão abrir
+            self.button_geral = QPushButton(self.menu_superior_page_hospedagem)
+            self.button_geral.setObjectName(u"button_geral")
+            self.button_geral.setText("Geral")
+            self.button_geral.setMinimumSize(QSize(100, 50))
+            self.button_geral.setMaximumSize(QSize(200, 70))
+            self.button_geral.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.button_geral.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_geral))
+            
+            self.horizontalLayout.addWidget(self.button_geral)
 
-            self.button_abrir = QPushButton(self.menu_superior_page_hospedagem)
-            self.button_abrir.setObjectName(u"button_abrir")
-            self.button_abrir.setMinimumSize(QSize(100, 50))
-            self.button_abrir.setMaximumSize(QSize(200, 70))
-            self.button_abrir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.button_abrir.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_abrir))
+            # Criando o botão listar
+            self.button_hospede = QPushButton(self.menu_superior_page_hospedagem)
+            self.button_hospede.setObjectName(u"button_hospede")
+            self.button_hospede.setText("Hospede")
+            self.button_hospede.setMinimumSize(QSize(100, 50))
+            self.button_hospede.setMaximumSize(QSize(200, 70))
+            self.button_hospede.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.button_hospede.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_hospede))
 
-            self.horizontalLayout.addWidget(self.button_abrir)
+            self.horizontalLayout.addWidget(self.button_hospede)
 
-            self.button_listar = QPushButton(self.menu_superior_page_hospedagem)
-            self.button_listar.setObjectName(u"button_listar")
-            self.button_listar.setMinimumSize(QSize(100, 50))
-            self.button_listar.setMaximumSize(QSize(200, 70))
-            self.button_listar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.button_listar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_listar))
+            # Criando o botão fechar
+            self.button_data = QPushButton(self.menu_superior_page_hospedagem)
+            self.button_data.setObjectName(u"button_data")
+            self.button_data.setText("Data")
+            self.button_data.setMinimumSize(QSize(100, 50))
+            self.button_data.setMaximumSize(QSize(200, 70))
+            self.button_data.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.button_data.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_data))
 
-            self.horizontalLayout.addWidget(self.button_listar)
+            self.horizontalLayout.addWidget(self.button_data)
 
-            self.button_fechar = QPushButton(self.menu_superior_page_hospedagem)
-            self.button_fechar.setObjectName(u"button_fechar")
-            self.button_fechar.setMinimumSize(QSize(100, 50))
-            self.button_fechar.setMaximumSize(QSize(200, 70))
-            self.button_fechar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.button_fechar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_fechar))
-
-            self.horizontalLayout.addWidget(self.button_fechar)
-
+            # Adicionando um espaçador horizontal
             self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
             self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
-            self.verticalLayout_2.addWidget(self.menu_superior_page_hospedagem)
+            # Adicionando o menu superior ao layout principal
+            self.layout_principal.addWidget(self.menu_superior_page_hospedagem)
 
+            # Criando o QStackedWidget para as páginas
             self.pages = QStackedWidget(Form)
             self.pages.setObjectName(u"pages")
-            self.page_abrir = QWidget()
-            self.page_abrir.setObjectName(u"page_abrir")
-            self.pages.addWidget(self.page_abrir)
-            self.page_listar = QWidget()
-            self.page_listar.setObjectName(u"page_listar")
-            self.pages.addWidget(self.page_listar)
-            self.page_fechar = QWidget()
-            self.page_fechar.setObjectName(u"page_fechar")
-            self.pages.addWidget(self.page_fechar)
 
-            self.verticalLayout_2.addWidget(self.pages)
+            # Criando as páginas
+            self.page_geral = QWidget()
+            self.page_geral.setObjectName(u"page_abrir")
+            self.pages.addWidget(self.page_geral)
+            self.page_hospede = QWidget()
+            self.page_hospede.setObjectName(u"page_listar")
+            self.pages.addWidget(self.page_hospede)
+            self.page_data = QWidget()
+            self.page_data.setObjectName(u"page_fechar")
+            self.pages.addWidget(self.page_data)
 
-            self.retranslateUi(Form)
+            # Adicionando o QStackedWidget ao layout principal
+            self.layout_principal.addWidget(self.pages)
+            # Definindo a página inicial do QStackedWidget
             self.pages.setCurrentIndex(0)
-            QMetaObject.connectSlotsByName(Form)
 
-        def retranslateUi(self, Form):
-            Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-            self.button_abrir.setText(QCoreApplication.translate("Form", u"Abrir", None))
-            self.button_listar.setText(QCoreApplication.translate("Form", u"Listar", None))
-            self.button_fechar.setText(QCoreApplication.translate("Form", u"Fechar", None))
+
+            QMetaObject.connectSlotsByName(Form)

@@ -18,11 +18,11 @@ class PageHospedagem(QWidget):
         # Verifica se o objeto tem nome, caso não tenha, define um nome
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        # Define o tamanho da janela
-        Form.resize(773, 808)
+
         # Cria um layout vertical
-        self.verticalLayout_2 = QVBoxLayout(Form)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.layout_principal = QVBoxLayout(Form)
+        self.layout_principal.setObjectName(u"verticalLayout_2")
+
         # Cria um frame para o menu superior
         self.menu_superior_page_hospedagem = QFrame(Form)
         self.menu_superior_page_hospedagem.setObjectName(u"menu_superior_page_hospedagem")
@@ -30,9 +30,11 @@ class PageHospedagem(QWidget):
         self.menu_superior_page_hospedagem.setMaximumSize(QSize(1800, 1200))
         self.menu_superior_page_hospedagem.setFrameShape(QFrame.Shape.StyledPanel)
         self.menu_superior_page_hospedagem.setFrameShadow(QFrame.Shadow.Raised)
+
         # Cria um layout horizontal para o menu superior
         self.horizontalLayout = QHBoxLayout(self.menu_superior_page_hospedagem)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+
         # Adiciona um espaçador horizontal
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -41,6 +43,7 @@ class PageHospedagem(QWidget):
         # Cria o botão abrir
         self.button_abrir = QPushButton(self.menu_superior_page_hospedagem)
         self.button_abrir.setObjectName(u"button_abrir")
+        self.button_abrir.setText("Abrir")
         self.button_abrir.setMinimumSize(QSize(100, 50))
         self.button_abrir.setMaximumSize(QSize(200, 70))
         self.button_abrir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -51,6 +54,7 @@ class PageHospedagem(QWidget):
         # Cria o botão listar
         self.button_listar = QPushButton(self.menu_superior_page_hospedagem)
         self.button_listar.setObjectName(u"button_listar")
+        self.button_listar.setText("Listar")
         self.button_listar.setMinimumSize(QSize(100, 50))
         self.button_listar.setMaximumSize(QSize(200, 70))
         self.button_listar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -61,6 +65,7 @@ class PageHospedagem(QWidget):
         # Cria o botão fechar
         self.button_fechar = QPushButton(self.menu_superior_page_hospedagem)
         self.button_fechar.setObjectName(u"button_fechar")
+        self.button_fechar.setText("Fechar")
         self.button_fechar.setMinimumSize(QSize(100, 50))
         self.button_fechar.setMaximumSize(QSize(200, 70))
         self.button_fechar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -73,9 +78,10 @@ class PageHospedagem(QWidget):
 
         self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
-        self.verticalLayout_2.addWidget(self.menu_superior_page_hospedagem)
+        # Adiciona o menu superior ao layout principal
+        self.layout_principal.addWidget(self.menu_superior_page_hospedagem)
 
-        # Cria um widget de páginas empilhadas
+        # Cria um sta'cked widget para as páginas
         self.pages = QStackedWidget(Form)
         self.pages.setObjectName(u"pages")
 
@@ -84,7 +90,7 @@ class PageHospedagem(QWidget):
         self.page_abrir.setObjectName(u"page_abrir")
         self.label_abrir = QLabel(self.page_abrir)
         self.label_abrir.setObjectName(u"label_abrir")
-        self.label_abrir.setText("<h1>Abrir</h1>")
+        self.label_abrir.setText("<h1>Abrir Hospedagem</h1>")
         self.pages.addWidget(self.page_abrir)
 
         # Cria a página listar
@@ -92,7 +98,7 @@ class PageHospedagem(QWidget):
         self.page_listar.setObjectName(u"page_listar")
         self.label_listar = QLabel(self.page_listar)
         self.label_listar.setObjectName(u"label_listar")
-        self.label_listar.setText("<h1>Listar</h1>")
+        self.label_listar.setText("<h1>Listar Hospedagem</h1>")
         self.pages.addWidget(self.page_listar)
 
         # Cria a página fechar
@@ -100,18 +106,14 @@ class PageHospedagem(QWidget):
         self.page_fechar.setObjectName(u"page_fechar")
         self.label_fechar = QLabel(self.page_fechar)
         self.label_fechar.setObjectName(u"label_fechar")
-        self.label_fechar.setText("<h1>Fechar</h1>")
+        self.label_fechar.setText("<h1>Fechar Hospedagem</h1>")
         self.pages.addWidget(self.page_fechar)
-        self.verticalLayout_2.addWidget(self.pages)
+
+        # Adiciona o stacked widget ao layout principal
+        self.layout_principal.addWidget(self.pages)
+
+        # Define a página inicial do stacked widget das páginas
+        self.pages.setCurrentIndex(0)
 
         # Configura a interface
-        self.retranslateUi(Form)
-        self.pages.setCurrentIndex(0)
-        QMetaObject.connectSlotsByName(Form)
-
-    # Método para traduzir os textos da interface
-    def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.button_abrir.setText(QCoreApplication.translate("Form", u"Abrir", None))
-        self.button_listar.setText(QCoreApplication.translate("Form", u"Listar", None))
-        self.button_fechar.setText(QCoreApplication.translate("Form", u"Fechar", None))
+        # QMetaObject.connectSlotsByName(Form) # faz conectar os slots com os nomes dos objetos. Slots
