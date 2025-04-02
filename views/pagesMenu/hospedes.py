@@ -53,6 +53,7 @@ class PageHospedes(QWidget):
         # Criando o botão listar
         self.button_listar = QPushButton(self.menu_superior_page_hospedagem)
         self.button_listar.setObjectName(u"button_listar")
+        self.button_listar.setText("Listar")
         self.button_listar.setMinimumSize(QSize(100, 50))
         self.button_listar.setMaximumSize(QSize(200, 70))
         self.button_listar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -88,21 +89,20 @@ class PageHospedes(QWidget):
         self.page_cadastrar.setObjectName(u"page_cadastrar")
         self.pages.addWidget(self.page_cadastrar)
         
+        # Criando pagina listar
         self.page_listar = QWidget()
         self.page_listar.setObjectName(u"page_listar")
         self.pages.addWidget(self.page_listar)
+
+        # Criando pagina alterar
         self.alterar = QWidget()
         self.alterar.setObjectName(u"page_alterar")
         self.pages.addWidget(self.alterar)
 
+        # Adicionando o stackedwidget ao layout principal
         self.layout_principal.addWidget(self.pages)
 
-        self.retranslateUi(Form)
+        # Definindo a pagina inicial do stackedwidget
         self.pages.setCurrentIndex(0)
-        QMetaObject.connectSlotsByName(Form)
 
-    def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.button_cadastrar.setText(QCoreApplication.translate("Form", u"Abrir", None))
-        self.button_listar.setText(QCoreApplication.translate("Form", u"Listar", None))
-        self.button_alterar.setText(QCoreApplication.translate("Form", u"Fechar", None))
+        # QMetaObject.connectSlotsByName(Form)
