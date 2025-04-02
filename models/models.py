@@ -30,7 +30,6 @@ class Usuario(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     usuario = Column(String, unique=True)
     senha = Column(String)
-    id_funcionario = Column(Integer, ForeignKey('funcionarios.id'))
     tipo = Column(String)
     
 

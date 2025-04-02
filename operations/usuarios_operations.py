@@ -4,21 +4,29 @@ from sqlalchemy.orm import sessionmaker
 Session = sessionmaker(bind=db)
 session = Session()
 
+TIPOS_USUARIOS = ["admin", "padrão"]
+def tipo_usuario(tipo):
+    while True:    
+        if tipo not in TIPOS_USUARIOS:
+            print("Tipo de usuário inválido.")
+            tipo = input("Digite o tipo de usuário novamente: (admin ou padrão): ")
+        else:
+            return tipo
+
 def criar_usuario():
     usuario = input("Usuário: ")
     senha = input("Senha: ")
-    id_funcionario = int(input("ID do funcionário associado: "))
     tipo = input("Tipo de usuário (admin ou padrão): ")
-
-    usuario = Usuario(usuario=usuario, senha=senha, id_funcionario=id_funcionario, tipo=tipo ) #admin ou padrão
+    tipo = tipo_usuario(tipo)
+    usuario = Usuario(usuario=usuario, senha=senha, tipo=tipo ) #admin ou padrão
+    print("Usuário criado com sucesso!")
     session.add(usuario)
     session.commit()
 
 def  listar_usuarios():
     usuarios = session.query(Usuario).all()
     for usuario in usuarios:
-        funcionario = session.query(Funcionario).filter_by(id=usuario.id_funcionario).first()
-        print(f"ID: {usuario.id}, Usuário: {usuario.usuario}, Funcionário Associado: {funcionario.nome}, Tipo: {usuario.tipo}")
+        print(f"ID: {usuario.id}, Usuário: {usuario.usuario}, Tipo: {usuario.tipo}")
 
 def atualizar_usuario():
     usuario = input("Usuário a ser atualizado: ")
@@ -26,6 +34,7 @@ def atualizar_usuario():
     if usuario:
         usuario.senha = input("Nova senha: ")
         usuario.tipo = input("Novo tipo: ")
+        usuario.tipo = tipo_usuario(usuario.tipo)
         session.commit()
         print("Usuário atualizado com sucesso!")
     else:

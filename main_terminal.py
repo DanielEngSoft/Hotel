@@ -106,7 +106,7 @@ if __name__ == "__main__":
                 elif opcao_usuario == "2": # Listar usuários
                     listar_usuarios()
                 elif opcao_usuario == "3": # Atualizar usuário
-                    atualizar_usuario
+                    atualizar_usuario()
                 elif opcao_usuario == "4": # Excluir usuário
                     excluir_usuario()
                 elif opcao_usuario == "0":
