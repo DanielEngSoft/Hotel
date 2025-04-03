@@ -11,6 +11,7 @@ class Hospede(Base):
     nome = Column(String)
     cpf = Column(String, unique=True)
     telefone = Column(String)
+    # endereco = Column(String)
 
 class Funcionario(Base):
     __tablename__ = 'funcionarios'
@@ -52,6 +53,17 @@ class Relatorio(Base):
     data_saida = Column(DateTime, default=datetime.datetime.now())
     valor_total = Column(Float)
 
+# class Endereco(Base):
+#     __tablename__ = 'enderecos'
+#     id = Column(Integer, primary_key=True, autoincrement=True)
+#     id_hospede = Column(String, ForeignKey('hospedes.cpf'))
+#     rua = Column(String)
+#     numero = Column(Integer)
+#     bairro = Column(String)
+#     cidade = Column(String)
+#     estado = Column(String)
+#     cep = Column(String)
+
 # class Reserva(Base):
 #     __tablename__ = 'reservar'
 #     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -60,7 +72,6 @@ class Relatorio(Base):
 #     data_entrada = Column(Datetime)
 #     data_saida = Column(Datetime)
 #     qtd_hospedes = Column(Integer)
-#     valor_diaria = Column(Float)
 
 # class Faturar(Base):
     # __tablename__ = 'faturar'

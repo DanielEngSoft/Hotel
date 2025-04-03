@@ -51,7 +51,7 @@ def abrir_hospedagem():
                 continue
             
         if not quarto.disponivel:
-             while True:
+            while True:
                 print("Quarto não disponível.")
                 numero_quarto = input('Digite um quarto disponivel:')                
                 quarto = session.query(Quarto).filter_by(numero=numero_quarto).first()
@@ -132,9 +132,6 @@ def fechar_hospedagem():
                 if valor_total == 0:
                     valor_total = hospedagem.valor_diaria
 
-                # data_saida_str = datetime.datetime.now()
-                # data_saida = datetime.datetime.strftime(data_saida_str,"%d/%m/%Y %H:%M")
-
                 data_entrada_str = hospedagem.data_entrada.strftime("%d/%m/%Y %H:%M")
                 data_entrada = datetime.datetime.strptime(data_entrada_str,"%d/%m/%Y %H:%M")
 
@@ -154,3 +151,4 @@ def fechar_hospedagem():
             else:
                 print("Hospedagem não encontrada.")
                 system('pause')
+
