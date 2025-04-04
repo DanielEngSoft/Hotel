@@ -1,7 +1,7 @@
 from models.models import Hospede, Hospedagem, db
 from sqlalchemy.orm import sessionmaker
 from os import system
-from styles.formatacao_de_entradas import formata_cpf, formata_nome, formata_telefone
+from utils.formatacao_de_entradas import formata_cpf, formata_nome, formata_telefone
 
 Session = sessionmaker(bind=db)
 

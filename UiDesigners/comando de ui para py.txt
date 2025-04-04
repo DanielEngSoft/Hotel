@@ -1,19 +1,10 @@
 Na pasta que criou o arquivo .ui execultar no terminal o comando:
 
-    pyside6-uic arquivo.ui -o arquivo.py
+    pyside6-uic arquivo.ui -o arquivo.pyside6
 
-Depois de criar um arquivo .py com o seguinte codigo:
 
-    from PySide6 import QtWidgets
-    from arquivo import Ui_MainWindow  # Substitua "arquivo" pelo nome do seu arquivo
+# Quando terminar de organizar --------------------------------------------------
 
-    class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
-        def __init__(self):
-            super().__init__()
-            self.setupUi(self)
+Comando para converter o arquivo .ui para .py (execute na pasta raiz do projeto):
 
-    if __name__ == "__main__":
-        app = QtWidgets.QApplication([])
-        window = MyApp()
-        window.show()
-        app.exec_()
+pyside6-uic src/views/gui/MainWindow.ui -o src/views/gui/Ui_MainWindow.py

@@ -3,7 +3,7 @@ from operations.quartos_operations import listar_quartos_disponiveis, listar_qua
 from sqlalchemy.orm import sessionmaker
 import datetime
 
-from styles.formatacao_de_entradas import formata_cpf, formata_data
+from utils.formatacao_de_entradas import formata_cpf, formata_data
 from os import system
 
 Session = sessionmaker(bind=db)

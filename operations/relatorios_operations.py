@@ -1,5 +1,5 @@
 from models.models import Relatorio, Hospede, db
-from styles.formatacao_de_entradas import formata_cpf
+from utils.formatacao_de_entradas import formata_cpf
 from sqlalchemy.orm import sessionmaker
 
 Session = sessionmaker(bind=db)
