@@ -9,6 +9,9 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout,QLabel, QPushBu
     QSizePolicy, QSpacerItem, QStackedWidget, QVBoxLayout,
     QWidget, QTableWidget)
 
+from views.PagesMenu.PagesHospedagem.page_listar import Ui_page_listar
+from views.PagesMenu.PagesHospedagem.page_abrir import Ui_page_abrir
+
 class PageHospedagem(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -27,9 +30,7 @@ class PageHospedagem(QWidget):
         self.menu_superior_page_hospedagem = QFrame(Form)
         self.menu_superior_page_hospedagem.setObjectName(u"menu_superior_page_hospedagem")
         self.menu_superior_page_hospedagem.setMinimumSize(QSize(600, 0))
-        self.menu_superior_page_hospedagem.setMaximumSize(QSize(1800, 1200))
         self.menu_superior_page_hospedagem.setFrameShape(QFrame.Shape.StyledPanel)
-        self.menu_superior_page_hospedagem.setFrameShadow(QFrame.Shadow.Raised)
 
         # Cria um layout horizontal para o menu superior
         self.horizontalLayout = QHBoxLayout(self.menu_superior_page_hospedagem)
@@ -86,12 +87,10 @@ class PageHospedagem(QWidget):
         self.pages.setObjectName(u"pages")
 
         # Cria a página abrir
-        from views.PagesMenu.PagesHospedagem.page_abrir import Ui_page_abrir
         self.page_abrir = Ui_page_abrir()
         self.pages.addWidget(self.page_abrir)
 
         # Cria a página listar
-        from views.PagesMenu.PagesHospedagem.page_listar import Ui_page_listar
         self.page_listar = Ui_page_listar()
         self.pages.addWidget(self.page_listar)
 

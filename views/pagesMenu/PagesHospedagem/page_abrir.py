@@ -20,6 +20,8 @@ from PySide6.QtWidgets import (QApplication, QDateEdit, QFrame, QHBoxLayout,
     QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
     QVBoxLayout, QWidget)
 
+from PySide6.QtCore import QTimer
+
 class Ui_page_abrir(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,17 +30,23 @@ class Ui_page_abrir(QWidget):
     def setupUi(self, page_abrir):
         if not page_abrir.objectName():
             page_abrir.setObjectName(u"page_abrir")
-        page_abrir.resize(776, 473)
-        page_abrir.setFocusPolicy(Qt.FocusPolicy.WheelFocus)
-        page_abrir.setInputMethodHints(Qt.InputMethodHint.ImhDigitsOnly)
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+
+        # Criando o widget central------------------------------------------------
         self.widget = QWidget(page_abrir)
         self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(40, 50, 721, 400))
+        self.widget.setGeometry(QRect(0, 0, page_abrir.width(), page_abrir.height()))
+        # Criando o layout horizontal principal ----------------------------------
         self.horizontalLayout = QHBoxLayout(self.widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setContentsMargins(20, 20, 20, 20)
+        self.horizontalLayout.setSpacing(20)
+        self.horizontalLayout.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
         self.verticalLayout_abrir = QVBoxLayout()
         self.verticalLayout_abrir.setObjectName(u"verticalLayout_abrir")
+
         self.label_cpf = QLabel(self.widget)
         self.label_cpf.setObjectName(u"label_cpf")
         font = QFont()
@@ -52,7 +60,7 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setMinimumSize(QSize(150, 0))
         self.lineEdit_cpf.setMaximumSize(QSize(150, 16777215))
         self.lineEdit_cpf.setFont(font)
-        from PySide6.QtCore import QTimer
+
         def cpf_focus_in_event(event):
             QLineEdit.focusInEvent(self.lineEdit_cpf, event)
             # Espera 0ms e só então move o cursor (depois do clique)
@@ -79,47 +87,31 @@ class Ui_page_abrir(QWidget):
 
         self.verticalLayout_abrir.addWidget(self.label_quartos)
 
+        # Cria um layout para a tabela de quartos disponíveis-----------------------------------------------
         self.tableWidget_quartos = QTableWidget(self.widget)
-        if (self.tableWidget_quartos.columnCount() < 2):
-            self.tableWidget_quartos.setColumnCount(2)
-        __qtablewidgetitem = QTableWidgetItem()
-        __qtablewidgetitem.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tableWidget_quartos.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        __qtablewidgetitem1.setTextAlignment(Qt.AlignTrailing|Qt.AlignVCenter);
-        self.tableWidget_quartos.setHorizontalHeaderItem(1, __qtablewidgetitem1)
-        if (self.tableWidget_quartos.rowCount() < 5):
-            self.tableWidget_quartos.setRowCount(5)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        self.tableWidget_quartos.setVerticalHeaderItem(0, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.tableWidget_quartos.setVerticalHeaderItem(1, __qtablewidgetitem3)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        self.tableWidget_quartos.setVerticalHeaderItem(2, __qtablewidgetitem4)
-        __qtablewidgetitem5 = QTableWidgetItem()
-        self.tableWidget_quartos.setVerticalHeaderItem(3, __qtablewidgetitem5)
-        __qtablewidgetitem6 = QTableWidgetItem()
-        self.tableWidget_quartos.setVerticalHeaderItem(4, __qtablewidgetitem6)
-        __qtablewidgetitem7 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(0, 0, __qtablewidgetitem7)
-        __qtablewidgetitem8 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(0, 1, __qtablewidgetitem8)
-        __qtablewidgetitem9 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(1, 0, __qtablewidgetitem9)
-        __qtablewidgetitem10 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(1, 1, __qtablewidgetitem10)
-        __qtablewidgetitem11 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(2, 0, __qtablewidgetitem11)
-        __qtablewidgetitem12 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(2, 1, __qtablewidgetitem12)
-        __qtablewidgetitem13 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(3, 0, __qtablewidgetitem13)
-        __qtablewidgetitem14 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(3, 1, __qtablewidgetitem14)
-        __qtablewidgetitem15 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(4, 0, __qtablewidgetitem15)
-        __qtablewidgetitem16 = QTableWidgetItem()
-        self.tableWidget_quartos.setItem(4, 1, __qtablewidgetitem16)
+
+        # Set table dimensions
+        self.tableWidget_quartos.setColumnCount(2)
+        self.tableWidget_quartos.setRowCount(5)
+
+        # Set header items
+        header_items = [
+            (0, Qt.AlignLeading|Qt.AlignVCenter),
+            (1, Qt.AlignTrailing|Qt.AlignVCenter)
+        ]
+        for col, alignment in header_items:
+            item = QTableWidgetItem()
+            item.setTextAlignment(alignment)
+            self.tableWidget_quartos.setHorizontalHeaderItem(col, item)
+
+        # Set vertical header items
+        for row in range(5):
+            self.tableWidget_quartos.setVerticalHeaderItem(row, QTableWidgetItem())
+
+        # Set table items
+        for row in range(5):
+            for col in range(2):
+                self.tableWidget_quartos.setItem(row, col, QTableWidgetItem())        
         self.tableWidget_quartos.setObjectName(u"tableWidget_quartos")
         self.tableWidget_quartos.setMinimumSize(QSize(0, 0))
         self.tableWidget_quartos.viewport().setProperty(u"cursor", QCursor(Qt.CursorShape.PointingHandCursor))
@@ -135,13 +127,16 @@ class Ui_page_abrir(QWidget):
 
         self.horizontalLayout.addLayout(self.verticalLayout_abrir)
 
+
+        # Separador da tela de abrir da tela de buscar-----------------------------------------------------
         self.line_separador = QFrame(self.widget)
         self.line_separador.setObjectName(u"line_separador")
         self.line_separador.setFrameShape(QFrame.Shape.VLine)
         self.line_separador.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.horizontalLayout.addWidget(self.line_separador)
-
+        
+        # Cria um layout para buscar hospedes-----------------------------------------------
         self.verticalLayout_buscar = QVBoxLayout()
         self.verticalLayout_buscar.setObjectName(u"verticalLayout_buscar")
         self.label_buscar = QLabel(self.widget)
@@ -227,6 +222,8 @@ class Ui_page_abrir(QWidget):
         self.retranslateUi(page_abrir)
 
         QMetaObject.connectSlotsByName(page_abrir)
+
+        layout.addWidget(self.widget)
     # setupUi
 
     def retranslateUi(self, page_abrir):
