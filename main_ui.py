@@ -1,3 +1,5 @@
+from PySide6 import QtWidgets
+
 from PySide6.QtCore import (
     QCoreApplication, QDate, QDateTime, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -184,3 +186,14 @@ class Ui_MainWindow(object):
         
     def mudar_pagina(self, index):
         self.pages.setCurrentIndex(index)
+
+class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication([])
+    window = MyApp()
+    window.show()
+    app.exec_()

@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float, Date, Boolean, DateTime
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 import datetime
 
-db = create_engine('sqlite:///hp-prime.db')
+db = create_engine('sqlite:///data/hp-prime.db')
 Base = declarative_base()
 
 class Hospede(Base):
@@ -12,6 +12,8 @@ class Hospede(Base):
     cpf = Column(String, unique=True)
     telefone = Column(String)
     # endereco = Column(String)
+    hospedagens = relationship("Hospedagem", backref="hospede")
+    relatorios = relationship("Relatorio", backref="hospede")
 
 class Funcionario(Base):
     __tablename__ = 'funcionarios'
@@ -25,6 +27,8 @@ class Quarto(Base):
     numero = Column(Integer, primary_key=True)
     tipo = Column(String)
     disponivel = Column(Boolean)
+    hospedagens = relationship("Hospedagem", backref="quarto")
+    relatorios = relationship("Relatorio", backref="quarto")
 
 class Usuario(Base):
     __tablename__ = 'usuarios'
