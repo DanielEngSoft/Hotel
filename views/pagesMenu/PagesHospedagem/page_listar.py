@@ -12,7 +12,7 @@ class PageListarHospedagem(QWidget):
         # Criar tabela
         self.table = QTableWidget()
         self.table.setColumnCount(6)
-        self.table.setHorizontalHeaderLabels(['ID', 'Cliente', 'Quarto', 'Entrada', 'Prev-Saída', 'Pessoas'])
+        self.table.setHorizontalHeaderLabels(['ID', 'Cliente', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'])
     
         # Ajusta o tamanho das colunas da tabela para se expandirem automaticamente
         # e preencherem todo o espaço disponível de forma uniforme

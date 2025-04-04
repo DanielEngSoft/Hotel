@@ -4,7 +4,7 @@ from operations.quartos_operations import cadastrar_quarto, listar_quartos,lista
 from operations.usuarios_operations import criar_usuario, listar_usuarios, atualizar_usuario, excluir_usuario
 from operations.hospedagem_operations import abrir_hospedagem, listar_hospedagens, fechar_hospedagem
 from operations.relatorios_operations import relatorio_hospedagem, relatorio_hospedes
-from views.menus_para_terminal import menu_principal, menu_usuarios, menu_quartos, menu_hospedar, menu_hospedes, menu_funcionarios, menu_relatorios
+from views.terminal.menus_para_terminal import menu_principal, menu_usuarios, menu_quartos, menu_hospedar, menu_hospedes, menu_funcionarios, menu_relatorios
 
 from os import system
 

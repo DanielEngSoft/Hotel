@@ -110,7 +110,7 @@ class PageHospedagem(QWidget):
         self.layout_principal.addWidget(self.pages)
 
         # Define a página inicial do stacked widget das páginas
-        self.pages.setCurrentIndex(0)
+        self.pages.setCurrentIndex(1)
 
         # Configura a interface
         # QMetaObject.connectSlotsByName(Form) # faz conectar os slots com os nomes dos objetos. Slots
