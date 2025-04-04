@@ -13,6 +13,12 @@ def formata_cpf(cpf):
 
     return cpf_formatado.mask(cpf)
 
+def formata_cpf_busca(cpf):
+    cpf_formatado = CPF()
+    cpf = cpf.replace('.', '').replace('-', '')
+
+    return cpf_formatado.mask(cpf)
+
 def formata_telefone(telefone):
     while True:
         numero = telefone.replace('(', '').replace(')', '').replace('-', '').replace('.', '')

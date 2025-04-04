@@ -3,7 +3,7 @@ from operations.quartos_operations import listar_quartos_disponiveis, listar_qua
 from sqlalchemy.orm import sessionmaker
 import datetime
 
-from utils.formatacao_de_entradas import formata_cpf, formata_data
+from utils.formatacao_de_entradas import formata_cpf_busca, formata_data
 from os import system
 
 Session = sessionmaker(bind=db)
@@ -31,6 +31,8 @@ def abrir_hospedagem():
                 return
 
             cpf_hospede = input("CPF do hóspede: ")
+            cpf_hospede = formata_cpf_busca(cpf_hospede)
+
             hospede = session.query(Hospede).filter_by(cpf=cpf_hospede).first()
             
             if not hospede:
