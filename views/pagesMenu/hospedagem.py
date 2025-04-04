@@ -7,7 +7,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout,QLabel, QPushButton,
     QSizePolicy, QSpacerItem, QStackedWidget, QVBoxLayout,
-    QWidget)
+    QWidget, QTableWidget)
 
 class PageHospedagem(QWidget):
     def __init__(self, parent=None):
@@ -94,11 +94,8 @@ class PageHospedagem(QWidget):
         self.pages.addWidget(self.page_abrir)
 
         # Cria a página listar
-        self.page_listar = QWidget()
-        self.page_listar.setObjectName(u"page_listar")
-        self.label_listar = QLabel(self.page_listar)
-        self.label_listar.setObjectName(u"label_listar")
-        self.label_listar.setText("<h1>Listar Hospedagem</h1>")
+        from views.pagesMenu.pages_hospedagem.page_listar import PageListarHospedagem
+        self.page_listar = PageListarHospedagem()
         self.pages.addWidget(self.page_listar)
 
         # Cria a página fechar
