@@ -1,9 +1,9 @@
-from operations.hospedes_operations  import cadastrar_hospede, listar_hospedes, atualizar_hospede, excluir_hospede
-from operations.funcionarios_operations import cadastrar_funcionario, listar_funcionarios, atualizar_funcionario, excluir_funcionario
-from operations.quartos_operations import cadastrar_quarto, listar_quartos,listar_quartos_disponiveis, listar_quartos_ocupados, atualiza_tipo, excluir_quarto
-from operations.usuarios_operations import criar_usuario, listar_usuarios, atualizar_usuario, excluir_usuario
-from operations.hospedagem_operations import abrir_hospedagem, listar_hospedagens, fechar_hospedagem
-from operations.relatorios_operations import relatorio_hospedagem, relatorio_hospedes
+from operations.terminal.hospedes_operations  import cadastrar_hospede, listar_hospedes, atualizar_hospede, excluir_hospede
+from operations.terminal.funcionarios_operations import cadastrar_funcionario, listar_funcionarios, atualizar_funcionario, excluir_funcionario
+from operations.terminal.quartos_operations import cadastrar_quarto, listar_quartos,listar_quartos_disponiveis, listar_quartos_ocupados, atualiza_tipo, excluir_quarto
+from operations.terminal.usuarios_operations import criar_usuario, listar_usuarios, atualizar_usuario, excluir_usuario
+from operations.terminal.hospedagem_operations import abrir_hospedagem, listar_hospedagens, fechar_hospedagem
+from operations.terminal.relatorios_operations import relatorio_hospedagem, relatorio_hospedes
 from views.terminal.menus_para_terminal import menu_principal, menu_usuarios, menu_quartos, menu_hospedar, menu_hospedes, menu_funcionarios, menu_relatorios
 
 from os import system
