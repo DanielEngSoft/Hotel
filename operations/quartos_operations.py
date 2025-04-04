@@ -3,7 +3,6 @@ from sqlalchemy.orm import sessionmaker
 from os import system
 
 Session = sessionmaker(bind=db)
-session = Session()
 
 
 def tipos_quartos():
@@ -34,76 +33,83 @@ def cadastrar_quarto():
     except ValueError:
         print("Número inválido.")
         return
-    if session.query(Quarto).filter_by(numero=numero).first():
-        print("Quarto já cadastrado.")
-        return
-    tipo = tipos_quartos()
-    quarto = Quarto(numero=numero, tipo=tipo, disponivel=True)
-
-    session.add(quarto)
-    session.commit()
-    print("Quarto cadastrado com sucesso!")
+    
+    with Session() as session:
+        if session.query(Quarto).filter_by(numero=numero).first():
+            print("Quarto já cadastrado.")
+            return
+        tipo = tipos_quartos()
+        quarto = Quarto(numero=numero, tipo=tipo, disponivel=True)
+        session.add(quarto)
+        session.commit()
+        print("Quarto cadastrado com sucesso!")
 
 def listar_quartos():
     system('cls')
-    quartos = session.query(Quarto).all()
-    print('-' * 20,'Quartos', '-' * 20)
-    for quarto in quartos:
-        print(f"Número: {quarto.numero}, Tipo: {quarto.tipo}, Status: {'Disponivel 'if quarto.disponivel  else 'Ocupado'}")
-        print('-' * 50)
-
-def listar_quartos_disponiveis():
-    system('cls')
-    quartos = session.query(Quarto).all()
-    print('-' * 20,'Quartos Disponíveis', '-' * 20)
-    for quarto in quartos:
-        if quarto.disponivel == True:
+    with Session() as session:
+        quartos = session.query(Quarto).all()
+        print('-' * 20,'Quartos', '-' * 20)
+        for quarto in quartos:
             print(f"Número: {quarto.numero}, Tipo: {quarto.tipo}, Status: {'Disponivel 'if quarto.disponivel  else 'Ocupado'}")
             print('-' * 50)
 
+def listar_quartos_disponiveis():
+    system('cls')
+    with Session() as session:
+        quartos = session.query(Quarto).all()
+        print('-' * 20,'Quartos Disponíveis', '-' * 20)
+        for quarto in quartos:
+            if quarto.disponivel == True:
+                print(f"Número: {quarto.numero}, Tipo: {quarto.tipo}, Status: {'Disponivel 'if quarto.disponivel  else 'Ocupado'}")
+                print('-' * 50)
+
 def listar_quartos_ocupados():
     system('cls')
-    quartos = session.query(Quarto).all()
-    print('-' * 20,'Quartos Ocupados', '-' * 20)
-    for quarto in quartos:
-        if quarto.disponivel == False:
-            print(f"Número: {quarto.numero}, Tipo: {quarto.tipo}, Status: {'Disponivel 'if quarto.disponivel  else 'Ocupado'}")
-            print('-' * 60)
+    with Session() as session:
+        quartos = session.query(Quarto).all()
+        print('-' * 20,'Quartos Ocupados', '-' * 20)
+        for quarto in quartos:
+            if quarto.disponivel == False:
+                print(f"Número: {quarto.numero}, Tipo: {quarto.tipo}, Status: {'Disponivel 'if quarto.disponivel  else 'Ocupado'}")
+                print('-' * 60)
 
 def atualiza_tipo():
     numero = input("Digite o número do quarto: ")
-    quarto = session.query(Quarto).filter_by(numero=numero).first()
-    if quarto:
-        novo_tipo = tipos_quartos()
-        quarto.tipo = novo_tipo
-        session.commit()
-        print("Tipo atualizado com sucesso!")
-    else:
-        print("Quarto não encontrado.")
+    with Session() as session:
+        quarto = session.query(Quarto).filter_by(numero=numero).first()
+        if quarto:
+            novo_tipo = tipos_quartos()
+            quarto.tipo = novo_tipo
+            session.commit()
+            print("Tipo atualizado com sucesso!")
+        else:
+            print("Quarto não encontrado.")
 
 def atualiza_status():
     numero = input("Digite o número do quarto: ")
-    quarto = session.query(Quarto).filter_by(numero=numero).first()
-    if quarto:
-        if quarto.disponivel == True:
-            quarto.disponivel = False
+    with Session() as session:
+        quarto = session.query(Quarto).filter_by(numero=numero).first()
+        if quarto:
+            if quarto.disponivel == True:
+                quarto.disponivel = False
+            else:
+                quarto.disponivel = True
+            session.commit()
+            print("Status atualizado com sucesso!")
         else:
-            quarto.disponivel = True
-        session.commit()
-        print("Status atualizado com sucesso!")
-    else:
-        print("Quarto não encontrado.")
+            print("Quarto não encontrado.")
 
 def excluir_quarto():
     numero = input("Digite o número do quarto: ")
-    quarto = session.query(Quarto).filter_by(numero=numero).first()
-    if quarto:
-        if session.query(Hospedagem).filter_by(id_quarto=numero).first():
-            print("Não é possível excluir o quarto pois há hospedagens associadas a ele.")
-            return
+    with Session() as session:
+        quarto = session.query(Quarto).filter_by(numero=numero).first()
+        if quarto:
+            if session.query(Hospedagem).filter_by(id_quarto=numero).first():
+                print("Não é possível excluir o quarto pois há hospedagens associadas a ele.")
+                return
+            else:
+                session.delete(quarto)
+                session.commit()
+                print("Quarto excluído com sucesso!")
         else:
-            session.delete(quarto)
-            session.commit()
-            print("Quarto excluído com sucesso!")
-    else:
-        print("Quarto não encontrado.")
+            print("Quarto não encontrado.")
