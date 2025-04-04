@@ -13,6 +13,7 @@ class Hospede(Base):
     cpf = Column(String, unique=True)
     telefone = Column(String)
     # endereco = Column(String)
+    
     hospedagens = relationship("Hospedagem", backref="hospede")
     relatorios = relationship("Relatorio", backref="hospede")
 
@@ -28,6 +29,7 @@ class Quarto(Base):
     numero = Column(Integer, primary_key=True)
     tipo = Column(String)
     disponivel = Column(Boolean)
+
     hospedagens = relationship("Hospedagem", backref="quarto")
     relatorios = relationship("Relatorio", backref="quarto")
 
