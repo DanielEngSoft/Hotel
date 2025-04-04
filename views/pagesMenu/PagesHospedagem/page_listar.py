@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 Session = sessionmaker(bind=db)
 
-class PageListarHospedagem(QWidget):
+class Ui_page_listar(QWidget):
     def __init__(self):
         super().__init__()
         self.setup_ui()

@@ -86,16 +86,13 @@ class PageHospedagem(QWidget):
         self.pages.setObjectName(u"pages")
 
         # Cria a página abrir
-        self.page_abrir = QWidget()
-        self.page_abrir.setObjectName(u"page_abrir")
-        self.label_abrir = QLabel(self.page_abrir)
-        self.label_abrir.setObjectName(u"label_abrir")
-        self.label_abrir.setText("<h1>Abrir Hospedagem</h1>")
+        from views.PagesMenu.PagesHospedagem.page_abrir import Ui_page_abrir
+        self.page_abrir = Ui_page_abrir()
         self.pages.addWidget(self.page_abrir)
 
         # Cria a página listar
-        from views.PagesMenu.PagesHospedagem.page_listar import PageListarHospedagem
-        self.page_listar = PageListarHospedagem()
+        from views.PagesMenu.PagesHospedagem.page_listar import Ui_page_listar
+        self.page_listar = Ui_page_listar()
         self.pages.addWidget(self.page_listar)
 
         # Cria a página fechar
