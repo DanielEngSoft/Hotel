@@ -21,11 +21,11 @@ from styles.styles import (
     data_menu_superior, hora_menu_superior, 
     nome_menu_superior, style_label_menu_lateral
 )
-from views.pagesMenu.hospedagem import PageHospedagem
-from views.pagesMenu.hospedes import PageHospedes
-from views.pagesMenu.quartos import PageQuartos
-from views.pagesMenu.relatorios import PageRelatorios
-from views.pagesMenu.reservas import PageReservas
+from views.PagesMenu.hospedagem import PageHospedagem
+from views.PagesMenu.hospedes import PageHospedes
+from views.PagesMenu.quartos import PageQuartos
+from views.PagesMenu.relatorios import PageRelatorios
+from views.PagesMenu.reservas import PageReservas
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
         self.label_data.setStyleSheet(data_menu_superior())
         self.label_hora.setStyleSheet(hora_menu_superior())
         
-        # Layout
+        # Layout para os labels de data e hora
         layout = QVBoxLayout()
         layout.addWidget(self.label_data)
         layout.addWidget(self.label_hora)
@@ -163,18 +163,10 @@ class Ui_MainWindow(object):
         
     def atualizar_relogio(self):
         agora = QDateTime.currentDateTime()
+        locale = QLocale(QLocale.Portuguese, QLocale.Brazil)
         
         # Formata a data (ex: "Segunda-Feira 15/01/2024")
-        data_formatada = (
-            agora.toString("dddd '-' d'/'MM'/'yyyy")
-            .replace("Monday", "Segunda-feira")
-            .replace("Tuesday", "Terça-feira")
-            .replace("Wednesday", "Quarta-feira")
-            .replace("Thursday", "Quinta-feira")
-            .replace("Friday", "Sexta-feira")
-            .replace("Saturday", "Sábado")
-            .replace("Sunday", "Domingo")
-        )
+        data_formatada = locale.toString(agora, "dddd '-' dd'/'MM'/'yyyy")
         data_formatada = data_formatada[0].upper() + data_formatada[1:]
         
         # Formata a hora (ex: "14:30:45")
@@ -182,8 +174,7 @@ class Ui_MainWindow(object):
         
         # Atualiza os labels
         self.label_data.setText(data_formatada)
-        self.label_hora.setText(hora_formatada)
-        
+        self.label_hora.setText(hora_formatada)        
     def mudar_pagina(self, index):
         self.pages.setCurrentIndex(index)
 

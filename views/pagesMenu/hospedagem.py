@@ -94,7 +94,7 @@ class PageHospedagem(QWidget):
         self.pages.addWidget(self.page_abrir)
 
         # Cria a página listar
-        from views.pagesMenu.pages_hospedagem.page_listar import PageListarHospedagem
+        from views.PagesMenu.PagesHospedagem.page_listar import PageListarHospedagem
         self.page_listar = PageListarHospedagem()
         self.pages.addWidget(self.page_listar)
 

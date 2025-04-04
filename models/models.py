@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float, Date, Boolean, DateTime
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 import datetime
 
 db = create_engine('sqlite:///data/hp-prime.db')
 Base = declarative_base()
+Session = sessionmaker(bind=db)
 
 class Hospede(Base):
     __tablename__ = 'hospedes'
@@ -88,4 +89,13 @@ class Relatorio(Base):
     # valor_total_servicos = Column(Float)
     # valor_total_pagar = Column(Float)
 
-Base.metadata.create_all(db)
+def init_db():
+    """Cria as tabelas no banco de dados se não existirem."""
+    Base.metadata.create_all(bind=db)
+    print("Banco de dados inicializado/verificado.")
+
+if __name__ == "__main__":
+    # Se executar este script diretamente, cria o DB
+    print("Inicializando o banco de dados...")
+    init_db()
+    print("Processo concluído.")
