@@ -1,5 +1,5 @@
 from models.models import Hospede, Hospedagem, Quarto, Relatorio, db
-from operations.quartos_operations import listar_quartos_disponiveis, listar_quartos_ocupados
+from operations.terminal.quartos_operations import listar_quartos_disponiveis, listar_quartos_ocupados
 from sqlalchemy.orm import sessionmaker
 import datetime
 
