@@ -64,6 +64,18 @@ class Ui_page_abrir(QWidget):
             # Espera 0ms e só então move o cursor (depois do clique)
             QTimer.singleShot(0, lambda: self.lineEdit_cpf.setCursorPosition(0))
 
+        def update_cpf_label():
+            cpf = self.lineEdit_cpf.text()
+            if len(cpf) == 14:  # Check if CPF is complete (including dots and dash)
+                Session = sessionmaker(bind=db.engine)
+                with Session() as session:
+                    hospede = session.query(Hospede).filter(Hospede.cpf == cpf).first()
+                    if hospede:
+                        self.label_cpf.setText(f"CPF: {hospede.nome}")
+                    else:
+                        self.label_cpf.setText("CPF: Nenhum encontrado")
+
+        self.lineEdit_cpf.textChanged.connect(update_cpf_label)
         self.lineEdit_cpf.focusInEvent = cpf_focus_in_event
         self.verticalLayout_abrir.addWidget(self.lineEdit_cpf)
 
