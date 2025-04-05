@@ -15,12 +15,18 @@ class Ui_page_listar(QWidget):
     
         # Criar tabela
         self.table = QTableWidget()
-        self.table.setColumnCount(6)
-        self.table.setHorizontalHeaderLabels(['ID', 'Cliente', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'])
+        self.table.setColumnCount(5)
+        self.table.verticalHeader().setVisible(True)
+        self.table.setHorizontalHeaderLabels(['Cliente', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'])
+        self.table.setSortingEnabled(True) # Habilita a ordenação da tabela
+        self.table.setAlternatingRowColors(True) # Cores alternadas para as linhas
+        self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows) # Seleciona linhas inteiras
+        self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection) # Seleciona apenas uma linha
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers) # Desabilita edição
     
         # Ajusta o tamanho das colunas
         header = self.table.horizontalHeader()
-        for i in range(6):
+        for i in range(5):
             header.setSectionResizeMode(i, QHeaderView.Stretch)        
         layout.addWidget(self.table)
     
@@ -38,12 +44,11 @@ class Ui_page_listar(QWidget):
             self.table.setRowCount(len(hospedagens))
 
             for row, hospedagem in enumerate(hospedagens):
-                self.table.setItem(row, 0, QTableWidgetItem(str(hospedagem.id)))
-                self.table.setItem(row, 1, QTableWidgetItem(hospedagem.hospede.nome))
-                self.table.setItem(row, 2, QTableWidgetItem(str(hospedagem.qtd_hospedes)))
-                self.table.setItem(row, 3, QTableWidgetItem(hospedagem.data_entrada.strftime('%d/%m/%Y')))
-                self.table.setItem(row, 4, QTableWidgetItem(hospedagem.data_saida.strftime('%d/%m/%Y')))
-                self.table.setItem(row, 5, QTableWidgetItem(str(hospedagem.id_quarto)))
+                self.table.setItem(row, 0, QTableWidgetItem(hospedagem.hospede.nome))
+                self.table.setItem(row, 1, QTableWidgetItem(str(hospedagem.qtd_hospedes)))
+                self.table.setItem(row, 2, QTableWidgetItem(hospedagem.data_entrada.strftime('%d/%m/%Y')))
+                self.table.setItem(row, 3, QTableWidgetItem(hospedagem.data_saida.strftime('%d/%m/%Y')))
+                self.table.setItem(row, 4, QTableWidgetItem(str(hospedagem.id_quarto)))
 
         # Conecta o evento de clique na tabela
         self.table.cellClicked.connect(self.mostrar_info_hospede)
