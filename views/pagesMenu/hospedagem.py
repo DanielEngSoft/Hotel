@@ -59,7 +59,10 @@ class PageHospedagem(QWidget):
         self.button_listar.setMinimumSize(QSize(100, 50))
         self.button_listar.setMaximumSize(QSize(200, 70))
         self.button_listar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.button_listar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_listar))
+        self.button_listar.clicked.connect(lambda: (
+            self.pages.setCurrentWidget(self.page_listar),
+            self.page_listar.atualizar_tabela()
+        ))
 
         self.horizontalLayout.addWidget(self.button_listar)
 

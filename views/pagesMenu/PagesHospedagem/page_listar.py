@@ -18,24 +18,24 @@ class Ui_page_listar(QWidget):
         self.table.setColumnCount(6)
         self.table.setHorizontalHeaderLabels(['ID', 'Cliente', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'])
     
-        # Ajusta o tamanho das colunas da tabela para se expandirem automaticamente
-        # e preencherem todo o espaço disponível de forma uniforme
+        # Ajusta o tamanho das colunas
         header = self.table.horizontalHeader()
         for i in range(6):
             header.setSectionResizeMode(i, QHeaderView.Stretch)        
         layout.addWidget(self.table)
     
-        # Carregar dados
+    def showEvent(self, event):
+        # Atualiza os dados sempre que a página é mostrada
         self.carregar_hospedagens()
-
+        super().showEvent(event)
         
     def carregar_hospedagens(self):
         self.table.setRowCount(0)  # Limpa os dados antes de carregar
 
         with Session() as session:
-            hospedagens = session.query(Hospedagem).join(Hospede).all()  # Busca as hospedagens com join em hospedes
+            hospedagens = session.query(Hospedagem).join(Hospede).all()
 
-            self.table.setRowCount(len(hospedagens))  # Define o número de linhas
+            self.table.setRowCount(len(hospedagens))
 
             for row, hospedagem in enumerate(hospedagens):
                 self.table.setItem(row, 0, QTableWidgetItem(str(hospedagem.id)))
@@ -48,19 +48,17 @@ class Ui_page_listar(QWidget):
         # Conecta o evento de clique na tabela
         self.table.cellClicked.connect(self.mostrar_info_hospede)
 
-    # melhorar depois
     def mostrar_info_hospede(self, row):
         with Session() as session:
-            hospedagem = session.query(Hospedagem).join(Hospede).all()[row]
+            hospedagens = session.query(Hospedagem).join(Hospede).all()
+            hospedagem = hospedagens[row]
             hospede = hospedagem.hospede
             
-            # Cria uma nova janela com as informações do hóspede
             from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout
             dialog = QDialog(self)
             dialog.setWindowTitle("Informações do Hóspede")
             layout = QVBoxLayout()
             
-            # Adiciona as informações do hóspede
             info_labels = [
                 f"Nome: {hospede.nome}",
                 f"CPF: {hospede.cpf}",
