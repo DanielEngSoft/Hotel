@@ -117,13 +117,14 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_quartos.setSelectionMode(QTableWidget.SelectionMode.SingleSelection) # Seleciona apenas uma linha
         self.tableWidget_quartos.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)  # Desabilita edição
         self.tableWidget_quartos.setAlternatingRowColors(True)  # Cores alternadas para as linhas
-        # Get available rooms directly from database
+
+        # Obtendo os quartos livres no banco de dados
         Session = sessionmaker(bind=db.engine)
         session = Session()
         quartos = session.query(Quarto).filter(Quarto.disponivel == True).all()
         session.close()
 
-        # Add rooms to the table
+        # Adicionando quartos à tabela
         for quarto in quartos:
             row = self.tableWidget_quartos.rowCount()
             self.tableWidget_quartos.insertRow(row)
@@ -191,6 +192,8 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_nome.setFont(font)
 
         # Adicionando o line edit ao layout
+        # Connect the returnPressed signal to the search button's click
+        self.lineEdit_nome.returnPressed.connect(self.search_hospedes)
         self.verticalLayout_buscar.addWidget(self.lineEdit_nome)
 
         # Layout do botão procurar
@@ -231,9 +234,18 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.setSortingEnabled(True) # Habilita a ordenação da tabela
         # Ajusta o tamanho das colunas
         header = self.tableWidget_hospedes.horizontalHeader()
-        for i in range(5):
+        for i in range(3):
             header.setSectionResizeMode(i, QHeaderView.Stretch)  
 
+        # Connect the search button to the search function
+        self.pushButton_procurar.clicked.connect(self.search_hospedes)
+
+        # Prepare the hospedes table
+        self.tableWidget_hospedes.setRowCount(0)
+        self.tableWidget_hospedes.setColumnCount(3)
+        self.tableWidget_hospedes.setHorizontalHeaderLabels(['Nome', 'Telefone', 'CPF'])
+
+        
         # Adiciona a tabela de hospedes ao layout
         self.verticalLayout_buscar.addWidget(self.tableWidget_hospedes)
 
@@ -268,11 +280,15 @@ class Ui_page_abrir(QWidget):
         # Pega o quarto selecionado
         row = self.tableWidget_quartos.currentRow()
         if row == -1:
+            QMessageBox.warning(self, "Erro", "Selecione todas as opções para continuar")
             return
         quarto_num = self.tableWidget_quartos.item(row, 0).text()
 
         # Pega o CPF do hospede
         cpf = self.lineEdit_cpf.text()
+        if cpf == "..-":
+            QMessageBox.warning(self, "Erro", "Selecione todas as opções para continuar")
+            return
 
         # Pega a data de saída
         data_saida = self.dateEdit_prev_saida.date()
@@ -311,3 +327,28 @@ class Ui_page_abrir(QWidget):
                 self.tableWidget_quartos.insertRow(row)
                 self.tableWidget_quartos.setItem(row, 0, QTableWidgetItem(str(quarto.numero)))
                 self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
+    def search_hospedes(self):
+        # Clear the current table
+            self.tableWidget_hospedes.setRowCount(0)
+            
+            # Get the search text
+            nome = self.lineEdit_nome.text()
+            
+            # Query the database
+            Session = sessionmaker(bind=db.engine)
+            with Session() as session:
+                hospedes = session.query(Hospede).filter(Hospede.nome.ilike(f'%{nome}%')).all()
+                
+                # Add results to table
+                for hospede in hospedes:
+                    row = self.tableWidget_hospedes.rowCount()
+                    self.tableWidget_hospedes.insertRow(row)
+                    self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
+                    self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.telefone))
+                    self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
+
+                self.tableWidget_hospedes.cellClicked.connect(self.pegar_cpf)
+    def pegar_cpf(self, row):
+        # Pega o CPF do hospede selecionado na tabela
+        cpf = self.tableWidget_hospedes.item(row, 2).text()
+        self.lineEdit_cpf.setText(cpf)

@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView
 from models.models import Hospedagem, Hospede, db
 from sqlalchemy.orm import sessionmaker
+from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout
 
 Session = sessionmaker(bind=db)
 
@@ -27,7 +28,10 @@ class Ui_page_listar(QWidget):
         # Ajusta o tamanho das colunas
         header = self.table.horizontalHeader()
         for i in range(5):
-            header.setSectionResizeMode(i, QHeaderView.Stretch)        
+            header.setSectionResizeMode(i, QHeaderView.Stretch)  
+
+        # Conecta o evento de clique na tabela
+        self.table.cellClicked.connect(self.mostrar_info_hospede)      
         layout.addWidget(self.table)
     
     def showEvent(self, event):
@@ -50,8 +54,6 @@ class Ui_page_listar(QWidget):
                 self.table.setItem(row, 3, QTableWidgetItem(hospedagem.data_saida.strftime('%d/%m/%Y')))
                 self.table.setItem(row, 4, QTableWidgetItem(str(hospedagem.id_quarto)))
 
-        # Conecta o evento de clique na tabela
-        self.table.cellClicked.connect(self.mostrar_info_hospede)
 
     def mostrar_info_hospede(self, row):
         with Session() as session:
@@ -59,7 +61,6 @@ class Ui_page_listar(QWidget):
             hospedagem = hospedagens[row]
             hospede = hospedagem.hospede
             
-            from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout
             dialog = QDialog(self)
             dialog.setWindowTitle("Informações do Hóspede")
             layout = QVBoxLayout()
@@ -67,7 +68,8 @@ class Ui_page_listar(QWidget):
             info_labels = [
                 f"Nome: {hospede.nome}",
                 f"CPF: {hospede.cpf}",
-                f"Telefone: {hospede.telefone}"
+                f"Telefone: {hospede.telefone}",
+                f"Diária:" f"R$ {hospedagem.valor_diaria:.2f}",
             ]
             
             for info in info_labels:
