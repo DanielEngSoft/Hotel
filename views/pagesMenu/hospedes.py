@@ -9,6 +9,8 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QPushButton,
         QSizePolicy, QSpacerItem, QStackedWidget, QVBoxLayout,
         QWidget)
 
+from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar
+
 class PageHospedes(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -85,7 +87,7 @@ class PageHospedes(QWidget):
         self.pages.setObjectName(u"pages")
 
         # Criando pagina cadastrar
-        self.page_cadastrar = QWidget()
+        self.page_cadastrar = Ui_page_cadastrar()
         self.page_cadastrar.setObjectName(u"page_cadastrar")
         self.pages.addWidget(self.page_cadastrar)
         

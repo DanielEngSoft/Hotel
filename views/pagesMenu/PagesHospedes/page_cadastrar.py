@@ -19,12 +19,19 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QHBoxLayout,
     QLabel, QLayout, QLineEdit, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
-class Ui_Frame(object):
-    def setupUi(self, Frame):
-        if not Frame.objectName():
-            Frame.setObjectName(u"Frame")
-        Frame.resize(1000, 655)
-        self.widget = QWidget(Frame)
+class Ui_page_cadastrar(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+
+    def setupUi(self, pade_cadastrar):
+        if not pade_cadastrar.objectName():
+            pade_cadastrar.setObjectName(u"Frame")
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+
+        pade_cadastrar.resize(1000, 655)
+        self.widget = QWidget(pade_cadastrar)
         self.widget.setObjectName(u"widget")
         self.widget.setGeometry(QRect(240, 110, 671, 461))
         self.verticalLayout = QVBoxLayout(self.widget)
@@ -200,10 +207,11 @@ class Ui_Frame(object):
         self.verticalLayout.addLayout(self.horizontalLayout_5)
 
 
-        self.retranslateUi(Frame)
+        self.retranslateUi(pade_cadastrar)
 
-        QMetaObject.connectSlotsByName(Frame)
-    # setupUi
+        QMetaObject.connectSlotsByName(pade_cadastrar)
+        
+        layout.addWidget(self.widget)
 
     def retranslateUi(self, Frame):
         Frame.setWindowTitle(QCoreApplication.translate("Frame", u"Frame", None))
