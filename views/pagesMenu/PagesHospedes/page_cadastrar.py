@@ -90,7 +90,14 @@ class Ui_page_cadastrar(QWidget):
         # Endereço: estado (combo), cidade
         self.horizontalLayout_6 = QHBoxLayout()
         self.comboBox = QComboBox(self.widget)
-        self.comboBox.addItems(["PI", "MA", "CE", "TO", "PA", "PR", "BA", "PB", "SP", "RJ", "GO", "DF", "--"])
+        self.comboBox.addItems([
+            "PI", "MA", "CE", "PE", "BA", "TO",
+            "PB", "RN", "AL", "SE", "DF", "GO",
+            "PA", "MT", "MG", "ES", "RJ", "SP",
+            "RO", "AM", "RR", "AC", "AP", "MS",
+            "PR", "SC", "RS"
+        ])
+
         self.comboBox.setFont(font)
         self.horizontalLayout_6.addWidget(self.comboBox)
 
