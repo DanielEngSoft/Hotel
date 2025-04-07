@@ -2,11 +2,12 @@
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView,
-    QDialog, QLabel, QPushButton
+    QDialog, QLabel, QPushButton, QLineEdit, QHBoxLayout
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QDate
 from models.models import Hospedagem, Hospede, db
 from sqlalchemy.orm import sessionmaker
+from datetime import datetime, timedelta
 
 Session = sessionmaker(bind=db)
 
@@ -23,7 +24,15 @@ class Ui_page_listar(QWidget):
     def setup_ui(self):
         layout = QVBoxLayout()
         self.setLayout(layout)
-    
+
+        # Filtro de busca por nome ou empresa
+        filter_layout = QHBoxLayout()
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("Buscar por cliente ou empresa...")
+        self.search_input.textChanged.connect(self.load_data)
+        filter_layout.addWidget(self.search_input)
+        layout.addLayout(filter_layout)
+
         # Criar tabela
         self.table = QTableWidget()
         self.table.setColumnCount(6)
@@ -34,6 +43,7 @@ class Ui_page_listar(QWidget):
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
+
         # Chama a função on_header_clicked quando o cabeçalho é clicado
         self.table.horizontalHeader().sectionClicked.connect(self.on_header_clicked)
 
@@ -42,11 +52,11 @@ class Ui_page_listar(QWidget):
         for i in range(6):
             if i in (2, 5):  # Colunas 'Pessoas' e 'Quarto'
                 header.setSectionResizeMode(i, QHeaderView.ResizeToContents)
-                self.table.setColumnWidth(i, 50)  # Limite mínimo visual
+                self.table.setColumnWidth(i, 50)
             else:
                 header.setSectionResizeMode(i, QHeaderView.Stretch)
 
-        self.table.cellClicked.connect(self.mostrar_info_hospede)
+        self.table.cellDoubleClicked.connect(self.mostrar_info_hospede)
         layout.addWidget(self.table)
 
     def showEvent(self, event):
@@ -54,14 +64,11 @@ class Ui_page_listar(QWidget):
         super().showEvent(event)
 
     def on_header_clicked(self, logical_index):
-        order_column = self.table.horizontalHeaderItem(logical_index).text()
-
-        if self.current_sort_column == order_column:
+        if self.current_sort_column == logical_index:
             self.sort_order = 'desc' if self.sort_order == 'asc' else 'asc'
         else:
             self.sort_order = 'asc'
-        self.current_sort_column = order_column
-
+        self.current_sort_column = logical_index
         self.load_data(page=self.current_page)
 
     def load_data(self, page=0):
@@ -69,13 +76,21 @@ class Ui_page_listar(QWidget):
             query = session.query(Hospedagem).join(Hospede)
 
             column_map = {
-                'Cliente': Hospede.nome,
-                'Empresa': Hospede.empresa,
-                'Pessoas': Hospedagem.qtd_hospedes,
-                'Entrada': Hospedagem.data_entrada,
-                'Prev-Saída': Hospedagem.data_saida,
-                'Quarto': Hospedagem.id_quarto
+                0: Hospede.nome,
+                1: Hospede.empresa,
+                2: Hospedagem.qtd_hospedes,
+                3: Hospedagem.data_entrada,
+                4: Hospedagem.data_saida,
+                5: Hospedagem.id_quarto
             }
+
+            # Filtro de texto
+            filtro = self.search_input.text().strip().lower()
+            if filtro:
+                query = query.filter(
+                    (Hospede.nome.ilike(f'%{filtro}%')) |
+                    (Hospede.empresa.ilike(f'%{filtro}%'))
+                )
 
             if self.current_sort_column in column_map:
                 column_attr = column_map[self.current_sort_column]
@@ -84,13 +99,14 @@ class Ui_page_listar(QWidget):
                 else:
                     query = query.order_by(column_attr.desc())
 
-            # Paginação (preparado, mas não implementado nos controles)
-            # query = query.offset(page * self.page_size).limit(self.page_size)
-
             hospedagens = query.all()
             self.hospedagens_visiveis = hospedagens
 
             self.table.setRowCount(len(hospedagens))
+
+            today = datetime.now().date()
+            tomorrow = today + timedelta(days=1)
+
             for row, hospedagem in enumerate(hospedagens):
                 self.table.setItem(row, 0, QTableWidgetItem(hospedagem.hospede.nome))
                 self.table.setItem(row, 1, QTableWidgetItem(hospedagem.hospede.empresa))
@@ -100,11 +116,27 @@ class Ui_page_listar(QWidget):
                 entrada_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.table.setItem(row, 3, entrada_item)
 
+                saida_data = hospedagem.data_saida.date()
                 saida_item = QTableWidgetItem(hospedagem.data_saida.strftime('%d/%m/%Y'))
                 saida_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.table.setItem(row, 4, saida_item)
 
                 self.table.setItem(row, 5, QTableWidgetItem(str(hospedagem.id_quarto)))
+
+                # Destaque se a saída é hoje ou amanhã
+                # Definir cores para destaque
+                if saida_data == today:
+                    cor = Qt.GlobalColor.darkRed
+                else:
+                    cor = None
+
+                # Aplicar cor apenas se necessário
+                if cor:
+                    for col in range(6):
+                        item = self.table.item(row, col)
+                        if item:  # Verifica se o item existe
+                            item.setBackground(cor)
+
 
     def mostrar_info_hospede(self, row):
         if row < 0 or row >= len(self.hospedagens_visiveis):
