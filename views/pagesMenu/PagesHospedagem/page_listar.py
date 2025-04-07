@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QDialog, QLabel, QPushButton, QLineEdit, QHBoxLayout
 )
 from PySide6.QtCore import Qt, QDate
+from PySide6.QtGui import QFont
 from models.models import Hospedagem, Hospede, db
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime, timedelta
@@ -35,6 +36,7 @@ class Ui_page_listar(QWidget):
 
         # Criar tabela
         self.table = QTableWidget()
+        self.table.setFont(QFont("Calibri", 12))
         self.table.setColumnCount(6)
         self.table.setHorizontalHeaderLabels(['Cliente','Empresa', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'])
         self.table.setSortingEnabled(False)
@@ -125,7 +127,7 @@ class Ui_page_listar(QWidget):
 
                 # Destaque se a saída é hoje ou amanhã
                 # Definir cores para destaque
-                if saida_data == today:
+                if saida_data == today or saida_data < today:
                     cor = Qt.GlobalColor.darkRed
                 else:
                     cor = None

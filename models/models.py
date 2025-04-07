@@ -48,7 +48,7 @@ class Hospedagem(Base):
     id_hospede = Column(String, ForeignKey('hospedes.cpf'))
     id_quarto = Column(Integer, ForeignKey('quartos.numero'))
     data_entrada = Column(DateTime, default=datetime.datetime.now())
-    data_saida = Column(DateTime) # Corrugir para Date
+    data_saida = Column(DateTime)
     qtd_hospedes = Column(Integer)
     valor_diaria = Column(Integer)
 
@@ -57,20 +57,10 @@ class Relatorio(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_hospede = Column(String, ForeignKey('hospedes.cpf'))
     id_quarto = Column(Integer, ForeignKey('quartos.numero'))
-    data_entrada = Column(DateTime)
-    data_saida = Column(DateTime, default=datetime.datetime.now())
-    valor_total = Column(Float)
-
-# class Endereco(Base):
-#     __tablename__ = 'enderecos'
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     id_hospede = Column(String, ForeignKey('hospedes.cpf'))
-#     rua = Column(String)
-#     numero = Column(Integer)
-#     bairro = Column(String)
-#     cidade = Column(String)
-#     estado = Column(String)
-#     cep = Column(String)
+    data_entrada = Column(DateTime, default=datetime.datetime.now())
+    data_saida = Column(DateTime)
+    qtd_hospedes = Column(Integer)
+    valor_diaria = Column(Integer)
 
 # class Reserva(Base):
 #     __tablename__ = 'reservar'
@@ -80,17 +70,11 @@ class Relatorio(Base):
 #     data_entrada = Column(Datetime)
 #     data_saida = Column(Datetime)
 #     qtd_hospedes = Column(Integer)
+#     valor_diaria = Column(Integer)
+#     observacao = Column(String)
 
-# class Faturar(Base):
-    # __tablename__ = 'faturar'
-    # id = Column(Integer, primary_key=True, autoincrement=True)
-    # id_hospede = Column(Integer, ForeignKey('hospedes.cpf'))
-    # id_quarto = Column(Integer, ForeignKey('quartos.numero'))
-    # data_entrada = Column(Date)
-    # data_saida = Column(Date)
-    # valor_total_diarias = Column(Float)
-    # valor_total_servicos = Column(Float)
-    # valor_total_pagar = Column(Float)
+# class Produto(Base):
+# class Despesa(Base): 
 
 def init_db():
     """Cria as tabelas no banco de dados se não existirem."""
