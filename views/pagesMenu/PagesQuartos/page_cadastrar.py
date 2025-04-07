@@ -1,13 +1,12 @@
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
-    QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit,QMessageBox, QPushButton,
+    QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox
 )
 from sqlalchemy.orm import sessionmaker
-from models.models import Hospede, db
 
-from operations.Ui.quartos_operations import varifica_quarto_existe, cadastra_quarto
+from operations.Ui.quartos_operations import verifica_quarto_existe, cadastra_quarto
 from styles.styles import style_botao_verde, style_groupbox
 
 
@@ -33,7 +32,7 @@ class Ui_page_cadastrar(QWidget):
         font.setPointSize(14)
 
         # GroupBox com estilo
-        self.groupBox = QGroupBox("Dados do hóspede", self.widget)
+        self.groupBox = QGroupBox("Dados do quarto", self.widget)
         self.groupBox.setFont(font)
         self.groupBox.setStyleSheet(style_groupbox())
         self.groupBoxLayout = QFormLayout(self.groupBox)
@@ -48,91 +47,33 @@ class Ui_page_cadastrar(QWidget):
             layout.addWidget(error_label)
             return container
 
-        def cpf_focus_in_event(event):
-            QLineEdit.focusInEvent(self.lineEdit_cpf, event)
-            QTimer.singleShot(0, lambda: self.lineEdit_cpf.setCursorPosition(0))
+        # Número do quarto
+        self.lineEdit_numero = QLineEdit()
+        self.lineEdit_numero.setInputMask("000; ")
+        self.lineEdit_numero.setFont(font)
+        self.lineEdit_numero.setMinimumWidth(60)
+    
+        def numero_focus_in_event(event):
+            QLineEdit.focusInEvent(self.lineEdit_numero, event)
+            QTimer.singleShot(0, lambda: self.lineEdit_numero.setCursorPosition(0))
+            
+        self.lineEdit_numero.focusInEvent = numero_focus_in_event
 
-        def update_cpf_label():
-            cpf = self.lineEdit_cpf.text()
-            if len(cpf) == 14:
-                Session = sessionmaker(bind=db.engine)
-                with Session() as session:
-                    hospede = session.query(Hospede).filter(Hospede.cpf == cpf).first()
-        # CPF
-        self.lineEdit_cpf = QLineEdit()
-        self.lineEdit_cpf.setInputMask("000.000.000-00;_")
-        self.lineEdit_cpf.setPlaceholderText("000.000.000-00")
-        self.lineEdit_cpf.setFont(font)
-        self.lineEdit_cpf.setMinimumWidth(150)
-        self.lineEdit_cpf.focusInEvent = cpf_focus_in_event
-        self.lineEdit_cpf.textChanged.connect(update_cpf_label)
+        self.label_error_numero = QLabel("")
+        self.label_error_numero.setStyleSheet("color: red;")
+        self.label_error_numero.setFont(font)
 
+        self.groupBoxLayout.addRow("Número:", create_input_with_error(self.lineEdit_numero, self.label_error_numero))
 
-        self.label_error_cpf = QLabel("")
-        self.label_error_cpf.setStyleSheet("color: red;")
-        self.label_error_cpf.setFont(font)
-
-        self.groupBoxLayout.addRow("CPF:", create_input_with_error(self.lineEdit_cpf, self.label_error_cpf))
-
-        # Nome
-        self.lineEdit_nome = QLineEdit()
-        self.lineEdit_nome.setPlaceholderText("Digite o nome completo")
-        self.lineEdit_nome.setFont(font)
-        self.lineEdit_nome.setMinimumWidth(300)
-
-        self.label_error_nome = QLabel("")
-        self.label_error_nome.setStyleSheet("color: red;")
-        self.label_error_nome.setFont(font)
-
-        self.groupBoxLayout.addRow("Nome:", create_input_with_error(self.lineEdit_nome, self.label_error_nome))
-
-        # Telefone
-        self.lineEdit_telefone = QLineEdit()
-        self.lineEdit_telefone.setInputMask("(00)00000-0000;_")
-        self.lineEdit_telefone.setFont(font)
-        self.lineEdit_telefone.setMinimumWidth(150)
-
-        self.label_error_telefone = QLabel("")
-        self.label_error_telefone.setStyleSheet("color: red;")
-        self.label_error_telefone.setFont(font)
-
-        self.groupBoxLayout.addRow("Telefone:", create_input_with_error(self.lineEdit_telefone, self.label_error_telefone))
-
-        # Endereço (UF + Cidade)
-        endereco_container = QWidget()
-        endereco_layout = QHBoxLayout(endereco_container)
-        endereco_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.comboBox = QComboBox()
-        self.comboBox.setFont(font)
-        self.comboBox.addItems([
-            "PI", "MA", "CE", "PE", "BA", "TO", "PB", "RN", "AL", "SE", "DF", "GO",
-            "PA", "MT", "MG", "ES", "RJ", "SP", "RO", "AM", "RR", "AC", "AP", "MS", "PR", "SC", "RS"
+        # Tipo do quarto
+        self.comboBox_tipo = QComboBox()
+        self.comboBox_tipo.setFont(font)
+        self.comboBox_tipo.addItems([
+            'Solteiro', 'Casal', 'Casal + Solteiro',
+            'Casal + 2 Solteiros', '2 Solteiros', '3 Solteiros'
         ])
-
-        self.lineEdit_cidade = QLineEdit()
-        self.lineEdit_cidade.setPlaceholderText("Cidade")
-        self.lineEdit_cidade.setFont(font)
-        self.lineEdit_cidade.setMinimumWidth(150)
-
-        self.label_error_cidade = QLabel("")
-        self.label_error_cidade.setStyleSheet("color: red;")
-        self.label_error_cidade.setFont(font)
-
-        endereco_layout.addWidget(self.comboBox)
-        endereco_layout.addSpacing(10)
-        endereco_layout.addWidget(self.lineEdit_cidade)
-        endereco_layout.addWidget(self.label_error_cidade)
-
-        self.groupBoxLayout.addRow("Endereço:", endereco_container)
-
-        # Empresa
-        self.lineEdit_empresa = QLineEdit()
-        self.lineEdit_empresa.setPlaceholderText("Digite o nome da empresa")
-        self.lineEdit_empresa.setFont(font)
-        self.lineEdit_empresa.setMinimumWidth(300)
-
-        self.groupBoxLayout.addRow("Empresa:", self.lineEdit_empresa)
+        self.comboBox_tipo.setMinimumWidth(200)
+        self.groupBoxLayout.addRow("Tipo:", self.comboBox_tipo)
 
         self.verticalLayout.addWidget(self.groupBox, alignment=Qt.AlignCenter)
 
@@ -155,66 +96,31 @@ class Ui_page_cadastrar(QWidget):
         layout.addWidget(self.widget)
 
     def abrir_cadastro(self):
-        # Limpa mensagens de erro
-        self.label_error_cpf.setText("")
-        self.label_error_nome.setText("")
-        self.label_error_telefone.setText("")
-        self.label_error_cidade.setText("")
+        self.label_error_numero.setText("")
 
-        cpf = self.lineEdit_cpf.text()
-        telefone = self.lineEdit_telefone.text()
-
-        nome = self.lineEdit_nome.text()
-        nome = formata_nome(nome)
-        cidade = self.lineEdit_cidade.text()
-        cidade = formata_nome(cidade)
-        endereco = self.comboBox.currentText() + " - " + cidade
-        empresa = self.lineEdit_empresa.text()
-        empresa = formata_nome(empresa)
-
+        numero_texto = self.lineEdit_numero.text().strip()
+        tipo = self.comboBox_tipo.currentText()
         erro = False
 
-        if not valida_cpf(cpf):
-            self.label_error_cpf.setText(" CPF inválido*")
+        if not numero_texto:
+            self.label_error_numero.setText(" Número obrigatório*")
             erro = True
-        if varifica_cpf_existe(cpf):
-            self.label_error_cpf.setText(" CPF já cadastrado*")
-            erro = True
-        if not nome:
-            self.label_error_nome.setText(" Nome obrigatório*")
-            erro = True
-        if len(nome) < 4:
-            self.label_error_nome.setText(" Nome muito curto*")
-            erro = True
-        if not cidade:
-            self.label_error_cidade.setText(" Cidade obrigatória*")
-            erro = True
-        if not valida_telefone(telefone):
-            self.label_error_telefone.setText(" Telefone inválido*")
-            erro = True
+        else:
+            try:
+                numero = int(numero_texto)
+                if verifica_quarto_existe(numero):
+                    self.label_error_numero.setText(" Quarto já cadastrado*")
+                    erro = True
+            except ValueError:
+                self.label_error_numero.setText(" Número inválido*")
+                erro = True
 
         if erro:
             return
 
-        if not empresa:
-            empresa = "------"
-        
         try:
-            Session = sessionmaker(bind=db.engine)
-            with Session() as session:
-                hospede = Hospede(nome=nome, cpf=cpf, telefone=telefone, endereco=endereco, empresa=empresa)
-                session.add(hospede)
-                session.commit()
-                QMessageBox.warning(self, "Cadastro realizado", "Cadastro realizado com sucesso!")
-
-                # Limpa os campos após o cadastro
-                self.lineEdit_cpf.clear()
-                self.lineEdit_nome.clear()
-                self.lineEdit_telefone.clear()
-                self.lineEdit_cidade.clear()
-                self.lineEdit_empresa.clear()
-
+            cadastra_quarto(numero, tipo)
+            QMessageBox.information(self, "Cadastro realizado", "Cadastro realizado com sucesso!")
+            self.lineEdit_numero.clear()
         except Exception as e:
-            QMessageBox.warning(self, "Erro ao cadastrar", "Tente novamente")
-
-        print("Cadastro realizado com sucesso!")
+            QMessageBox.critical(self, "Erro ao cadastrar", f"Erro ao cadastrar o quarto: {str(e)}")

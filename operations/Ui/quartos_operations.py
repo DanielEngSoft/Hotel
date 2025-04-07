@@ -1,10 +1,13 @@
-from sqlalchemy.orm import Session
-from models.models import Quarto
+from sqlalchemy.orm import Session, sessionmaker
+from models.models import Quarto, db
 from sqlalchemy.exc import IntegrityError
 
-def create_quarto(num, tipo):
+Session = sessionmaker(bind=db)
+
+def cadastra_quarto(num, tipo):
     try:
         with Session() as session:
+            num = int(num)
             quarto = Quarto(numero=num, tipo=tipo, disponivel=True)
             session.add(quarto)
             session.commit()
@@ -43,3 +46,7 @@ def listar_quartos_ocupados():
     except Exception as e:
         print(f"Erro ao listar quartos ocupados: {e}")
         return []
+
+def verifica_quarto_existe(numero):
+    with Session() as session:
+        return session.query(Quarto).filter(Quarto.numero == numero).first()

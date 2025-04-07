@@ -1,7 +1,7 @@
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
-    QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit,QMessageBox, QPushButton,
+    QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox
 )
 from sqlalchemy.orm import sessionmaker
@@ -201,19 +201,15 @@ class Ui_page_cadastrar(QWidget):
             empresa = "------"
         
         try:
-            Session = sessionmaker(bind=db.engine)
-            with Session() as session:
-                hospede = Hospede(nome=nome, cpf=cpf, telefone=telefone, endereco=endereco, empresa=empresa)
-                session.add(hospede)
-                session.commit()
-                QMessageBox.warning(self, "Cadastro realizado", "Cadastro realizado com sucesso!")
+            cadastra_hospede(nome, cpf, telefone, endereco, empresa)
+            QMessageBox.warning(self, "Cadastro realizado", "Cadastro realizado com sucesso!")
 
-                # Limpa os campos após o cadastro
-                self.lineEdit_cpf.clear()
-                self.lineEdit_nome.clear()
-                self.lineEdit_telefone.clear()
-                self.lineEdit_cidade.clear()
-                self.lineEdit_empresa.clear()
+            # Limpa os campos após o cadastro
+            self.lineEdit_cpf.clear()
+            self.lineEdit_nome.clear()
+            self.lineEdit_telefone.clear()
+            self.lineEdit_cidade.clear()
+            self.lineEdit_empresa.clear()
 
         except Exception as e:
             QMessageBox.warning(self, "Erro ao cadastrar", "Tente novamente")

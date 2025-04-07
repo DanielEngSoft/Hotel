@@ -9,6 +9,8 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QPushButton,
     QSizePolicy, QSpacerItem, QStackedWidget, QVBoxLayout,
     QWidget)
 
+from views.PagesMenu.PagesQuartos.page_cadastrar import Ui_page_cadastrar
+
 class PageQuartos(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -62,15 +64,15 @@ class PageQuartos(QWidget):
         self.horizontalLayout.addWidget(self.button_ocupados)
 
         # Criando o botão desocupados
-        self.button_desocupados = QPushButton(self.menu_superior_page_hospedagem)
-        self.button_desocupados.setObjectName(u"button_desocupados")
-        self.button_desocupados.setText("Desocupados")
-        self.button_desocupados.setMinimumSize(QSize(100, 50))
-        self.button_desocupados.setMaximumSize(QSize(200, 70))
-        self.button_desocupados.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.button_desocupados.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_desocupados))
+        self.button_cadastrar = QPushButton(self.menu_superior_page_hospedagem)
+        self.button_cadastrar.setObjectName(u"button_cadastrar")
+        self.button_cadastrar.setText("Cadastrar")
+        self.button_cadastrar.setMinimumSize(QSize(100, 50))
+        self.button_cadastrar.setMaximumSize(QSize(200, 70))
+        self.button_cadastrar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.button_cadastrar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_cadastrar))
 
-        self.horizontalLayout.addWidget(self.button_desocupados)
+        self.horizontalLayout.addWidget(self.button_cadastrar)
 
         # Adicionando um espaçador horizontal
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -94,10 +96,10 @@ class PageQuartos(QWidget):
         self.page_ocupados.setObjectName(u"page_ocupados")
         self.pages.addWidget(self.page_ocupados)
 
-        # Adicionando a page desocupados
-        self.page_desocupados = QWidget()
-        self.page_desocupados.setObjectName(u"page_desocupados")
-        self.pages.addWidget(self.page_desocupados)
+        # Adicionando a page cadastrar
+        self.page_cadastrar = Ui_page_cadastrar()
+        self.page_cadastrar.setObjectName(u"page_cadastrar")
+        self.pages.addWidget(self.page_cadastrar)
 
         # Adicionando o stackwidget ao layout principal
         self.layout_principal.addWidget(self.pages)
