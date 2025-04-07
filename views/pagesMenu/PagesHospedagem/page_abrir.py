@@ -8,6 +8,8 @@ from operations.Ui.hospedagem_operations import create_hospedagem
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
+from styles.styles import style_page_abrir_hospedagem as estilo
+
 class Ui_page_abrir(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -241,3 +243,4 @@ class Ui_page_abrir(QWidget):
     def pegar_cpf(self, row):
         cpf = self.tableWidget_hospedes.item(row, 2).text()
         self.lineEdit_cpf.setText(cpf)
+        self.lineEdit_cpf.setFocus()
