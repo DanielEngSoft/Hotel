@@ -4,6 +4,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView,
     QDialog, QLabel, QPushButton
 )
+from PySide6.QtCore import Qt
 from models.models import Hospedagem, Hospede, db
 from sqlalchemy.orm import sessionmaker
 
@@ -25,19 +26,25 @@ class Ui_page_listar(QWidget):
     
         # Criar tabela
         self.table = QTableWidget()
-        self.table.setColumnCount(5)
-        self.table.setHorizontalHeaderLabels(['Cliente', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'])
+        self.table.setColumnCount(6)
+        self.table.setHorizontalHeaderLabels(['Cliente','Empresa', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'])
         self.table.setSortingEnabled(False)
         self.table.setAlternatingRowColors(True)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+
+        # Chama a função on_header_clicked quando o cabeçalho é clicado
         self.table.horizontalHeader().sectionClicked.connect(self.on_header_clicked)
 
         # Ajusta o tamanho das colunas
         header = self.table.horizontalHeader()
-        for i in range(5):
-            header.setSectionResizeMode(i, QHeaderView.Stretch)
+        for i in range(6):
+            if i in (2, 5):  # Colunas 'Pessoas' e 'Quarto'
+                header.setSectionResizeMode(i, QHeaderView.ResizeToContents)
+                self.table.setColumnWidth(i, 50)  # Limite mínimo visual
+            else:
+                header.setSectionResizeMode(i, QHeaderView.Stretch)
 
         self.table.cellClicked.connect(self.mostrar_info_hospede)
         layout.addWidget(self.table)
@@ -63,6 +70,7 @@ class Ui_page_listar(QWidget):
 
             column_map = {
                 'Cliente': Hospede.nome,
+                'Empresa': Hospede.empresa,
                 'Pessoas': Hospedagem.qtd_hospedes,
                 'Entrada': Hospedagem.data_entrada,
                 'Prev-Saída': Hospedagem.data_saida,
@@ -85,10 +93,18 @@ class Ui_page_listar(QWidget):
             self.table.setRowCount(len(hospedagens))
             for row, hospedagem in enumerate(hospedagens):
                 self.table.setItem(row, 0, QTableWidgetItem(hospedagem.hospede.nome))
-                self.table.setItem(row, 1, QTableWidgetItem(str(hospedagem.qtd_hospedes)))
-                self.table.setItem(row, 2, QTableWidgetItem(hospedagem.data_entrada.strftime('%d/%m/%Y %H:%M')))
-                self.table.setItem(row, 3, QTableWidgetItem(hospedagem.data_saida.strftime('%d/%m/%Y')))
-                self.table.setItem(row, 4, QTableWidgetItem(str(hospedagem.id_quarto)))
+                self.table.setItem(row, 1, QTableWidgetItem(hospedagem.hospede.empresa))
+                self.table.setItem(row, 2, QTableWidgetItem(str(hospedagem.qtd_hospedes)))
+
+                entrada_item = QTableWidgetItem(hospedagem.data_entrada.strftime('%d/%m/%Y %H:%M'))
+                entrada_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.table.setItem(row, 3, entrada_item)
+
+                saida_item = QTableWidgetItem(hospedagem.data_saida.strftime('%d/%m/%Y'))
+                saida_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.table.setItem(row, 4, saida_item)
+
+                self.table.setItem(row, 5, QTableWidgetItem(str(hospedagem.id_quarto)))
 
     def mostrar_info_hospede(self, row):
         if row < 0 or row >= len(self.hospedagens_visiveis):

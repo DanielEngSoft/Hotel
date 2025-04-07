@@ -46,49 +46,49 @@ class Ui_page_cadastrar(QWidget):
         self.lineEdit.setFont(font)
         self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.lineEdit.setInputMask("000.000.000-00;_")
-        self.lineEdit.setText("..-")
         self.horizontalLayout.addWidget(self.lineEdit)
 
         self.horizontalLayout.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         self.verticalLayout.addLayout(self.horizontalLayout)
 
         # Nome
-        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_nome = QHBoxLayout()
         self.label_nome = QLabel("Nome:", self.widget)
         self.label_nome.setMinimumSize(QSize(100, 0))
         self.label_nome.setMaximumSize(QSize(100, 16777215))
         self.label_nome.setFont(font)
-        self.horizontalLayout_2.addWidget(self.label_nome)
+        self.horizontalLayout_nome.addWidget(self.label_nome)
 
-        self.lineEdit_2 = QLineEdit(self.widget)
-        self.lineEdit_2.setMinimumSize(QSize(0, 30))
-        self.lineEdit_2.setMaximumSize(QSize(400, 16777215))
-        self.lineEdit_2.setFont(font)
-        self.horizontalLayout_2.addWidget(self.lineEdit_2)
+        self.lineEdit_nome = QLineEdit(self.widget)
+        self.lineEdit_nome.setMinimumSize(QSize(0, 30))
+        self.lineEdit_nome.setMaximumSize(QSize(400, 16777215))
+        self.lineEdit_nome.setFont(font)
+        self.lineEdit_nome.setPlaceholderText("Digite o nome completo")  # ← ADICIONADO
+        self.horizontalLayout_nome.addWidget(self.lineEdit_nome)
 
-        self.horizontalLayout_2.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_nome.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.verticalLayout.addLayout(self.horizontalLayout_nome)
 
         # Telefone
-        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_telefone = QHBoxLayout()
         self.label_telefone = QLabel("Telefone:", self.widget)
         self.label_telefone.setMinimumSize(QSize(100, 0))
         self.label_telefone.setMaximumSize(QSize(100, 16777215))
         self.label_telefone.setFont(font)
-        self.horizontalLayout_3.addWidget(self.label_telefone)
+        self.horizontalLayout_telefone.addWidget(self.label_telefone)
 
-        self.lineEdit_3 = QLineEdit(self.widget)
-        self.lineEdit_3.setMinimumSize(QSize(0, 30))
-        self.lineEdit_3.setMaximumSize(QSize(145, 16777215))
-        self.lineEdit_3.setFont(font)
-        self.lineEdit_3.setInputMask("(00)00000-0000;_")
-        self.horizontalLayout_3.addWidget(self.lineEdit_3)
+        self.lineEdit_telefone = QLineEdit(self.widget)
+        self.lineEdit_telefone.setMinimumSize(QSize(0, 30))
+        self.lineEdit_telefone.setMaximumSize(QSize(145, 16777215))
+        self.lineEdit_telefone.setFont(font)
+        self.lineEdit_telefone.setInputMask("(00)00000-0000;_")
+        self.horizontalLayout_telefone.addWidget(self.lineEdit_telefone)
 
-        self.horizontalLayout_3.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        self.verticalLayout.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_telefone.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.verticalLayout.addLayout(self.horizontalLayout_telefone)
 
         # Endereço: estado (combo), cidade
-        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_endereco = QHBoxLayout()
         self.comboBox = QComboBox(self.widget)
         self.comboBox.addItems([
             "PI", "MA", "CE", "PE", "BA", "TO",
@@ -97,49 +97,56 @@ class Ui_page_cadastrar(QWidget):
             "RO", "AM", "RR", "AC", "AP", "MS",
             "PR", "SC", "RS"
         ])
-
         self.comboBox.setFont(font)
-        self.horizontalLayout_6.addWidget(self.comboBox)
+        self.horizontalLayout_endereco.addWidget(self.comboBox)
 
-        self.label_2 = QLabel(self.widget)  # espaço reservado (vazio)
-        self.label_2.setMinimumSize(QSize(24, 0))
-        self.horizontalLayout_6.addWidget(self.label_2)
+        self.label_vazia = QLabel(self.widget)  # espaço reservado (vazio)
+        self.label_vazia.setMinimumSize(QSize(25, 0))
+        self.horizontalLayout_endereco.addWidget(self.label_vazia)
 
-        self.label = QLabel(self.widget)  # outro espaço reservado
-        self.horizontalLayout_6.addWidget(self.label)
+        self.lineEdit_cidade = QLineEdit(self.widget)
+        self.lineEdit_cidade.setMinimumSize(QSize(150, 0))
+        self.lineEdit_cidade.setMaximumSize(QSize(400, 16777215))
+        self.lineEdit_cidade.setFont(font)
+        self.lineEdit_cidade.setPlaceholderText("Cidade")
+        self.horizontalLayout_endereco.addWidget(self.lineEdit_cidade)
 
-        self.lineEdit_5 = QLineEdit(self.widget)
-        self.lineEdit_5.setMinimumSize(QSize(150, 0))
-        self.lineEdit_5.setFont(font)
-        self.lineEdit_5.setPlaceholderText("Cidade")
-        self.horizontalLayout_6.addWidget(self.lineEdit_5)
-
-        self.horizontalLayout_6.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        self.verticalLayout.addLayout(self.horizontalLayout_6)
+        self.horizontalLayout_endereco.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.verticalLayout.addLayout(self.horizontalLayout_endereco)
 
         # Empresa
-        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_empresa = QHBoxLayout()
         self.label_4 = QLabel("Empresa:", self.widget)
         self.label_4.setMinimumSize(QSize(100, 0))
         self.label_4.setFont(font)
-        self.horizontalLayout_4.addWidget(self.label_4)
+        self.horizontalLayout_empresa.addWidget(self.label_4)
 
-        self.lineEdit_4 = QLineEdit(self.widget)
-        self.lineEdit_4.setMinimumSize(QSize(0, 30))
-        self.lineEdit_4.setFont(font)
-        self.horizontalLayout_4.addWidget(self.lineEdit_4)
+        self.lineEdit_empresa = QLineEdit(self.widget)
+        self.lineEdit_empresa.setMinimumSize(QSize(0, 30))
+        self.lineEdit_empresa.setMaximumSize(QSize(400, 16777215))
+        self.lineEdit_empresa.setFont(font)
+        self.lineEdit_empresa.setPlaceholderText("Nome da empresa")  # ← ADICIONADO
+        self.horizontalLayout_empresa.addWidget(self.lineEdit_empresa)
 
-        self.verticalLayout.addLayout(self.horizontalLayout_4)
+        self.horizontalLayout_empresa.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+        self.verticalLayout.addLayout(self.horizontalLayout_empresa)
+
+        # Separador visual
+        self.separator = QFrame(self.widget)  # ← ADICIONADO
+        self.separator.setFrameShape(QFrame.HLine)
+        self.separator.setFrameShadow(QFrame.Sunken)
+        self.verticalLayout.addWidget(self.separator)
 
         # Botão
-        self.horizontalLayout_5 = QHBoxLayout()
-        self.horizontalLayout_5.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.horizontalLayout_button = QHBoxLayout()
+        self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
 
         self.pushButton = QPushButton("Cadastrar", self.widget)
         self.pushButton.setFont(font)
-        self.horizontalLayout_5.addWidget(self.pushButton)
+        self.horizontalLayout_button.addWidget(self.pushButton)
 
-        self.horizontalLayout_5.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        self.verticalLayout.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.verticalLayout.addLayout(self.horizontalLayout_button)
 
         layout.addWidget(self.widget)

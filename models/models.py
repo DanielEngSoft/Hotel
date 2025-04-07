@@ -12,7 +12,8 @@ class Hospede(Base):
     nome = Column(String)
     cpf = Column(String, unique=True)
     telefone = Column(String)
-    # endereco = Column(String)
+    endereco = Column(String) #'Estado [PI], cidade[Picos]'
+    empresa = Column(String, default="------")
     
     hospedagens = relationship("Hospedagem", backref="hospede")
     relatorios = relationship("Relatorio", backref="hospede")
