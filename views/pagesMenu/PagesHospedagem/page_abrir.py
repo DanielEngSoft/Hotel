@@ -114,6 +114,12 @@ class Ui_page_abrir(QWidget):
         self.pushButton_abrir.setFont(font)
         self.pushButton_abrir.setCursor(QCursor(Qt.PointingHandCursor))
         self.pushButton_abrir.setMaximumWidth(150)
+        self.pushButton_abrir.setStyleSheet("""
+                                                QPushButton {
+                                                background-color: green; 
+                                                color: white;
+                                                }
+                                            """)
         self.pushButton_abrir.clicked.connect(self.button_abrir_clicked)
 
         abrir_layout = QHBoxLayout()
