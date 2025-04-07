@@ -178,6 +178,10 @@ class Ui_page_abrir(QWidget):
 
         QMetaObject.connectSlotsByName(page_abrir)
 
+    def showEvent(self, event):
+        self.update_quartos()
+        super().showEvent(event)
+
     def update_quartos(self):
         self.tableWidget_quartos.setRowCount(0)
         with sessionmaker(bind=db.engine)() as session:
