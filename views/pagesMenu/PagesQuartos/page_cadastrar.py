@@ -7,9 +7,8 @@ from PySide6.QtWidgets import (
 from sqlalchemy.orm import sessionmaker
 from models.models import Hospede, db
 
-from operations.Ui.hospedes_operations import varifica_cpf_existe, cadastra_hospede
+from operations.Ui.quartos_operations import varifica_quarto_existe, cadastra_quarto
 from styles.styles import style_botao_verde, style_groupbox
-from utils.validadores_ui import valida_cpf, formata_nome, valida_telefone
 
 
 class Ui_page_cadastrar(QWidget):

@@ -7,6 +7,7 @@ from models.models import Hospedagem, Hospede, Quarto, db
 from operations.Ui.hospedagem_operations import create_hospedagem
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+from styles.styles import style_botao_verde
 
 
 class Ui_page_abrir(QWidget):
@@ -114,12 +115,7 @@ class Ui_page_abrir(QWidget):
         self.pushButton_abrir.setFont(font)
         self.pushButton_abrir.setCursor(QCursor(Qt.PointingHandCursor))
         self.pushButton_abrir.setMaximumWidth(150)
-        self.pushButton_abrir.setStyleSheet("""
-                                                QPushButton {
-                                                background-color: green; 
-                                                color: white;
-                                                }
-                                            """)
+        self.pushButton_abrir.setStyleSheet(style_botao_verde())
         self.pushButton_abrir.clicked.connect(self.button_abrir_clicked)
 
         abrir_layout = QHBoxLayout()
@@ -167,7 +163,7 @@ class Ui_page_abrir(QWidget):
         self.verticalLayout_buscar.addLayout(btn_layout)
 
         self.tableWidget_hospedes = QTableWidget(0, 3, self.widget)
-        self.tableWidget_hospedes.setHorizontalHeaderLabels(["Nome", "Telefone", "CPF"])
+        self.tableWidget_hospedes.setHorizontalHeaderLabels(["Nome", "Empresa", "CPF"])
         self.tableWidget_hospedes.setSelectionBehavior(QTableWidget.SelectRows)
         self.tableWidget_hospedes.setSelectionMode(QTableWidget.SingleSelection)
         self.tableWidget_hospedes.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -231,7 +227,7 @@ class Ui_page_abrir(QWidget):
                 row = self.tableWidget_hospedes.rowCount()
                 self.tableWidget_hospedes.insertRow(row)
                 self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
-                self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.telefone))
+                self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
                 self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
 
     def pegar_cpf(self, row):

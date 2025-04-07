@@ -71,3 +71,39 @@ def style_botao_sair():
             background-color: #a93226;
         }
     """
+
+def style_botao_verde():
+    return """
+        QPushButton {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 15px;
+            font-weight: bold;
+        }
+        QPushButton:hover {
+            background-color: #27ae60;
+        }
+        QPushButton:pressed {
+            background-color: #219653;
+        }
+    """
+
+def style_groupbox():
+    return """
+        QGroupBox {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            border: 1px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 50px;
+            margin-top: 10px;
+        }
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            left: 10px;
+            padding: 0 5px;
+        }
+    """
