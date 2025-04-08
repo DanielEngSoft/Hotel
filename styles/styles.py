@@ -23,6 +23,12 @@ def style_label_menu_lateral():
     QListWidget::item:hover {
         background-color: #3d566e;
     }
+    QListWidget::item:selected {
+        background-color: #4E9A06;
+        color: white;
+        border-radius: 5px;
+        padding: 5px;
+    }
     """
 
 
