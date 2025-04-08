@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
 
 # Importa a interface da tela de cadastro de hóspedes
 from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar
+from views.PagesMenu.PagesHospedes.page_editar import Ui_page_editar
 
 
 class PageHospedes(QWidget):
@@ -39,10 +40,10 @@ class PageHospedes(QWidget):
         self._estilizar_botao(self.button_cadastrar)
         self.horizontalLayout.addWidget(self.button_cadastrar)
 
-        # Cria o botão "Listar", aplica estilo e adiciona ao layout
-        self.button_listar = QPushButton("Listar", self.menu_superior)
-        self._estilizar_botao(self.button_listar)
-        self.horizontalLayout.addWidget(self.button_listar)
+        # Cria o botão "Editar", aplica estilo e adiciona ao layout
+        self.button_editar = QPushButton("Editar", self.menu_superior)
+        self._estilizar_botao(self.button_editar)
+        self.horizontalLayout.addWidget(self.button_editar)
 
         # Cria o botão "Alterar", aplica estilo e adiciona ao layout
         self.button_alterar = QPushButton("Alterar", self.menu_superior)
@@ -60,11 +61,10 @@ class PageHospedes(QWidget):
         self.page_cadastrar = Ui_page_cadastrar()
         self.pages.addWidget(self.page_cadastrar)  # Adiciona ao QStackedWidget
 
-        # Cria a página "Listar" (temporária com QLabel)
-        self.page_listar = QWidget()
-        self.page_listar.setLayout(QVBoxLayout())
-        self.page_listar.layout().addWidget(QLabel("Página Listar"))
-        self.pages.addWidget(self.page_listar)
+        # Cria a página "Editar" (temporária com QLabel)
+        self.page_editar = Ui_page_editar()
+        self.page_editar.setLayout(QVBoxLayout())
+        self.pages.addWidget(self.page_editar)
 
         # Cria a página "Alterar" (temporária com QLabel)
         self.page_alterar = QWidget()
@@ -79,8 +79,8 @@ class PageHospedes(QWidget):
         # Quando o botão "Cadastrar" é clicado, muda para a página de cadastro
         self.button_cadastrar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_cadastrar))
 
-        # Quando o botão "Listar" é clicado, muda para a página de listagem
-        self.button_listar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_listar))
+        # Quando o botão "Editar" é clicado, muda para a página de listagem
+        self.button_editar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_editar))
 
         # Quando o botão "Alterar" é clicado, muda para a página de alteração
         self.button_alterar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_alterar))
