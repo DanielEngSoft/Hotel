@@ -51,6 +51,7 @@ class Hospedagem(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_hospede = Column(String, ForeignKey('hospedes.cpf'))  # CPF como FK (pode trocar por id se quiser)
     id_quarto = Column(Integer, ForeignKey('quartos.numero'))
+    # id_despesas = Column(Integer, ForeignKey('despesas.id'))
     data_entrada = Column(DateTime, default=datetime.datetime.now)
     data_saida = Column(DateTime)
     qtd_hospedes = Column(Integer)
@@ -58,6 +59,8 @@ class Hospedagem(Base):
 
     hospede = relationship("Hospede", back_populates="hospedagens")
     quarto = relationship("Quarto", back_populates="hospedagens")
+    despesas = relationship("Despesa", back_populates="hospedagens", cascade="all, delete-orphan")
+
 
 
 class Relatorio(Base):
@@ -71,6 +74,30 @@ class Relatorio(Base):
     valor_diaria = Column(Float)
 
     quarto = relationship("Quarto", back_populates="relatorios")
+
+
+class Despesa(Base):
+    __tablename__ = 'despesas'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    hospedagem_id = Column(Integer, ForeignKey('hospedagens.id'), nullable=False)
+    id_produto = Column(Integer, ForeignKey('produtos.id'), nullable=False)
+    quantidade = Column(Integer, nullable=False)
+    valor = Column(Float, nullable=False)
+    data = Column(DateTime, default=datetime.now)
+
+    hospedagem = relationship("Hospedagem", back_populates="despesas")
+    produto = relationship("Produto", back_populates="despesas")
+    
+
+class Produto(Base):
+    __tablename__ = 'produtos'
+
+    id = Column(Integer, primary_key=True)
+    descricao = Column(String, nullable=False)
+    valor = Column(Float, nullable=False)
+
+    despesa = relationship("Despesa", back_populates="produto")
 
 
 # Função para iniciar o banco
