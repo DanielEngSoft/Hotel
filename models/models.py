@@ -1,10 +1,12 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float, Date, Boolean, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float, DateTime, Boolean
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 import datetime
 
+# Configuração do banco
 db = create_engine('sqlite:///data/hp-prime.db')
 Base = declarative_base()
 Session = sessionmaker(bind=db)
+
 
 class Hospede(Base):
     __tablename__ = 'hospedes'
@@ -12,11 +14,11 @@ class Hospede(Base):
     nome = Column(String)
     cpf = Column(String, unique=True)
     telefone = Column(String)
-    endereco = Column(String) #'Estado [PI], cidade[Picos]'
+    endereco = Column(String)  # 'Estado [PI], cidade [Picos]'
     empresa = Column(String, default="------")
-    
-    hospedagens = relationship("Hospedagem", backref="hospede")
-    relatorios = relationship("Relatorio", backref="hospede")
+
+    hospedagens = relationship("Hospedagem", back_populates="hospede")
+
 
 class Funcionario(Base):
     __tablename__ = 'funcionarios'
@@ -25,14 +27,16 @@ class Funcionario(Base):
     cpf = Column(String, unique=True)
     telefone = Column(String)
 
+
 class Quarto(Base):
     __tablename__ = 'quartos'
     numero = Column(Integer, primary_key=True)
     tipo = Column(String)
     disponivel = Column(Boolean)
 
-    hospedagens = relationship("Hospedagem", backref="quarto")
-    relatorios = relationship("Relatorio", backref="quarto")
+    hospedagens = relationship("Hospedagem", back_populates="quarto")
+    relatorios = relationship("Relatorio", back_populates="quarto")
+
 
 class Usuario(Base):
     __tablename__ = 'usuarios'
@@ -40,49 +44,43 @@ class Usuario(Base):
     usuario = Column(String, unique=True)
     senha = Column(String)
     tipo = Column(String)
-    
+
 
 class Hospedagem(Base):
-    __tablename__ = 'hospedagems'
+    __tablename__ = 'hospedagens'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_hospede = Column(String, ForeignKey('hospedes.cpf'))
+    id_hospede = Column(String, ForeignKey('hospedes.cpf'))  # CPF como FK (pode trocar por id se quiser)
     id_quarto = Column(Integer, ForeignKey('quartos.numero'))
-    data_entrada = Column(DateTime, default=datetime.datetime.now())
+    data_entrada = Column(DateTime, default=datetime.datetime.now)
     data_saida = Column(DateTime)
     qtd_hospedes = Column(Integer)
-    valor_diaria = Column(Integer)
+    valor_diaria = Column(Float)
+
+    hospede = relationship("Hospede", back_populates="hospedagens")
+    quarto = relationship("Quarto", back_populates="hospedagens")
+
 
 class Relatorio(Base):
     __tablename__ = 'relatorios'
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_hospede = Column(String, ForeignKey('hospedes.cpf'))
     id_quarto = Column(Integer, ForeignKey('quartos.numero'))
-    data_entrada = Column(DateTime, default=datetime.datetime.now())
+    data_entrada = Column(DateTime, default=datetime.datetime.now)
     data_saida = Column(DateTime)
     qtd_hospedes = Column(Integer)
-    valor_diaria = Column(Integer)
+    valor_diaria = Column(Float)
 
-# class Reserva(Base):
-#     __tablename__ = 'reservar'
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     id_hospede = Column(Integer, ForeignKey('hospedes.cpf'))
-#     id_quarto = Column(Integer, ForeignKey('quartos.numero'))
-#     data_entrada = Column(Datetime)
-#     data_saida = Column(Datetime)
-#     qtd_hospedes = Column(Integer)
-#     valor_diaria = Column(Integer)
-#     observacao = Column(String)
+    quarto = relationship("Quarto", back_populates="relatorios")
 
-# class Produto(Base):
-# class Despesa(Base): 
 
+# Função para iniciar o banco
 def init_db():
     """Cria as tabelas no banco de dados se não existirem."""
     Base.metadata.create_all(bind=db)
     print("Banco de dados inicializado/verificado.")
 
+
 if __name__ == "__main__":
-    # Se executar este script diretamente, cria o DB
     print("Inicializando o banco de dados...")
     init_db()
     print("Processo concluído.")

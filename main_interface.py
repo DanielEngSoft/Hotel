@@ -95,7 +95,7 @@ class Ui_MainWindow(object):
         # Menu lateral
         self.MenuLateral = QListWidget(self.centralwidget)
         self.MenuLateral.setObjectName("MenuLateral")
-        self.MenuLateral.setMinimumSize(QSize(0, 50))
+        self.MenuLateral.setMinimumSize(QSize(200, 50))
         self.MenuLateral.setMaximumSize(QSize(220, 1900))
         self.MenuLateral.setStyleSheet(style_label_menu_lateral())
         self.MenuLateral.setSpacing(15)

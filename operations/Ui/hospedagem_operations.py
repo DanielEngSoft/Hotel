@@ -1,6 +1,10 @@
 from models.models import Hospedagem,Quarto, Hospede, db
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session, joinedload
+from models.models import Session as DBSession, Hospedagem
+
+Session = sessionmaker(bind=db)
 
 def diaria(pessoas):
     if pessoas == 1:
@@ -47,3 +51,12 @@ def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes):
             session.rollback()
             print(f"Erro ao criar hospedagem: {e}")
             return False
+        
+def listar_hospedagens():
+    with DBSession() as session:
+        hospedagens = session.query(Hospedagem)\
+            .options(
+                joinedload(Hospedagem.quarto),
+                joinedload(Hospedagem.hospede)
+            ).all()
+        return hospedagens

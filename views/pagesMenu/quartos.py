@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QPushButton,
     QWidget)
 
 from views.PagesMenu.PagesQuartos.page_cadastrar import Ui_page_cadastrar
+from views.PagesMenu.PagesQuartos.page_listar import Ui_page_listar
 
 class PageQuartos(QWidget):
     def __init__(self, parent=None):
@@ -87,7 +88,7 @@ class PageQuartos(QWidget):
         self.pages.setObjectName(u"pages")
 
         # Adicionando a page listar
-        self.page_listar = QWidget()
+        self.page_listar = Ui_page_listar()
         self.page_listar.setObjectName(u"page_listar")
         self.pages.addWidget(self.page_listar)
 
