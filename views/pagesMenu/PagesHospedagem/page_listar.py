@@ -8,7 +8,9 @@ from PySide6.QtCore import Qt, QDate
 from PySide6.QtGui import QFont
 from models.models import Hospedagem, Hospede, db
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import joinedload
 from datetime import datetime, timedelta
+from views.PagesMenu.PagesHospedagem.ficha import JanelaHospedagem
 
 Session = sessionmaker(bind=db)
 
@@ -21,6 +23,8 @@ class Ui_page_listar(QWidget):
         self.sort_order = 'asc'
         self.hospedagens_visiveis = []
         self.setup_ui()
+        self.janelas_abertas = []
+
     
     def setup_ui(self):
         layout = QVBoxLayout()
@@ -58,7 +62,8 @@ class Ui_page_listar(QWidget):
             else:
                 header.setSectionResizeMode(i, QHeaderView.Stretch)
 
-        self.table.cellDoubleClicked.connect(self.mostrar_info_hospede)
+        self.table.cellDoubleClicked.connect(self.handle_cell_double_clicked)
+
         layout.addWidget(self.table)
 
     def showEvent(self, event):
@@ -75,7 +80,10 @@ class Ui_page_listar(QWidget):
 
     def load_data(self, page=0):
         with Session() as session:
-            query = session.query(Hospedagem).join(Hospede)
+            query = session.query(Hospedagem).options(
+                joinedload(Hospedagem.hospede),
+                joinedload(Hospedagem.quarto)
+            ).join(Hospede)
 
             column_map = {
                 0: Hospede.nome,
@@ -140,30 +148,21 @@ class Ui_page_listar(QWidget):
                             item.setBackground(cor)
 
 
-    def mostrar_info_hospede(self, row):
-        if row < 0 or row >= len(self.hospedagens_visiveis):
-            return
+    def abrir_janela_hospedagem(self, hospedagem):
+        try:
+            print(f"Abrindo ficha para hospedagem: {hospedagem.id}")
+            janela = JanelaHospedagem(hospedagem)
+            self.janelas_abertas.append(janela)
+            janela.setWindowModality(Qt.ApplicationModal)
+            janela.raise_()
+            janela.activateWindow()
+            janela.show()
+        except Exception as e:
+            print("Erro ao abrir ficha:", e)
 
-        hospedagem = self.hospedagens_visiveis[row]
-        hospede = hospedagem.hospede
-
-        dialog = QDialog(self)
-        dialog.setWindowTitle("Informações do Hóspede")
-        layout = QVBoxLayout()
-
-        info_labels = [
-            f"Nome: {hospede.nome}",
-            f"CPF: {hospede.cpf}",
-            f"Telefone: {hospede.telefone}",
-            f"Diária: R$ {hospedagem.valor_diaria:.2f}",
-        ]
-
-        for info in info_labels:
-            layout.addWidget(QLabel(info))
-
-        btn_fechar = QPushButton("Fechar")
-        btn_fechar.clicked.connect(dialog.accept)
-        layout.addWidget(btn_fechar)
-
-        dialog.setLayout(layout)
-        dialog.exec()
+    def handle_cell_double_clicked(self, row, column):
+        try:
+            hospedagem = self.hospedagens_visiveis[row]
+            self.abrir_janela_hospedagem(hospedagem)
+        except IndexError:
+            print("Erro: índice fora do intervalo ao tentar abrir ficha de hospedagem.")
