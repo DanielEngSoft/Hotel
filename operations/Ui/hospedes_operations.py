@@ -5,7 +5,7 @@ def cadastra_hospede(nome, cpf, telefone, endereco, empresa):
     try:
         Session = sessionmaker(bind=db.engine)
         with Session() as session:
-            hospede = Hospede(nome=nome, cpf=cpf, telefone=telefone)
+            hospede = Hospede(nome=nome, cpf=cpf, telefone=telefone, endereco=endereco, empresa=empresa)
             session.add(hospede)
             session.commit()
             return True
