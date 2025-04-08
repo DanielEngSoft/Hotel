@@ -1,12 +1,13 @@
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
-    QAbstractItemView, QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit,
+    QAbstractItemView, QComboBox, QFormLayout, QFrame, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox,
     QTableWidget, QTableWidgetItem, QHeaderView
 )
 from sqlalchemy.orm import sessionmaker
 from models.models import Hospede, db
+from operations.Ui.hospedes_operations import procura_hospede_completo, procura_hospedes_por_nome, atualiza_hospede
 from styles.styles import style_botao_verde, style_groupbox
 from utils.validadores_ui import formata_nome, valida_telefone
 
@@ -67,6 +68,12 @@ class Ui_page_editar(QWidget):
 
         # Adiciona a tabela centralizada
         self.verticalLayout.addWidget(self.tabela_resultados, alignment=Qt.AlignCenter)
+
+        # Linha separadora entre colunas
+        self.line_separador = QFrame(self.widget)
+        self.line_separador.setFrameShape(QFrame.HLine)
+        self.line_separador.setFrameShadow(QFrame.Sunken)
+        self.verticalLayout.addWidget(self.line_separador)
 
         # GroupBox estilizado para edição de dados
         self.groupBox = QGroupBox("Editar dados do hóspede", self.widget)
@@ -158,8 +165,9 @@ class Ui_page_editar(QWidget):
     def buscar_hospede(self):
         nome = self.lineEdit_busca.text()
         self.tabela_resultados.setRowCount(0)
-        with sessionmaker(bind=db.engine)() as session:
-            hospedes = session.query(Hospede).filter(Hospede.nome.ilike(f"%{nome}%")).all()
+
+        hospedes = procura_hospedes_por_nome(nome)
+        if hospedes:
             for i, h in enumerate(hospedes):
                 self.tabela_resultados.insertRow(i)
                 for j, val in enumerate([h.nome, h.cpf, h.empresa, h.telefone, h.endereco]):
@@ -183,11 +191,7 @@ class Ui_page_editar(QWidget):
             self.comboBox_estado.setCurrentIndex(0)
             self.lineEdit_cidade.clear()
 
-        with sessionmaker(bind=db.engine)() as session:
-            hospede = session.query(Hospede).filter_by(
-                nome=nome, empresa=empresa, telefone=telefone, endereco=endereco
-            ).first()
-            self.hospede_selecionado = hospede
+        self.hospede_selecionado = procura_hospede_completo(nome, empresa, telefone, endereco)
 
     def salvar_alteracoes(self):
         self.label_error_nome.setText("")
@@ -197,13 +201,15 @@ class Ui_page_editar(QWidget):
 
         if not self.hospede_selecionado:
             return
-
+        cpf = self.hospede_selecionado.cpf
         nome = formata_nome(self.lineEdit_nome.text())
         telefone = self.lineEdit_telefone.text()
         cidade = formata_nome(self.lineEdit_cidade.text())
         uf = self.comboBox_estado.currentText()
         endereco = f"{uf} - {cidade}"
         empresa = formata_nome(self.lineEdit_empresa.text())
+        if empresa == "":
+            empresa = "------"
 
         erro = False
         if not nome or len(nome) < 4:
@@ -222,19 +228,12 @@ class Ui_page_editar(QWidget):
         if erro:
             return
 
-        Session = sessionmaker(bind=db.engine)
-        with Session() as session:
-            hospede = session.query(Hospede).get(self.hospede_selecionado.id)
-            if hospede:
-                hospede.nome = nome
-                hospede.telefone = telefone
-                hospede.endereco = endereco
-                hospede.empresa = empresa or "------"
-                session.commit()
-                self.label_confirmacao.setText("Dados atualizados com sucesso!")
+        atualiza_hospede(cpf=cpf, nome=nome, telefone=telefone, endereco=endereco, empresa=empresa)
 
-                self.buscar_hospede()
-                QTimer.singleShot(2000, self.limpar_campos)
+        self.label_confirmacao.setText("Dados atualizados com sucesso!")
+
+        self.buscar_hospede()
+        QTimer.singleShot(2000, self.limpar_campos)
 
     def limpar_campos(self):
         self.lineEdit_nome.clear()
