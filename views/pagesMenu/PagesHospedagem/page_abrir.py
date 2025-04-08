@@ -1,21 +1,29 @@
 # ui_page_abrir.py
 
+# ====== IMPORTAÇÕES ======
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
+
+# Modelos e operações do sistema
 from models.models import Hospedagem, Hospede, Quarto, db
 from operations.Ui.hospedagem_operations import create_hospedagem
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+
+# Estilo personalizado
 from styles.styles import style_botao_verde
 
 
+# ====== CLASSE PRINCIPAL DA PÁGINA ABRIR HOSPEDAGEM ======
 class Ui_page_abrir(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setupUi(self)
+        self.setupUi(self)  # Inicializa a interface
 
+    # ====== CONFIGURAÇÃO DA INTERFACE ======
     def setupUi(self, page_abrir):
+        # Define nome do objeto, se ainda não tiver
         if not page_abrir.objectName():
             page_abrir.setObjectName("page_abrir")
 
@@ -24,6 +32,7 @@ class Ui_page_abrir(QWidget):
         self.widget = QWidget(page_abrir)
         layout.addWidget(self.widget)
 
+        # Layout horizontal principal com margens
         self.horizontalLayout = QHBoxLayout(self.widget)
         self.horizontalLayout.setContentsMargins(20, 20, 20, 20)
         self.horizontalLayout.setSpacing(20)
@@ -32,10 +41,10 @@ class Ui_page_abrir(QWidget):
         font = QFont()
         font.setPointSize(14)
 
-        # ========== LADO ESQUERDO ==========
-
+        # ====== LADO ESQUERDO (ABERTURA DE HOSPEDAGEM) ======
         self.verticalLayout_abrir = QVBoxLayout()
 
+        # Campo CPF
         self.label_cpf = QLabel("CPF:", self.widget)
         self.label_cpf.setFont(font)
         self.verticalLayout_abrir.addWidget(self.label_cpf)
@@ -48,10 +57,12 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setMaximumSize(150, 16777215)
         self.verticalLayout_abrir.addWidget(self.lineEdit_cpf)
 
+        # Evento para posicionar cursor no início do campo CPF
         def cpf_focus_in_event(event):
             QLineEdit.focusInEvent(self.lineEdit_cpf, event)
             QTimer.singleShot(0, lambda: self.lineEdit_cpf.setCursorPosition(0))
 
+        # Atualiza o label do CPF com o nome do hóspede (se encontrado)
         def update_cpf_label():
             cpf = self.lineEdit_cpf.text()
             if len(cpf) == 14:
@@ -64,12 +75,12 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.textChanged.connect(update_cpf_label)
         self.lineEdit_cpf.editingFinished.connect(update_cpf_label)
 
+        # Quantidade de hóspedes + Preço
         self.label_qtd_hospedes = QLabel("Quantidade de hospedes:", self.widget)
         self.label_qtd_hospedes.setFont(font)
         self.verticalLayout_abrir.addWidget(self.label_qtd_hospedes)
 
         qtd_layout = QHBoxLayout()
-
         self.spinBox_qtd_hospedes = QSpinBox(self.widget)
         self.spinBox_qtd_hospedes.setFont(font)
         self.spinBox_qtd_hospedes.setMaximumWidth(80)
@@ -83,9 +94,9 @@ class Ui_page_abrir(QWidget):
         qtd_layout.addWidget(self.label_preco)
 
         self.verticalLayout_abrir.addLayout(qtd_layout)
-
         self.spinBox_qtd_hospedes.valueChanged.connect(self.atualizar_preco)
 
+        # Previsão de saída
         self.label_prev_saida = QLabel("Prev. Saída:", self.widget)
         self.label_prev_saida.setFont(font)
         self.verticalLayout_abrir.addWidget(self.label_prev_saida)
@@ -95,10 +106,12 @@ class Ui_page_abrir(QWidget):
         self.dateEdit_prev_saida.setFont(font)
         self.verticalLayout_abrir.addWidget(self.dateEdit_prev_saida)
 
-        self.label_quartos = QLabel("Quartos disponíveis:", self.widget)
-        self.label_quartos.setFont(font)
-        self.verticalLayout_abrir.addWidget(self.label_quartos)
+        # Quantidade de quartos disponíveis
+        self.label_total_quartos = QLabel("Quartos disponíveis: 0", self.widget)
+        self.label_total_quartos.setFont(font)
+        self.verticalLayout_abrir.addWidget(self.label_total_quartos)
 
+        # Tabela de quartos disponíveis
         self.tableWidget_quartos = QTableWidget(0, 2, self.widget)
         self.tableWidget_quartos.setHorizontalHeaderLabels(["Nº", "Tipo"])
         self.tableWidget_quartos.setSelectionBehavior(QTableWidget.SelectRows)
@@ -111,6 +124,7 @@ class Ui_page_abrir(QWidget):
 
         self.update_quartos()
 
+        # Botão abrir hospedagem
         self.pushButton_abrir = QPushButton("Abrir", self.widget)
         self.pushButton_abrir.setFont(font)
         self.pushButton_abrir.setCursor(QCursor(Qt.PointingHandCursor))
@@ -124,17 +138,25 @@ class Ui_page_abrir(QWidget):
         abrir_layout.addStretch()
         self.verticalLayout_abrir.addLayout(abrir_layout)
 
+        # Feedback de mensagens (erro/sucesso)
+        self.label_feedback = QLabel("", self.widget)
+        self.label_feedback.setFont(font)
+        self.label_feedback.setAlignment(Qt.AlignCenter)
+        self.verticalLayout_abrir.addWidget(self.label_feedback)
+
+        # Adiciona layout do lado esquerdo na tela
         self.horizontalLayout.addLayout(self.verticalLayout_abrir)
 
+        # Linha separadora entre colunas
         self.line_separador = QFrame(self.widget)
         self.line_separador.setFrameShape(QFrame.VLine)
         self.line_separador.setFrameShadow(QFrame.Sunken)
         self.horizontalLayout.addWidget(self.line_separador)
 
-        # ========== LADO DIREITO ==========
-
+        # ============================================= LADO DIREITO (BUSCA DE HÓSPEDES) ==============================================
         self.verticalLayout_buscar = QVBoxLayout()
 
+        # Título e linha separadora
         self.label_buscar = QLabel("Buscar", self.widget)
         self.label_buscar.setFont(font)
         self.label_buscar.setAlignment(Qt.AlignCenter)
@@ -145,12 +167,14 @@ class Ui_page_abrir(QWidget):
         self.line_separador_busca.setFrameShadow(QFrame.Sunken)
         self.verticalLayout_buscar.addWidget(self.line_separador_busca)
 
+        # Campo de busca por nome
         self.lineEdit_nome = QLineEdit(self.widget)
         self.lineEdit_nome.setPlaceholderText("Nome do hóspede")
         self.lineEdit_nome.setFont(font)
         self.lineEdit_nome.returnPressed.connect(self.search_hospedes)
         self.verticalLayout_buscar.addWidget(self.lineEdit_nome)
 
+        # Botão de buscar
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
         self.pushButton_procurar = QPushButton("Procurar", self.widget)
@@ -162,6 +186,7 @@ class Ui_page_abrir(QWidget):
         btn_layout.addStretch()
         self.verticalLayout_buscar.addLayout(btn_layout)
 
+        # Tabela de hóspedes encontrados
         self.tableWidget_hospedes = QTableWidget(0, 3, self.widget)
         self.tableWidget_hospedes.setHorizontalHeaderLabels(["Nome", "Empresa", "CPF"])
         self.tableWidget_hospedes.setSelectionBehavior(QTableWidget.SelectRows)
@@ -173,11 +198,15 @@ class Ui_page_abrir(QWidget):
 
         self.tableWidget_hospedes.cellClicked.connect(self.pegar_cpf)
 
+        # Espaçamento final
         self.verticalLayout_buscar.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+
+        # Adiciona layout do lado direito na tela
         self.horizontalLayout.addLayout(self.verticalLayout_buscar)
 
         QMetaObject.connectSlotsByName(page_abrir)
 
+    # Atualiza a tabela de quartos disponíveis
     def showEvent(self, event):
         self.update_quartos()
         super().showEvent(event)
@@ -186,6 +215,7 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_quartos.setRowCount(0)
         with sessionmaker(bind=db.engine)() as session:
             quartos = session.query(Quarto).filter(Quarto.disponivel == True).all()
+            self.label_total_quartos.setText(f"Quartos disponíveis: {len(quartos)}")
             for quarto in quartos:
                 row = self.tableWidget_quartos.rowCount()
                 self.tableWidget_quartos.insertRow(row)
@@ -194,12 +224,17 @@ class Ui_page_abrir(QWidget):
                 self.tableWidget_quartos.setItem(row, 0, item_num)
                 self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
 
+    # Lógica ao clicar no botão "Abrir"
     def button_abrir_clicked(self):
         row = self.tableWidget_quartos.currentRow()
         cpf = self.lineEdit_cpf.text()
 
+        self.label_feedback.setText("")
+        self.label_feedback.setStyleSheet("")
+
         if row == -1 or len(cpf) != 14:
-            QMessageBox.warning(self, "Erro", "Selecione todas as opções para continuar")
+            self.label_feedback.setText("Selecione um quarto e preencha o CPF.")
+            self.label_feedback.setStyleSheet("color: red;")
             return
 
         quarto_num = self.tableWidget_quartos.item(row, 0).text()
@@ -209,18 +244,24 @@ class Ui_page_abrir(QWidget):
         with sessionmaker(bind=db.engine)() as session:
             hospede = session.query(Hospede).filter(Hospede.cpf == cpf).first()
             if not hospede:
-                QMessageBox.warning(self, "Erro", "Hóspede não encontrado.")
+                self.label_feedback.setText("Hóspede não encontrado.")
+                self.label_feedback.setStyleSheet("color: red;")
                 return
 
-            QMessageBox.information(self, "Sucesso", f"Hospedagem criada para {hospede.nome}")
             create_hospedagem(cpf, quarto_num, data_saida, qtd_hospedes)
+            self.label_feedback.setText(f"Hospedagem criada para {hospede.nome}")
+            self.label_feedback.setStyleSheet("color: green;")
 
+        # Limpa os campos após sucesso
         self.lineEdit_cpf.setText("..-")
         self.dateEdit_prev_saida.setDate(QDate.currentDate())
         self.spinBox_qtd_hospedes.setValue(1)
         self.atualizar_preco(1)
         self.update_quartos()
 
+        QTimer.singleShot(4000, lambda: self.label_feedback.setText(""))
+
+    # Busca hóspedes por nome e preenche a tabela
     def search_hospedes(self):
         self.tableWidget_hospedes.setRowCount(0)
         nome = self.lineEdit_nome.text()
@@ -234,11 +275,13 @@ class Ui_page_abrir(QWidget):
                 self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
                 self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
 
+    # Preenche o campo CPF ao clicar em um hóspede da lista
     def pegar_cpf(self, row):
         cpf = self.tableWidget_hospedes.item(row, 2).text()
         self.lineEdit_cpf.setText(cpf)
         self.lineEdit_cpf.setFocus()
 
+    # Atualiza o preço de acordo com a quantidade de hóspedes
     def atualizar_preco(self, valor):
         precos = {1: 100, 2: 150, 3: 200, 4: 250, 5: 300}
         preco = precos.get(valor, 0)

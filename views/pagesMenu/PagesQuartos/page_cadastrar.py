@@ -1,7 +1,7 @@
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
-    QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton,
+    QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox
 )
 from sqlalchemy.orm import sessionmaker
@@ -36,7 +36,7 @@ class Ui_page_cadastrar(QWidget):
         self.groupBox.setFont(font)
         self.groupBox.setStyleSheet(style_groupbox())
         self.groupBoxLayout = QFormLayout(self.groupBox)
-        self.groupBoxLayout.setSpacing(30)
+        self.groupBoxLayout.setSpacing(20)
         self.groupBoxLayout.setContentsMargins(10, 10, 10, 10)
 
         def create_input_with_error(input_widget, error_label):
@@ -52,11 +52,11 @@ class Ui_page_cadastrar(QWidget):
         self.lineEdit_numero.setInputMask("000; ")
         self.lineEdit_numero.setFont(font)
         self.lineEdit_numero.setMinimumWidth(60)
-    
+
         def numero_focus_in_event(event):
             QLineEdit.focusInEvent(self.lineEdit_numero, event)
             QTimer.singleShot(0, lambda: self.lineEdit_numero.setCursorPosition(0))
-            
+
         self.lineEdit_numero.focusInEvent = numero_focus_in_event
 
         self.label_error_numero = QLabel("")
@@ -75,7 +75,9 @@ class Ui_page_cadastrar(QWidget):
         self.comboBox_tipo.setMinimumWidth(200)
         self.groupBoxLayout.addRow("Tipo:", self.comboBox_tipo)
 
-        self.verticalLayout.addWidget(self.groupBox, alignment=Qt.AlignCenter)
+        self.verticalLayout.addStretch()
+        self.verticalLayout.addWidget(self.groupBox, alignment=Qt.AlignHCenter)
+        self.verticalLayout.addStretch()
 
         # Botão cadastrar
         self.horizontalLayout_button = QHBoxLayout()
@@ -85,18 +87,26 @@ class Ui_page_cadastrar(QWidget):
         self.pushButton.setFont(font)
         self.pushButton.setMinimumWidth(150)
         self.pushButton.setStyleSheet(style_botao_verde())
-        self.pushButton.clicked.connect(self.abrir_cadastro)
+        self.pushButton.clicked.connect(self.cadastrar_quarto)
 
         self.horizontalLayout_button.addWidget(self.pushButton)
         self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
 
         self.verticalLayout.addLayout(self.horizontalLayout_button)
+
+        # Feedback geral
+        self.label_feedback = QLabel("")
+        self.label_feedback.setFont(font)
+        self.label_feedback.setAlignment(Qt.AlignCenter)
+        self.verticalLayout.addWidget(self.label_feedback)
+
         self.verticalLayout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         layout.addWidget(self.widget)
 
-    def abrir_cadastro(self):
+    def cadastrar_quarto(self):
         self.label_error_numero.setText("")
+        self.label_feedback.setText("")
 
         numero_texto = self.lineEdit_numero.text().strip()
         tipo = self.comboBox_tipo.currentText()
@@ -120,7 +130,11 @@ class Ui_page_cadastrar(QWidget):
 
         try:
             cadastra_quarto(numero, tipo)
-            QMessageBox.information(self, "Cadastro realizado", "Cadastro realizado com sucesso!")
+            self.label_feedback.setText("Cadastro realizado com sucesso!")
+            self.label_feedback.setStyleSheet("color: green;")
             self.lineEdit_numero.clear()
         except Exception as e:
-            QMessageBox.critical(self, "Erro ao cadastrar", f"Erro ao cadastrar o quarto: {str(e)}")
+            self.label_feedback.setText(f"Erro ao cadastrar o quarto: {str(e)}")
+            self.label_feedback.setStyleSheet("color: red;")
+
+        QTimer.singleShot(4000, lambda: self.label_feedback.setText(""))

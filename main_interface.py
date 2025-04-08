@@ -1,3 +1,4 @@
+# Importações do PySide6 para criação de interfaces gráficas
 from PySide6 import QtWidgets
 from PySide6.QtCore import (
     QCoreApplication, QDate, QDateTime, QLocale,
@@ -156,8 +157,7 @@ class Ui_MainWindow(object):
         locale = QLocale(QLocale.Portuguese, QLocale.Brazil)
 
         # Data no formato "segunda-feira - 01/01/2025"
-        data_formatada = locale.toString(agora, "dddd - dd/MM/yyyy")
-        data_formatada = data_formatada[0].upper() + data_formatada[1:]  # Primeira letra maiúscula
+        data_formatada = locale.toString(agora, "dddd - dd/MM/yyyy").capitalize()
 
         # Hora no formato "HH:mm:ss"
         hora_formatada = agora.toString("HH:mm:ss")

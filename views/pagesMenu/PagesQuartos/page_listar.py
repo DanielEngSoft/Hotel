@@ -1,53 +1,86 @@
+# Importações do PySide6 para criação de interfaces gráficas
 from PySide6.QtWidgets import (
     QWidget, QPushButton, QVBoxLayout, QGridLayout, QLabel,
     QSizePolicy, QScrollArea
 )
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
+
+# Importações auxiliares
 from functools import partial
 
+# Importações das operações para buscar dados
 from operations.Ui.quartos_operations import listar_quartos
 from operations.Ui.hospedagem_operations import listar_hospedagens
+
+# Importação da janela de ficha de hospedagem
 from views.PagesMenu.PagesHospedagem.ficha import JanelaHospedagem
 
 
 class Ui_page_listar(QWidget):
     def __init__(self, parent=None):
-        super().__init__(parent)
-        # Janelas abertas para evitar múltiplas instâncias
-        self.janelas_abertas = []
+        super().__init__(parent)  # Inicializa a superclasse QWidget
+        self.janelas_abertas = []  # Armazena janelas de hospedagens já abertas
 
-        # Criando e configurando layout principal --------------------------------------------------------------|
-        layout_principal = QVBoxLayout(self)
-        layout_principal.setContentsMargins(20, 20, 20, 20) # Ajusta as margens
-        layout_principal.setSpacing(15) # Ajusta o espaçamento entre os widgets
+        # ========== LAYOUT PRINCIPAL ==========
+        self.layout_principal = QVBoxLayout(self)
+        self.layout_principal.setContentsMargins(20, 20, 20, 20)
+        self.layout_principal.setSpacing(15)
 
-        # Label de título --------------------------------------------------------------------------------
+        # ========== TÍTULO DA PÁGINA ==========
         label_titulo = QLabel("Quartos")
-        label_titulo.setAlignment(Qt.AlignCenter) # Centraliza o texto
-        label_titulo.setFont(QFont("Segoe UI", 14, QFont.Bold)) # Define a fonte e o tamanho do título
+        label_titulo.setAlignment(Qt.AlignCenter)
+        label_titulo.setFont(QFont("Segoe UI", 14, QFont.Bold))
+        self.layout_principal.addWidget(label_titulo)
 
-        # Adiciona o título ao layout principal
-        layout_principal.addWidget(label_titulo)
+        # ========== ÁREA DE SCROLL ==========
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
 
-        # Scroll area onde os botões dos quartos serão exibidos -------------------------------------------|
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True) # Permite que o conteúdo do scroll redimensione com a janela
+        # Conteúdo dentro da área de scroll
+        self.scroll_content = QWidget()
+        self.grid = QGridLayout(self.scroll_content)
+        self.grid.setContentsMargins(10, 10, 10, 10)
+        self.grid.setHorizontalSpacing(10)
+        self.grid.setVerticalSpacing(10)
 
-        # Criando a área de conteúdo do scroll ------------------------------------------------------------|
-        scroll_content = QWidget()
-        grid = QGridLayout(scroll_content) # Layout em grade para organizar os botões dos quartos
-        grid.setContentsMargins(10, 10, 10, 10)
-        grid.setHorizontalSpacing(10)
-        grid.setVerticalSpacing(10)
+        # Adiciona o conteúdo ao scroll e o scroll ao layout principal
+        self.scroll_area.setWidget(self.scroll_content)
+        self.layout_principal.addWidget(self.scroll_area)
 
-        quartos = listar_quartos() # Obtém a lista de quartos disponíveis
-        hospedagens = listar_hospedagens() # Obtém a lista de hospedagens ativas
+        # Define o layout principal como o layout do widget
+        self.setLayout(self.layout_principal)
 
-        # Cria um dicionário para acesso rápido das hospedagens por id_quarto
+        # Chama o método para preencher os dados inicialmente
+        self.atualizar_dados()
+
+    def showEvent(self, event):
+        """
+        Método chamado automaticamente quando a página é exibida.
+        Garante que os dados estejam atualizados sempre que a aba for mostrada.
+        """
+        super().showEvent(event)
+        self.atualizar_dados()
+
+    def atualizar_dados(self):
+        """
+        Atualiza o grid de botões com os dados dos quartos.
+        Mostra se o quarto está ocupado ou disponível,
+        e conecta o clique dos quartos ocupados à janela de hospedagem.
+        """
+        # Limpa os widgets existentes no grid
+        while self.grid.count():
+            item = self.grid.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+
+        # Busca os dados de quartos e hospedagens
+        quartos = listar_quartos()
+        hospedagens = listar_hospedagens()
         hospedagens_por_quarto = {h.id_quarto: h for h in hospedagens}
 
-        # Cria os botões para cada quarto e adiciona ao layout em grade ----------------------------------|
+        # Cria um botão para cada quarto
         for i, quarto in enumerate(quartos):
             btn = QPushButton(f"{quarto.numero}\n{quarto.tipo}")
             btn.setMinimumSize(QSize(120, 60))
@@ -55,30 +88,26 @@ class Ui_page_listar(QWidget):
             btn.setFont(QFont("Segoe UI", 10))
             btn.setToolTip("Disponível" if quarto.disponivel else "Ocupado")
 
-            # Linha e coluna para o botão na grade
+            # Define a posição no grid (6 por linha)
             row = i // 6
             col = i % 6
-            grid.addWidget(btn, row, col)
+            self.grid.addWidget(btn, row, col)
 
-            # Altera o estilo do botão dependendo da disponibilidade do quarto
+            # Aplica o estilo conforme disponibilidade
             if quarto.disponivel:
                 btn.setStyleSheet("background-color: green;")
             else:
                 btn.setStyleSheet("background-color: red;")
-                # Procura hospedagem ativa relacionada a esse quarto do laço for
+                # Conecta o botão à janela da hospedagem correspondente
                 hospedagem_quarto = hospedagens_por_quarto.get(quarto.numero)
-                # Se houver uma hospedagem ativa, conecta o botão à função de abrir a ficha
                 if hospedagem_quarto:
                     btn.clicked.connect(partial(self.abrir_janela_hospedagem, hospedagem_quarto))
 
-        # Adiciona o layout em grade ao conteúdo do scroll ------------------------------------------|
-        scroll_area.setWidget(scroll_content)
-        layout_principal.addWidget(scroll_area)
-
-        # Definindo o layout principal --------------------------------------------------------------|
-        self.setLayout(layout_principal)
-
     def abrir_janela_hospedagem(self, hospedagem):
+        """
+        Abre a janela de detalhes da hospedagem do quarto selecionado.
+        Janela é modal e fica em destaque.
+        """
         try:
             janela = JanelaHospedagem(hospedagem)
             self.janelas_abertas.append(janela)
@@ -88,4 +117,3 @@ class Ui_page_listar(QWidget):
             janela.show()
         except Exception as e:
             print("Erro ao abrir ficha:", e)
-
