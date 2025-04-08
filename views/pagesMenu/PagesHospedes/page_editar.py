@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 from sqlalchemy.orm import sessionmaker
 from models.models import Hospede, db
 from operations.Ui.hospedes_operations import procura_hospede_completo, procura_hospedes_por_nome, atualiza_hospede
-from styles.styles import style_botao_verde, style_groupbox
+from styles.styles import style_botao_verde, style_groupbox, style_botao_branco
 from utils.validadores_ui import formata_nome, valida_telefone
 
 class Ui_page_editar(QWidget):
@@ -39,10 +39,10 @@ class Ui_page_editar(QWidget):
         self.lineEdit_busca.setMaximumWidth(700)
         self.lineEdit_busca.returnPressed.connect(self.buscar_hospede)
 
-        self.pushButton_buscar = QPushButton("Buscar")
+        self.pushButton_buscar = QPushButton("🔍")
         self.pushButton_buscar.setMaximumWidth(100)
         self.pushButton_buscar.setFont(font)
-        self.pushButton_buscar.setStyleSheet(style_botao_verde())
+        self.pushButton_buscar.setStyleSheet(style_botao_branco())
         self.pushButton_buscar.clicked.connect(self.buscar_hospede)
 
         # Layout horizontal para campo de busca + botão

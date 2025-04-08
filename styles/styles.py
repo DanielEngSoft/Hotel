@@ -95,6 +95,23 @@ def style_botao_verde():
             background-color: #219653;
         }
     """
+def style_botao_branco():
+    return """
+        QPushButton {
+            background-color: #fff;
+            color: black;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 15px;
+            font-weight: bold;
+        }
+        QPushButton:hover {
+            background-color: #27ae60;
+        }
+        QPushButton:pressed {
+            background-color: #219653;
+        }
+    """
 
 def style_groupbox():
     return """
