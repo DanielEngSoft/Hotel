@@ -80,7 +80,7 @@ class Despesa(Base):
     __tablename__ = 'despesas'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    hospedagem_id = Column(Integer, ForeignKey('hospedagens.id'), nullable=False)
+    id_hospedagem = Column(Integer, ForeignKey('hospedagens.id'), nullable=False)
     id_produto = Column(Integer, ForeignKey('produtos.id'), nullable=False)
     quantidade = Column(Integer, nullable=False)
     valor = Column(Float, nullable=False)
