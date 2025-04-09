@@ -7,7 +7,7 @@ from PySide6.QtGui import QFont, QColor
 from models.models import Hospedagem, Hospede, db
 from sqlalchemy.orm import sessionmaker, joinedload
 from datetime import datetime, timedelta
-from views.PagesMenu.PagesHospedagem.ficha import JanelaHospedagem
+from views.PagesMenu.PagesHospedagem.page_ficha import JanelaHospedagem
 
 # Sessão para comunicação com o banco de dados
 Session = sessionmaker(bind=db)
