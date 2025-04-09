@@ -148,7 +148,6 @@ class Ui_page_listar(QWidget):
     def abrir_janela_hospedagem(self, hospedagem):
         """Abre a janela de ficha da hospedagem"""
         try:
-            print(f"Abrindo ficha para hospedagem: {hospedagem.id}")
             janela = JanelaHospedagem(hospedagem)
             self.janelas_abertas.append(janela)
             janela.setWindowModality(Qt.ApplicationModal)

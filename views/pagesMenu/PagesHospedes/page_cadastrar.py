@@ -214,4 +214,3 @@ class Ui_page_cadastrar(QWidget):
         except Exception as e:
             QMessageBox.warning(self, "Erro ao cadastrar", "Tente novamente")
 
-        print("Cadastro realizado com sucesso!")
