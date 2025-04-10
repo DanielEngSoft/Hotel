@@ -8,7 +8,8 @@ from PySide6.QtWidgets import *
 # Modelos e operações do sistema
 from models.models import Hospedagem, Hospede, Quarto, db
 from operations.Ui.hospedagem_operations import create_hospedagem, buscar_hospedagem_por_quarto
-from operations.Ui.hospedes_operations import procura_hospede_por_cpf
+from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
+from operations.Ui.quartos_operations import listar_quartos_disponiveis
 from operations.Ui.despesas_operations import create_despesa
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -120,6 +121,7 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_quartos.setSelectionMode(QTableWidget.SingleSelection)
         self.tableWidget_quartos.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tableWidget_quartos.setAlternatingRowColors(True)
+        self.tableWidget_quartos.setMinimumHeight(200)
         self.tableWidget_quartos.setColumnWidth(0, 50)
         self.tableWidget_quartos.horizontalHeader().setStretchLastSection(True)
         self.verticalLayout_abrir.addWidget(self.tableWidget_quartos)
@@ -173,7 +175,7 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_nome = QLineEdit(self.widget)
         self.lineEdit_nome.setPlaceholderText("Nome do hóspede")
         self.lineEdit_nome.setFont(font)
-        self.lineEdit_nome.returnPressed.connect(self.search_hospedes)
+        self.lineEdit_nome.textChanged.connect(self.search_hospedes)
         self.verticalLayout_buscar.addWidget(self.lineEdit_nome)
 
         # Botão de buscar
@@ -196,6 +198,7 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tableWidget_hospedes.setAlternatingRowColors(True)
         self.tableWidget_hospedes.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableWidget_hospedes.setVisible(False)
         self.verticalLayout_buscar.addWidget(self.tableWidget_hospedes)
 
         self.tableWidget_hospedes.cellClicked.connect(self.pegar_cpf)
@@ -215,16 +218,15 @@ class Ui_page_abrir(QWidget):
 
     def update_quartos(self):
         self.tableWidget_quartos.setRowCount(0)
-        with sessionmaker(bind=db.engine)() as session:
-            quartos = session.query(Quarto).filter(Quarto.disponivel == True).all()
-            self.label_total_quartos.setText(f"Quartos disponíveis: {len(quartos)}")
-            for quarto in quartos:
-                row = self.tableWidget_quartos.rowCount()
-                self.tableWidget_quartos.insertRow(row)
-                item_num = QTableWidgetItem(str(quarto.numero))
-                item_num.setTextAlignment(Qt.AlignCenter)
-                self.tableWidget_quartos.setItem(row, 0, item_num)
-                self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
+        quartos = listar_quartos_disponiveis()
+        self.label_total_quartos.setText(f"Quartos disponíveis: {len(quartos)}")
+        for quarto in quartos:
+            row = self.tableWidget_quartos.rowCount()
+            self.tableWidget_quartos.insertRow(row)
+            item_num = QTableWidgetItem(str(quarto.numero))
+            item_num.setTextAlignment(Qt.AlignCenter)
+            self.tableWidget_quartos.setItem(row, 0, item_num)
+            self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
 
     # Lógica ao clicar no botão "Abrir"
     def button_abrir_clicked(self):
@@ -275,15 +277,24 @@ class Ui_page_abrir(QWidget):
     def search_hospedes(self):
         self.tableWidget_hospedes.setRowCount(0)
         nome = self.lineEdit_nome.text()
+        
+        if self.lineEdit_nome.text() == "":
+            self.lineEdit_nome.setPlaceholderText("Nome do hóspede")
+            self.tableWidget_hospedes.setVisible(False)
 
-        with sessionmaker(bind=db.engine)() as session:
-            hospedes = session.query(Hospede).filter(Hospede.nome.ilike(f"%{nome}%")).all()
-            for hospede in hospedes:
-                row = self.tableWidget_hospedes.rowCount()
-                self.tableWidget_hospedes.insertRow(row)
-                self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
-                self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
-                self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
+        hospedes = procura_hospedes_por_nome(nome)
+        if hospedes:
+            if self.lineEdit_nome.text() == "":
+                self.lineEdit_nome.setPlaceholderText("Nome do hóspede")
+                self.tableWidget_hospedes.setVisible(False)
+            else:
+                self.tableWidget_hospedes.setVisible(True)
+                for hospede in hospedes:
+                    row = self.tableWidget_hospedes.rowCount()
+                    self.tableWidget_hospedes.insertRow(row)
+                    self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
+                    self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
+                    self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
 
     # Preenche o campo CPF ao clicar em um hóspede da lista
     def pegar_cpf(self, row):
