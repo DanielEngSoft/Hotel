@@ -1,7 +1,7 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+    QAbstractItemView, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
     QSpacerItem, QSizePolicy, QFrame, QLineEdit, QSpinBox,
     QPushButton, QTableWidget, QTableWidgetItem, QListWidget, QListWidgetItem
 )
@@ -89,6 +89,9 @@ class JanelaHospedagem(QWidget):
 
         # Tabela de despesas
         self.tabela = QTableWidget(0, 5)
+        self.tabela.setEditTriggers(QTableWidget.NoEditTriggers)  # impede edição direta
+        self.tabela.setAlternatingRowColors(True)
+        self.tabela.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.tabela.setHorizontalHeaderLabels(["Data", "Descrição", "QTD", "Valor", "TOTAL"])
 
         header = self.tabela.horizontalHeader()

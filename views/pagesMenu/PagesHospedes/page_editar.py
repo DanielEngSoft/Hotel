@@ -63,9 +63,6 @@ class Ui_page_editar(QWidget):
         self.tabela_resultados.setAlternatingRowColors(True)
         self.tabela_resultados.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.tabela_resultados.cellClicked.connect(self.carregar_dados_hospede) 
-        if self.lineEdit_busca.text() == "":
-            self.lineEdit_busca.setPlaceholderText("Nome do hóspede")
-            self.tabela_resultados.setVisible(False)
 
         # Faz o cabeçalho se ajustar ao tamanho da tabela
         self.tabela_resultados.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -172,11 +169,14 @@ class Ui_page_editar(QWidget):
 
         hospedes = procura_hospedes_por_nome(nome)
         if hospedes:
-            self.tabela_resultados.setVisible(True)
-            for i, h in enumerate(hospedes):
-                self.tabela_resultados.insertRow(i)
-                for j, val in enumerate([h.nome, h.cpf, h.empresa, h.telefone, h.endereco]):
-                    self.tabela_resultados.setItem(i, j, QTableWidgetItem(str(val)))
+            if self.lineEdit_busca.text() == "":
+                self.tabela_resultados.setVisible(False)
+            else:
+                self.tabela_resultados.setVisible(True)
+                for i, h in enumerate(hospedes):
+                    self.tabela_resultados.insertRow(i)
+                    for j, val in enumerate([h.nome, h.cpf, h.empresa, h.telefone, h.endereco]):
+                        self.tabela_resultados.setItem(i, j, QTableWidgetItem(str(val)))
         else:
             self.tabela_resultados.setVisible(False)
 
