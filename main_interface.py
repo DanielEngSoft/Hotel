@@ -110,11 +110,11 @@ class Ui_MainWindow(object):
 
         # Lista de itens e ícones do menu
         menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios"]
-        icons = ["🏨", "📅", "🛏️", "🧑", "📊"]  # Emojis como ícones simples
+        icons = ["🏨", "📅", "🛏️", "👫", "📊"]  # Emojis como ícones simples
 
         # Adiciona os itens com ícones ao menu lateral
-        for i, text in enumerate(menu_items):
-            item = QListWidgetItem(f"{icons[i]}  {text}")
+        for itens, text in enumerate(menu_items):
+            item = QListWidgetItem(f"{icons[itens]}  {text}")
             self.MenuLateral.addItem(item)
 
         # Conecta mudança de item à troca de página no conteúdo

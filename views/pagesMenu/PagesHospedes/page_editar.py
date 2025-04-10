@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 from sqlalchemy.orm import sessionmaker
 from models.models import Hospede, db
 from operations.Ui.hospedes_operations import procura_hospede_completo, procura_hospedes_por_nome, atualiza_hospede
-from styles.styles import style_botao_verde, style_groupbox, style_botao_branco
+from styles.styles import style_botao_verde, style_groupbox
 from utils.validadores_ui import formata_nome, valida_telefone
 
 class Ui_page_editar(QWidget):
@@ -36,13 +36,13 @@ class Ui_page_editar(QWidget):
         self.lineEdit_busca = QLineEdit()
         self.lineEdit_busca.setPlaceholderText("Nome do hóspede")
         self.lineEdit_busca.setFont(font)
-        self.lineEdit_busca.setMaximumWidth(700)
-        self.lineEdit_busca.returnPressed.connect(self.buscar_hospede)
+        self.lineEdit_busca.setMaximumWidth(700)        
+        self.lineEdit_busca.textChanged.connect(self.buscar_hospede) 
 
-        self.pushButton_buscar = QPushButton("🔍")
+        self.pushButton_buscar = QPushButton("Buscar")
         self.pushButton_buscar.setMaximumWidth(100)
         self.pushButton_buscar.setFont(font)
-        self.pushButton_buscar.setStyleSheet(style_botao_branco())
+        self.pushButton_buscar.setStyleSheet(style_botao_verde())
         self.pushButton_buscar.clicked.connect(self.buscar_hospede)
 
         # Layout horizontal para campo de busca + botão
@@ -54,6 +54,7 @@ class Ui_page_editar(QWidget):
 
         # Tabela de resultados da busca
         self.tabela_resultados = QTableWidget()
+        self.tabela_resultados.setVisible(False)
         self.tabela_resultados.setMaximumHeight(150)
         self.tabela_resultados.setMinimumWidth(800)
         self.tabela_resultados.setColumnCount(5)
@@ -61,7 +62,10 @@ class Ui_page_editar(QWidget):
         self.tabela_resultados.setEditTriggers(QTableWidget.NoEditTriggers)  # impede edição direta
         self.tabela_resultados.setAlternatingRowColors(True)
         self.tabela_resultados.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.tabela_resultados.cellClicked.connect(self.carregar_dados_hospede)
+        self.tabela_resultados.cellClicked.connect(self.carregar_dados_hospede) 
+        if self.lineEdit_busca.text() == "":
+            self.lineEdit_busca.setPlaceholderText("Nome do hóspede")
+            self.tabela_resultados.setVisible(False)
 
         # Faz o cabeçalho se ajustar ao tamanho da tabela
         self.tabela_resultados.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -168,10 +172,13 @@ class Ui_page_editar(QWidget):
 
         hospedes = procura_hospedes_por_nome(nome)
         if hospedes:
+            self.tabela_resultados.setVisible(True)
             for i, h in enumerate(hospedes):
                 self.tabela_resultados.insertRow(i)
                 for j, val in enumerate([h.nome, h.cpf, h.empresa, h.telefone, h.endereco]):
                     self.tabela_resultados.setItem(i, j, QTableWidgetItem(str(val)))
+        else:
+            self.tabela_resultados.setVisible(False)
 
     def carregar_dados_hospede(self, row, column):
         nome = self.tabela_resultados.item(row, 0).text()

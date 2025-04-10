@@ -19,5 +19,4 @@ def valida_telefone(numero):
     if len(teste) == 11:  # Com DDD e 9 dígitos
         return True
     else:  
-        print("Telefone inválido")
         return False

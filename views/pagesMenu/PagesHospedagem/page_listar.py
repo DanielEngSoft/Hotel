@@ -7,7 +7,7 @@ from PySide6.QtGui import QFont, QColor
 from models.models import Hospedagem, Hospede, db
 from sqlalchemy.orm import sessionmaker, joinedload
 from datetime import datetime, timedelta
-from views.PagesMenu.PagesHospedagem.ficha import JanelaHospedagem
+from views.PagesMenu.PagesHospedagem.page_ficha import JanelaHospedagem
 
 # Sessão para comunicação com o banco de dados
 Session = sessionmaker(bind=db)
@@ -148,7 +148,6 @@ class Ui_page_listar(QWidget):
     def abrir_janela_hospedagem(self, hospedagem):
         """Abre a janela de ficha da hospedagem"""
         try:
-            print(f"Abrindo ficha para hospedagem: {hospedagem.id}")
             janela = JanelaHospedagem(hospedagem)
             self.janelas_abertas.append(janela)
             janela.setWindowModality(Qt.ApplicationModal)

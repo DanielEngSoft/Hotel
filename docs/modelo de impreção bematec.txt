@@ -1,0 +1,34 @@
+from datetime import datetime
+
+def gerar_relatorio_hotelaria(hospedagem, despesas, pagamento):
+    relatorio = ""
+    relatorio += "============================\n"
+    relatorio += "           HOTEL HP         \n"
+    relatorio += "     Tel: (89)3422-5678     \n"
+    relatorio += "============================\n"
+    relatorio += f"Hóspede: {hospedagem.hospede.nome}\n"
+    relatorio += f"CPF: {hospedagem.hospede.cpf}\n"
+    relatorio += f"Apto: {hospedagem.quarto}\n"
+    relatorio += f"Entrada: {hospedagem.data_entrada.strftime('%d/%m/%Y %H:%M')}\n"
+    relatorio += f"Saída:   {hospedagem.data_saida.strftime('%d/%m/%Y %H:%M')}\n"
+    relatorio += "----------------------------\n"
+    relatorio += "DT  |  DESC. |  QTD  |  (R$)\n"
+    relatorio += "----------------------------\n"
+
+    total = 0
+    for item in despesas:
+        data = item.data.strftime('%d/%m/%Y)
+        descricao = item.descricao
+        qtd = item.quantidade
+        valor = f"{item.valor:.2f}"
+        relatorio += f"{data}|{descricao}|{qtd}|{valor}\n"
+
+    relatorio += "----------------------------\n"
+    relatorio += f"TOTAL:              R$ {despesas.total:.2f}\n"
+    relatorio += "Forma de Pgto: {pagamento}\n"
+    relatorio += "============================\n"
+    relatorio += "  Obrigado pela preferência!\n"
+    relatorio += "============================\n\n"
+    relatorio += "\n\n\n"  # espaço pro corte de papel
+
+    return relatorio

@@ -14,7 +14,7 @@ from operations.Ui.quartos_operations import listar_quartos
 from operations.Ui.hospedagem_operations import listar_hospedagens
 
 # Importação da janela de ficha de hospedagem
-from views.PagesMenu.PagesHospedagem.ficha import JanelaHospedagem
+from views.PagesMenu.PagesHospedagem.page_ficha import JanelaHospedagem
 
 
 class Ui_page_listar(QWidget):

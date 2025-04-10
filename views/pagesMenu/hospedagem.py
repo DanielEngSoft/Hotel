@@ -86,6 +86,9 @@ class PageHospedagem(QWidget):
         # Quando o botão "Fechar" é clicado, muda para a página de fechamento
         self.button_fechar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_fechar))
 
+        # Pagina padrão inicial (listar)
+        self.pages.setCurrentWidget(self.page_listar)
+
     # ========== MÉTODO AUXILIAR ==========
     def _estilizar_botao(self, botao):
         """
