@@ -45,7 +45,7 @@ def procura_hospedes_por_nome(nome):
 def procura_hospede_por_cpf(cpf):
     Session = sessionmaker(bind=db.engine)
     with Session() as session:
-        hospede = session.query(Hospede).get(cpf)
+        hospede = session.query(Hospede).filter_by(cpf=cpf).first()
         if hospede:
             return hospede
         else:

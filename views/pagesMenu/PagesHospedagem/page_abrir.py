@@ -7,7 +7,9 @@ from PySide6.QtWidgets import *
 
 # Modelos e operações do sistema
 from models.models import Hospedagem, Hospede, Quarto, db
-from operations.Ui.hospedagem_operations import create_hospedagem
+from operations.Ui.hospedagem_operations import create_hospedagem, buscar_hospedagem_por_quarto
+from operations.Ui.hospedes_operations import procura_hospede_por_cpf
+from operations.Ui.despesas_operations import create_despesa
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
@@ -241,17 +243,25 @@ class Ui_page_abrir(QWidget):
         qtd_hospedes = self.spinBox_qtd_hospedes.value()
         data_saida = self.dateEdit_prev_saida.date().toPython()
 
-        with sessionmaker(bind=db.engine)() as session:
-            hospede = session.query(Hospede).filter(Hospede.cpf == cpf).first()
-            if not hospede:
-                self.label_feedback.setText("Hóspede não encontrado.")
-                self.label_feedback.setStyleSheet("color: red;")
-                return
+        # Verifica se o hóspede existe no banco de dados
+        hospede = procura_hospede_por_cpf(cpf)
+        if not hospede:
+            self.label_feedback.setText("Hóspede não encontrado.")
+            self.label_feedback.setStyleSheet("color: red;")
+            return
+        
+        # Cria a hospedagem no banco de dados
+        create_hospedagem(cpf, quarto_num, data_saida, qtd_hospedes)
+        self.label_feedback.setText(f"Hospedagem criada para {hospede.nome}")
+        self.label_feedback.setStyleSheet("color: green;")
 
-            create_hospedagem(cpf, quarto_num, data_saida, qtd_hospedes)
-            self.label_feedback.setText(f"Hospedagem criada para {hospede.nome}")
-            self.label_feedback.setStyleSheet("color: green;")
-
+        hospedagem = buscar_hospedagem_por_quarto(quarto_num)
+        # Adicionando a despesa de Diária no hospede
+        create_despesa(
+            id_hospedagem=hospedagem.id,
+            id_produto=qtd_hospedes,  # Despesas de diárias tem o id do produto igual à quantidade de hóspedes
+            quantidade=1  # Quantidade de diárias
+        )
         # Limpa os campos após sucesso
         self.lineEdit_cpf.setText("..-")
         self.dateEdit_prev_saida.setDate(QDate.currentDate())

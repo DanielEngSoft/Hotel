@@ -71,3 +71,13 @@ def listar_hospedagens():
 
         # Retorna a lista de objetos Hospedagem
         return hospedagens
+    
+def buscar_hospedagem_por_quarto(id_quarto):
+    with DBSession() as session:
+        # Busca a hospedagem com base no ID do quarto
+        hospedagem = session.query(Hospedagem).filter_by(id_quarto=id_quarto).first()
+        if hospedagem:
+            return hospedagem
+        else:
+            print(f"Hospedagem não encontrada para o quarto {id_quarto}.")
+            return None
