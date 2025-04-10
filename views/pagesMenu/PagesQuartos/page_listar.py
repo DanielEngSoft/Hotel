@@ -95,9 +95,9 @@ class Ui_page_listar(QWidget):
 
             # Aplica o estilo conforme disponibilidade
             if quarto.disponivel:
-                btn.setStyleSheet("background-color: green;")
+                btn.setStyleSheet("background-color: #2c3e50;")
             else:
-                btn.setStyleSheet("background-color: red;")
+                btn.setStyleSheet("background-color: #A52A2A;")
                 # Conecta o botão à janela da hospedagem correspondente
                 hospedagem_quarto = hospedagens_por_quarto.get(quarto.numero)
                 if hospedagem_quarto:

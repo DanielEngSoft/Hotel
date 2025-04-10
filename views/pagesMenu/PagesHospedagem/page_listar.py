@@ -43,7 +43,7 @@ class Ui_page_listar(QWidget):
         self.table.setFont(QFont("Calibri", 12))
         self.table.setColumnCount(6)
         self.table.setHorizontalHeaderLabels([
-            'Cliente', 'Empresa', 'Pessoas', 'Entrada', 'Prev-Saída', 'Quarto'
+            'Quarto','Cliente', 'Empresa', 'Pessoas', 'Entrada', 'Prev-Saída'
         ])
         self.table.setSortingEnabled(False)
         self.table.setAlternatingRowColors(True)
@@ -54,7 +54,7 @@ class Ui_page_listar(QWidget):
         # Ajuste de largura das colunas
         header = self.table.horizontalHeader()
         for i in range(6):
-            if i in (2, 5):  # Colunas 'Pessoas' e 'Quarto'
+            if i in (0, 3):  # Colunas 'Pessoas' e 'Quarto'
                 header.setSectionResizeMode(i, QHeaderView.ResizeToContents)
                 self.table.setColumnWidth(i, 50)
             else:
@@ -101,12 +101,12 @@ class Ui_page_listar(QWidget):
 
             # Ordenação dinâmica
             column_map = {
-                0: Hospede.nome,
-                1: Hospede.empresa,
-                2: Hospedagem.qtd_hospedes,
-                3: Hospedagem.data_entrada,
-                4: Hospedagem.data_saida,
-                5: Hospedagem.id_quarto
+                0: Hospedagem.id_quarto,
+                1: Hospede.nome,
+                2: Hospede.empresa,
+                3: Hospedagem.qtd_hospedes,
+                4: Hospedagem.data_entrada,
+                5: Hospedagem.data_saida
             }
             if self.current_sort_column in column_map:
                 coluna = column_map[self.current_sort_column]
@@ -122,28 +122,27 @@ class Ui_page_listar(QWidget):
 
             # Preenche as linhas da tabela
             for row, hospedagem in enumerate(hospedagens):
-                self.table.setItem(row, 0, QTableWidgetItem(hospedagem.hospede.nome))
-                self.table.setItem(row, 1, QTableWidgetItem(hospedagem.hospede.empresa))
-                self.table.setItem(row, 2, QTableWidgetItem(str(hospedagem.qtd_hospedes)))
+                self.table.setItem(row, 0, QTableWidgetItem(str(hospedagem.id_quarto)))
+                self.table.setItem(row, 1, QTableWidgetItem(hospedagem.hospede.nome))
+                self.table.setItem(row, 2, QTableWidgetItem(hospedagem.hospede.empresa))
+                self.table.setItem(row, 3, QTableWidgetItem(str(hospedagem.qtd_hospedes)))
 
                 entrada_item = QTableWidgetItem(hospedagem.data_entrada.strftime('%d/%m/%Y %H:%M'))
                 entrada_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                self.table.setItem(row, 3, entrada_item)
+                self.table.setItem(row, 4, entrada_item)
 
                 saida_data = hospedagem.data_saida.date()
                 saida_item = QTableWidgetItem(hospedagem.data_saida.strftime('%d/%m/%Y'))
                 saida_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                self.table.setItem(row, 4, saida_item)
-
-                self.table.setItem(row, 5, QTableWidgetItem(str(hospedagem.id_quarto)))
+                self.table.setItem(row, 5, saida_item)
 
                 # Destaque para saídas hoje ou atrasadas
                 if saida_data <= today:
-                    cor = QColor(255, 102, 102)  # Vermelho claro
+                    cor = QColor('#A52A2A')  # Vermelho claro
                     for col in range(6):
                         item = self.table.item(row, col)
                         if item:
-                            item.setBackground(cor)
+                            item.setBackground(cor)  # Vermelho claro
 
     def abrir_janela_hospedagem(self, hospedagem):
         """Abre a janela de ficha da hospedagem"""
