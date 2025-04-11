@@ -11,6 +11,7 @@ from operations.Ui.hospedagem_operations import create_hospedagem, buscar_hosped
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
 from operations.Ui.quartos_operations import listar_quartos_disponiveis
 from operations.Ui.despesas_operations import create_despesa
+from operations.Ui.produtos_operations import buscar_produto_por_id
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
@@ -259,11 +260,14 @@ class Ui_page_abrir(QWidget):
         self.label_feedback.setStyleSheet("color: green;")
 
         hospedagem = buscar_hospedagem_por_quarto(quarto_num)
+        produto = buscar_produto_por_id(qtd_hospedes)
+        valor_diária = produto.valor
         # Adicionando a despesa de Diária no hospede
         create_despesa(
             id_hospedagem=hospedagem.id,
             id_produto=qtd_hospedes,  # Despesas de diárias tem o id do produto igual à quantidade de hóspedes
-            quantidade=1  # Quantidade de diárias
+            quantidade=1,  # Quantidade de diárias
+            valor_produto=valor_diária,  # Valor da diária
         )
         # Limpa os campos após sucesso
         self.lineEdit_cpf.setText("..-")

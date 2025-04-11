@@ -83,7 +83,7 @@ class Despesa(Base):
     id_hospedagem = Column(Integer, ForeignKey('hospedagens.id'), nullable=False)
     id_produto = Column(Integer, ForeignKey('produtos.id'), nullable=False)
     quantidade = Column(Integer, nullable=False)
-    #valor_produto = Column(Float, nullable=False)
+    valor_produto = Column(Float, nullable=False)
     valor = Column(Float, nullable=False)
     data = Column(DateTime, default=datetime.datetime.now)
 
