@@ -4,10 +4,14 @@ from PySide6.QtWidgets import (
     QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox
 )
-from sqlalchemy.orm import sessionmaker
-
 from operations.Ui.quartos_operations import verifica_quarto_existe, cadastra_quarto
 from styles.styles import style_botao_verde, style_groupbox
+
+# Cores e estilos reutilizáveis
+COR_SUCESSO = "color: green;"
+COR_ERRO = "color: red;"
+BORDA_ERRO = "border: 1px solid red;"
+BORDA_PADRAO = "border: 1px solid lightgray;"
 
 
 class Ui_page_cadastrar(QWidget):
@@ -39,10 +43,12 @@ class Ui_page_cadastrar(QWidget):
         self.groupBoxLayout.setSpacing(20)
         self.groupBoxLayout.setContentsMargins(10, 10, 10, 10)
 
+        # Função auxiliar para agrupar input e erro
         def create_input_with_error(input_widget, error_label):
             container = QWidget()
             layout = QHBoxLayout(container)
             layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(10)
             layout.addWidget(input_widget)
             layout.addWidget(error_label)
             return container
@@ -52,6 +58,7 @@ class Ui_page_cadastrar(QWidget):
         self.lineEdit_numero.setInputMask("000; ")
         self.lineEdit_numero.setFont(font)
         self.lineEdit_numero.setMinimumWidth(60)
+        self.lineEdit_numero.setStyleSheet(BORDA_PADRAO)
 
         def numero_focus_in_event(event):
             QLineEdit.focusInEvent(self.lineEdit_numero, event)
@@ -60,7 +67,7 @@ class Ui_page_cadastrar(QWidget):
         self.lineEdit_numero.focusInEvent = numero_focus_in_event
 
         self.label_error_numero = QLabel("")
-        self.label_error_numero.setStyleSheet("color: red;")
+        self.label_error_numero.setStyleSheet(COR_ERRO)
         self.label_error_numero.setFont(font)
 
         self.groupBoxLayout.addRow("Número:", create_input_with_error(self.lineEdit_numero, self.label_error_numero))
@@ -75,11 +82,12 @@ class Ui_page_cadastrar(QWidget):
         self.comboBox_tipo.setMinimumWidth(200)
         self.groupBoxLayout.addRow("Tipo:", self.comboBox_tipo)
 
+        # Adiciona GroupBox ao layout
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.groupBox, alignment=Qt.AlignHCenter)
         self.verticalLayout.addStretch()
 
-        # Botão cadastrar
+        # Botão cadastrar centralizado
         self.horizontalLayout_button = QHBoxLayout()
         self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
 
@@ -88,11 +96,9 @@ class Ui_page_cadastrar(QWidget):
         self.pushButton.setMinimumWidth(150)
         self.pushButton.setStyleSheet(style_botao_verde())
         self.pushButton.clicked.connect(self.cadastrar_quarto)
-        self.pushButton.pressed.connect(self.cadastrar_quarto)
 
         self.horizontalLayout_button.addWidget(self.pushButton)
         self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-
         self.verticalLayout.addLayout(self.horizontalLayout_button)
 
         # Feedback geral
@@ -106,8 +112,10 @@ class Ui_page_cadastrar(QWidget):
         layout.addWidget(self.widget)
 
     def cadastrar_quarto(self):
+        # Limpa mensagens anteriores
         self.label_error_numero.setText("")
         self.label_feedback.setText("")
+        self.lineEdit_numero.setStyleSheet(BORDA_PADRAO)
 
         numero_texto = self.lineEdit_numero.text().strip()
         tipo = self.comboBox_tipo.currentText()
@@ -115,27 +123,32 @@ class Ui_page_cadastrar(QWidget):
 
         if not numero_texto:
             self.label_error_numero.setText(" Número obrigatório*")
+            self.lineEdit_numero.setStyleSheet(BORDA_ERRO)
             erro = True
         else:
             try:
                 numero = int(numero_texto)
                 if verifica_quarto_existe(numero):
                     self.label_error_numero.setText(" Quarto já cadastrado*")
+                    self.lineEdit_numero.setStyleSheet(BORDA_ERRO)
                     erro = True
             except ValueError:
                 self.label_error_numero.setText(" Número inválido*")
+                self.lineEdit_numero.setStyleSheet(BORDA_ERRO)
                 erro = True
 
         if erro:
             return
 
+        # Cadastra no banco de dados
         try:
             cadastra_quarto(numero, tipo)
             self.label_feedback.setText("Cadastro realizado com sucesso!")
-            self.label_feedback.setStyleSheet("color: green;")
+            self.label_feedback.setStyleSheet(COR_SUCESSO)
             self.lineEdit_numero.clear()
         except Exception as e:
             self.label_feedback.setText(f"Erro ao cadastrar o quarto: {str(e)}")
-            self.label_feedback.setStyleSheet("color: red;")
+            self.label_feedback.setStyleSheet(COR_ERRO)
 
+        # Limpa o feedback após 4 segundos
         QTimer.singleShot(4000, lambda: self.label_feedback.setText(""))
