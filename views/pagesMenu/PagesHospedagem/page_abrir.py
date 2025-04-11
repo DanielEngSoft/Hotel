@@ -18,6 +18,8 @@ from datetime import datetime
 # Estilo personalizado
 from styles.styles import style_botao_verde
 
+# CONSTANTES
+DESCONTO = 0.1  # 10% de desconto
 
 # ====== CLASSE PRINCIPAL DA PÁGINA ABRIR HOSPEDAGEM ======
 class Ui_page_abrir(QWidget):
@@ -94,8 +96,13 @@ class Ui_page_abrir(QWidget):
 
         self.label_preco = QLabel("R$ 100", self.widget)
         self.label_preco.setFont(font)
+        self.label_preco.setMaximumWidth(80)
         self.label_preco.setStyleSheet("color: green; font-weight: bold;")
         qtd_layout.addWidget(self.label_preco)
+
+        self.checkBox_desconto = QCheckBox("Desconto", self.widget)
+        self.checkBox_desconto.setFont(font)
+        qtd_layout.addWidget(self.checkBox_desconto)
 
         self.verticalLayout_abrir.addLayout(qtd_layout)
         self.spinBox_qtd_hospedes.valueChanged.connect(self.atualizar_preco)
@@ -262,6 +269,10 @@ class Ui_page_abrir(QWidget):
         hospedagem = buscar_hospedagem_por_quarto(quarto_num)
         produto = buscar_produto_por_id(qtd_hospedes)
         valor_diária = produto.valor
+
+        # Adicionar condições em caso do checkBox estiver marcado
+        if self.checkBox_desconto.isChecked():
+            valor_diária = produto.valor * (1 - DESCONTO)
         # Adicionando a despesa de Diária no hospede
         create_despesa(
             id_hospedagem=hospedagem.id,
