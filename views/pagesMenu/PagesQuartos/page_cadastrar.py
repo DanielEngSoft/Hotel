@@ -88,6 +88,7 @@ class Ui_page_cadastrar(QWidget):
         self.pushButton.setMinimumWidth(150)
         self.pushButton.setStyleSheet(style_botao_verde())
         self.pushButton.clicked.connect(self.cadastrar_quarto)
+        self.pushButton.pressed.connect(self.cadastrar_quarto)
 
         self.horizontalLayout_button.addWidget(self.pushButton)
         self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))

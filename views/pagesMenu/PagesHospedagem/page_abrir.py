@@ -228,6 +228,7 @@ class Ui_page_abrir(QWidget):
             self.tableWidget_quartos.setItem(row, 0, item_num)
             self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
 
+
     # Lógica ao clicar no botão "Abrir"
     def button_abrir_clicked(self):
         row = self.tableWidget_quartos.currentRow()

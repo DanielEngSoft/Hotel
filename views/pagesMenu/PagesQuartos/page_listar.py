@@ -83,10 +83,10 @@ class Ui_page_listar(QWidget):
         # Cria um botão para cada quarto
         for i, quarto in enumerate(quartos):
             btn = QPushButton(f"{quarto.numero}\n{quarto.tipo}")
+            btn.setMaximumHeight(60)
             btn.setMinimumSize(QSize(120, 60))
             btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             btn.setFont(QFont("Segoe UI", 10))
-            btn.setToolTip("Disponível" if quarto.disponivel else "Ocupado")
 
             # Define a posição no grid (6 por linha)
             row = i // 6
