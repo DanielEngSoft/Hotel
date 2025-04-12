@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
 
 from operations.Ui.produtos_operations import buscar_produto_por_nome
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem, create_despesa
+from styles.styles import tabelas
 
 # Constante para valor inicial monetário
 VALOR_ZERO = "R$ 0,00"
@@ -106,16 +107,24 @@ class Ui_page_ficha(QWidget):
 
         group_layout.addLayout(input_layout)
 
-        # Lista de sugestões com base na descrição
-        self.lista_sugestoes = QListWidget()
-        self.lista_sugestoes.setMaximumHeight(100)
-        self.lista_sugestoes.setVisible(False)
-        group_layout.addWidget(self.lista_sugestoes)
+        # Tabela de sugestões com base na descrição
+        self.tabela_sugestoes = QTableWidget(0, 2)
+        self.tabela_sugestoes.setStyleSheet(tabelas())
+        self.tabela_sugestoes.setHorizontalHeaderLabels(["Preço", "Descrição"])
+        self.tabela_sugestoes.setMaximumHeight(100)
+        self.tabela_sugestoes.setVisible(False)
+        self.tabela_sugestoes.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.tabela_sugestoes.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tabela_sugestoes.verticalHeader().setVisible(False)
+        self.tabela_sugestoes.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.tabela_sugestoes.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.tabela_sugestoes.horizontalHeader().setMaximumHeight(25)
+        group_layout.addWidget(self.tabela_sugestoes)
 
         # Conexões dos sinais com as ações
         self.produto_selecionado = None
         self.input_descricao.textChanged.connect(self.atualizar_sugestoes)
-        self.lista_sugestoes.itemClicked.connect(self.selecionar_sugestao)
+        self.tabela_sugestoes.cellClicked.connect(self.selecionar_sugestao)
         self.btn_adicionar.clicked.connect(self.adicionar_despesa)
 
         # Tabela que exibe as despesas
@@ -163,25 +172,34 @@ class Ui_page_ficha(QWidget):
 
     # Atualiza a lista de sugestões conforme a descrição digitada
     def atualizar_sugestoes(self, texto):
-        self.lista_sugestoes.clear()
+        self.tabela_sugestoes.setRowCount(0)
         if not texto.strip():
-            self.lista_sugestoes.setVisible(False)
+            self.tabela_sugestoes.setVisible(False)
             return
 
         resultados = buscar_produto_por_nome(texto)
         if not resultados:
-            self.lista_sugestoes.setVisible(False)
+            self.tabela_sugestoes.setVisible(False)
             return
 
-        for produto in resultados:
-            item = QListWidgetItem(f"{produto.descricao} - R${produto.valor:.2f}")
-            item.setData(Qt.ItemDataRole.UserRole, produto)
-            self.lista_sugestoes.addItem(item)
+        self.tabela_sugestoes.setRowCount(len(resultados))
+        for row, produto in enumerate(resultados):
+            descricao_item = QTableWidgetItem(produto.descricao)
+            valor_item = QTableWidgetItem(f"R${produto.valor:.2f}")
+            descricao_item.setData(Qt.ItemDataRole.UserRole, produto)
 
-        self.lista_sugestoes.setVisible(True)
+            self.tabela_sugestoes.setItem(row, 0, valor_item)
+            self.tabela_sugestoes.setItem(row, 1, descricao_item)
+
+        self.tabela_sugestoes.setVisible(True)
+        self._ajustar_altura_tabela()
 
     # Preenche os campos ao selecionar uma sugestão
-    def selecionar_sugestao(self, item):
+    def selecionar_sugestao(self, row, column):
+        item = self.tabela_sugestoes.item(row, 1)  # Coluna 1 contém a descrição com o produto associado
+        if not item:
+            return
+
         produto = item.data(Qt.ItemDataRole.UserRole)
         self.produto_selecionado = produto
         self.input_descricao.setText(produto.descricao)
@@ -195,7 +213,7 @@ class Ui_page_ficha(QWidget):
         self.input_valor.blockSignals(False)
         self.input_valor.setCursorPosition(len(texto_formatado))
 
-        self.lista_sugestoes.setVisible(False)
+        self.tabela_sugestoes.setVisible(False)
 
     # Adiciona uma nova despesa à tabela e ao banco
     def adicionar_despesa(self):
@@ -215,7 +233,7 @@ class Ui_page_ficha(QWidget):
 
         row = self.tabela.rowCount()
         self.tabela.insertRow(row)
-        self.tabela.setItem(row, 0, QTableWidgetItem(despesa.data.strftime("%d/%m/%Y")))
+        self.tabela.setItem(row, 0, QTableWidgetItem(despesa.data.strftime("%d/%m/%Y %H:%M")))
         self.tabela.setItem(row, 1, QTableWidgetItem(produto.descricao))
         self.tabela.setItem(row, 2, QTableWidgetItem(str(despesa.quantidade)))
         self.tabela.setItem(row, 3, QTableWidgetItem(f"R${despesa.valor_produto:.2f}"))
@@ -227,7 +245,7 @@ class Ui_page_ficha(QWidget):
         self.input_valor.valor_cents = 0
         self.input_quantidade.setValue(1)
         self.produto_selecionado = None
-        self.lista_sugestoes.setVisible(False)
+        self.tabela_sugestoes.setVisible(False)
 
         self.atualizar_totais()
 
@@ -267,3 +285,18 @@ class Ui_page_ficha(QWidget):
             self.tabela.setItem(row, 4, QTableWidgetItem(f"R${despesa.valor:.2f}"))
 
         self.atualizar_totais()
+    
+    def _ajustar_altura_tabela(self):
+        row_count = self.tabela_sugestoes.rowCount()
+        if row_count == 0:
+            self.tabela_sugestoes.setVisible(False)
+            return
+        row_height = self.tabela_sugestoes.verticalHeader().defaultSectionSize()
+        header_height = self.tabela_sugestoes.horizontalHeader().height()
+        scrollbar_height = self.tabela_sugestoes.horizontalScrollBar().height() if self.tabela_sugestoes.horizontalScrollBar().isVisible() else 0
+
+        # Calcula a altura desejada com base no número de linhas
+        desired_height = row_count * row_height + header_height + scrollbar_height + 2
+
+        self.tabela_sugestoes.setMaximumHeight(desired_height)
+        self.tabela_sugestoes.setVisible(True)
