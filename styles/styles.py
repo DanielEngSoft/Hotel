@@ -150,3 +150,27 @@ def menu_superior_pages():
                 border-bottom: 2px solid #4E9A06;
             }
         """
+
+def tabelas():
+    return """
+        QTableWidget{
+            outline: 0;
+        }
+        QTableWidget::item{
+            background-color: #05452f;
+        }
+        QTableWidget::item:selected {
+            background-color: #3d566e;
+        }
+        QTableWidget::item:hover {
+            background-color: #3d566e;
+            color: white; 
+        }
+        QHeaderView::section {
+            background-color: #2c3e50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            padding: 4px;
+        }
+    """

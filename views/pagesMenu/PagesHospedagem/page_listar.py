@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 from views.PagesMenu.PagesHospedagem.page_ficha import JanelaHospedagem
 from operations.Ui.hospedagem_operations import hospedagens_ativas
 
+from styles.styles import tabelas
+
 
 # Página de listagem de hospedagens
 class Ui_page_listar(QWidget):
@@ -37,16 +39,16 @@ class Ui_page_listar(QWidget):
 
         # Tabela de hospedagens
         self.table = QTableWidget()
-        self.table.setFont(QFont("Calibri", 12))
-        self.table.setColumnCount(6)
+        self.table.setColumnCount(6) 
         self.table.setHorizontalHeaderLabels([
             'Quarto','Cliente', 'Empresa', 'Pessoas', 'Entrada', 'Prev-Saída'
         ])
-        self.table.setSortingEnabled(False)
-        self.table.setAlternatingRowColors(True)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.table.setFont(QFont("Calibri", 12))
+        self.table.setSortingEnabled(False)
+        self.table.setAlternatingRowColors(True)
 
         # Ajuste de largura das colunas
         header = self.table.horizontalHeader()

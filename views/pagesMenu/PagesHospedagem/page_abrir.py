@@ -6,7 +6,6 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
 # Modelos e operações do sistema
-from models.models import Hospedagem, Hospede, Quarto, db
 from operations.Ui.hospedagem_operations import create_hospedagem, buscar_hospedagem_por_quarto
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
 from operations.Ui.quartos_operations import listar_quartos_disponiveis
@@ -16,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 # Estilo personalizado
-from styles.styles import style_botao_verde
+from styles.styles import style_botao_verde, tabelas
 
 # CONSTANTES
 DESCONTO = 0.1  # 10% de desconto
@@ -72,10 +71,8 @@ class Ui_page_abrir(QWidget):
         def update_cpf_label():
             cpf = self.lineEdit_cpf.text()
             if len(cpf) == 14:
-                Session = sessionmaker(bind=db.engine)
-                with Session() as session:
-                    hospede = session.query(Hospede).filter(Hospede.cpf == cpf).first()
-                    self.label_cpf.setText(f"CPF: {hospede.nome}" if hospede else "CPF: Nenhum encontrado")
+                hospede = procura_hospede_por_cpf(cpf)
+                self.label_cpf.setText(f"CPF: {hospede.nome}" if hospede else "CPF: Nenhum encontrado")
 
         self.lineEdit_cpf.focusInEvent = cpf_focus_in_event
         self.lineEdit_cpf.textChanged.connect(update_cpf_label)
@@ -125,6 +122,7 @@ class Ui_page_abrir(QWidget):
         # Tabela de quartos disponíveis
         self.tableWidget_quartos = QTableWidget(0, 2, self.widget)
         self.tableWidget_quartos.setHorizontalHeaderLabels(["Nº", "Tipo"])
+        self.tableWidget_quartos.setStyleSheet(tabelas())
         self.tableWidget_quartos.setSelectionBehavior(QTableWidget.SelectRows)
         self.tableWidget_quartos.setSelectionMode(QTableWidget.SingleSelection)
         self.tableWidget_quartos.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -132,6 +130,7 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_quartos.setMinimumHeight(200)
         self.tableWidget_quartos.setColumnWidth(0, 50)
         self.tableWidget_quartos.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget_quartos.verticalHeader().setVisible(False)
         self.verticalLayout_abrir.addWidget(self.tableWidget_quartos)
 
         self.update_quartos()
@@ -185,18 +184,6 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_nome.setFont(font)
         self.lineEdit_nome.textChanged.connect(self.search_hospedes)
         self.verticalLayout_buscar.addWidget(self.lineEdit_nome)
-
-        # Botão de buscar
-        btn_layout = QHBoxLayout()
-        btn_layout.addStretch()
-        self.pushButton_procurar = QPushButton("Procurar", self.widget)
-        self.pushButton_procurar.setFont(font)
-        self.pushButton_procurar.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushButton_procurar.setMinimumWidth(150)
-        self.pushButton_procurar.clicked.connect(self.search_hospedes)
-        btn_layout.addWidget(self.pushButton_procurar)
-        btn_layout.addStretch()
-        self.verticalLayout_buscar.addLayout(btn_layout)
 
         # Tabela de hóspedes encontrados
         self.tableWidget_hospedes = QTableWidget(0, 3, self.widget)
