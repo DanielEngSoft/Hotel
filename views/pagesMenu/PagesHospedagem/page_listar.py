@@ -4,13 +4,10 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, QDate
 from PySide6.QtGui import QFont, QColor
-from models.models import Hospedagem, Hospede, db
-from sqlalchemy.orm import sessionmaker, joinedload
 from datetime import datetime, timedelta
 from views.PagesMenu.PagesHospedagem.page_ficha import JanelaHospedagem
+from operations.Ui.hospedagem_operations import hospedagens_ativas
 
-# Sessão para comunicação com o banco de dados
-Session = sessionmaker(bind=db)
 
 # Página de listagem de hospedagens
 class Ui_page_listar(QWidget):
@@ -84,36 +81,34 @@ class Ui_page_listar(QWidget):
         self.load_data(page=self.current_page)
 
     def load_data(self, page=0):
-        """Carrega os dados da hospedagem do banco para a tabela"""
-        with Session() as session:
-            query = session.query(Hospedagem).options(
-                joinedload(Hospedagem.hospede),
-                joinedload(Hospedagem.quarto)
-            ).join(Hospede)
+        """Carrega os dados da hospedagem usando hospedagens_ativas"""
+        try:
+            # Obtém todas as hospedagens ativas
+            hospedagens = hospedagens_ativas()
 
             # Filtro de busca
             filtro = self.search_input.text().strip().lower()
             if filtro:
-                query = query.filter(
-                    (Hospede.nome.ilike(f'%{filtro}%')) |
-                    (Hospede.empresa.ilike(f'%{filtro}%'))
-                )
+                hospedagens = [
+                    h for h in hospedagens
+                    if filtro in h.hospede.nome.lower() or filtro in h.hospede.empresa.lower()
+                ]
 
             # Ordenação dinâmica
             column_map = {
-                0: Hospedagem.id_quarto,
-                1: Hospede.nome,
-                2: Hospede.empresa,
-                3: Hospedagem.qtd_hospedes,
-                4: Hospedagem.data_entrada,
-                5: Hospedagem.data_saida
+                0: lambda h: h.id_quarto,
+                1: lambda h: h.hospede.nome.lower(),
+                2: lambda h: h.hospede.empresa.lower(),
+                3: lambda h: h.qtd_hospedes,
+                4: lambda h: h.data_entrada,
+                5: lambda h: h.data_saida
             }
             if self.current_sort_column in column_map:
-                coluna = column_map[self.current_sort_column]
-                query = query.order_by(coluna.asc() if self.sort_order == 'asc' else coluna.desc())
+                key_func = column_map[self.current_sort_column]
+                reverse = self.sort_order == 'desc'
+                hospedagens.sort(key=key_func, reverse=reverse)
 
-            # Executa a consulta e armazena os resultados visíveis
-            hospedagens = query.all()
+            # Armazena os resultados visíveis
             self.hospedagens_visiveis = hospedagens
             self.table.setRowCount(len(hospedagens))
 
@@ -143,13 +138,15 @@ class Ui_page_listar(QWidget):
                         item = self.table.item(row, col)
                         if item:
                             item.setBackground(cor)  # Vermelho claro
+        except Exception as e:
+            print("Erro ao carregar dados:", e)
 
     def abrir_janela_hospedagem(self, hospedagem):
         """Abre a janela de ficha da hospedagem"""
         try:
             janela = JanelaHospedagem(hospedagem)
             self.janelas_abertas.append(janela)
-            janela.setWindowModality(Qt.ApplicationModal)
+            janela.setWindowModality(Qt.ApplicationModal) # Para bloquear a janela principal
             janela.raise_()
             janela.activateWindow()
             janela.show()

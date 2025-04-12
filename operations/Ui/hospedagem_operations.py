@@ -77,3 +77,21 @@ def buscar_hospedagem_por_quarto(id_quarto):
         else:
             print(f"Hospedagem não encontrada para o quarto {id_quarto}.")
             return None
+
+def hospedagem_com_dados_do_hospede():
+    with Session() as session:
+        query = session.query(Hospedagem).options(
+                    joinedload(Hospedagem.hospede),
+                    joinedload(Hospedagem.quarto)
+                ).join(Hospede)
+        return query
+    
+def hospedagens_ativas():
+    with Session() as session:
+        try:
+            # Eager loading dos relacionamentos hospede e quarto
+            hospedagens = session.query(Hospedagem).options(joinedload(Hospedagem.hospede), joinedload(Hospedagem.quarto)).filter(Hospedagem.aberta == True).all()
+            return hospedagens
+        except Exception as e:
+            print(f"Erro ao buscar hospedagens ativas: {e}")
+            return []
