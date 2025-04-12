@@ -8,6 +8,22 @@ Base = declarative_base()
 Session = sessionmaker(bind=db)
 
 
+class Hospedagem(Base):
+    __tablename__ = 'hospedagens'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_hospede = Column(String, ForeignKey('hospedes.cpf')) 
+    id_quarto = Column(Integer, ForeignKey('quartos.numero'))
+    data_entrada = Column(DateTime, default=datetime.datetime.now)
+    data_saida = Column(DateTime)
+    qtd_hospedes = Column(Integer)
+    valor_diaria = Column(Float)
+    aberta = Column(Boolean, default=True)  # True se a hospedagem estiver aberta, False se já tiver sido encerrada
+
+    hospede = relationship("Hospede", back_populates="hospedagens")
+    quarto = relationship("Quarto", back_populates="hospedagens")
+    despesas = relationship("Despesa", back_populates="hospedagem", cascade="all, delete-orphan")
+
+ 
 class Hospede(Base):
     __tablename__ = 'hospedes'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -20,14 +36,6 @@ class Hospede(Base):
     hospedagens = relationship("Hospedagem", back_populates="hospede")
 
 
-class Funcionario(Base):
-    __tablename__ = 'funcionarios'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    nome = Column(String)
-    cpf = Column(String, unique=True)
-    telefone = Column(String)
-
-
 class Quarto(Base):
     __tablename__ = 'quartos'
     numero = Column(Integer, primary_key=True)
@@ -35,7 +43,6 @@ class Quarto(Base):
     disponivel = Column(Boolean)
 
     hospedagens = relationship("Hospedagem", back_populates="quarto")
-    relatorios = relationship("Relatorio", back_populates="quarto")
 
 
 class Usuario(Base):
@@ -44,36 +51,6 @@ class Usuario(Base):
     usuario = Column(String, unique=True)
     senha = Column(String)
     tipo = Column(String)
-
-
-class Hospedagem(Base):
-    __tablename__ = 'hospedagens'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    id_hospede = Column(String, ForeignKey('hospedes.cpf')) 
-    id_quarto = Column(Integer, ForeignKey('quartos.numero'))
-    data_entrada = Column(DateTime, default=datetime.datetime.now)
-    data_saida = Column(DateTime)
-    qtd_hospedes = Column(Integer)
-    valor_diaria = Column(Float)
-
-    hospede = relationship("Hospede", back_populates="hospedagens")
-    quarto = relationship("Quarto", back_populates="hospedagens")
-    despesas = relationship("Despesa", back_populates="hospedagem", cascade="all, delete-orphan")
-
-
-
-
-class Relatorio(Base):
-    __tablename__ = 'relatorios'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    id_hospede = Column(String, ForeignKey('hospedes.cpf'))
-    id_quarto = Column(Integer, ForeignKey('quartos.numero'))
-    data_entrada = Column(DateTime, default=datetime.datetime.now)
-    data_saida = Column(DateTime)
-    qtd_hospedes = Column(Integer)
-    valor_diaria = Column(Float)
-
-    quarto = relationship("Quarto", back_populates="relatorios")
 
 
 class Despesa(Base):

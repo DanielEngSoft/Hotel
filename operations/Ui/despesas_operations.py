@@ -1,58 +1,49 @@
-from models.models import Hospedagem, Despesa, Produto, db  # Importa os modelos e a conexão com o banco
-from sqlalchemy.orm import sessionmaker, joinedload         # Utilitários do SQLAlchemy
+from models.models import Hospedagem, Despesa, Produto, Session # Importa os modelos e a conexão com o banco
+from sqlalchemy.orm import joinedload         # Utilitários do SQLAlchemy
 from sqlalchemy.exc import IntegrityError                   # Para tratar erros de integridade (ex: chaves duplicadas)
-from models.models import Session as DBSession              # Session já configurada para consultas gerais
 from datetime import datetime
 
-# Cria uma fábrica de sessões do banco de dados
-Session = sessionmaker(bind=db)
-
-
-
 def create_despesa(id_hospedagem, id_produto, quantidade, valor_produto):
-    session = Session()
-    try:
-        hospedagem = session.query(Hospedagem).filter_by(id=id_hospedagem).first()
-        if not hospedagem:
-            print(f"Hospedagem com ID {id_hospedagem} não encontrada.")
+    with Session() as session:
+        try:
+            hospedagem = session.query(Hospedagem).filter_by(id=id_hospedagem).first()
+            if not hospedagem:
+                print(f"Hospedagem com ID {id_hospedagem} não encontrada.")
+                return False
+
+            produto = session.query(Produto).filter_by(id=id_produto).first()
+            if not produto:
+                print(f"Produto com ID {id_produto} não encontrado.")
+                return False
+
+            valor_total = quantidade * valor_produto
+            despesa = Despesa(
+                id_hospedagem=id_hospedagem,
+                id_produto=id_produto,
+                quantidade=quantidade,
+                valor_produto=valor_produto,
+                valor=valor_total,
+                data=datetime.now()
+            )
+
+            session.add(despesa)
+            session.commit()
+            session.refresh(despesa)  # <- ESSENCIAL para garantir que o objeto está completo
+            return despesa  # <- Aqui está a mudança principal
+
+        except IntegrityError:
+            session.rollback()
+            print("Erro de integridade ao criar a despesa.")
             return False
 
-        produto = session.query(Produto).filter_by(id=id_produto).first()
-        if not produto:
-            print(f"Produto com ID {id_produto} não encontrado.")
+        except Exception as e:
+            session.rollback()
+            print(f"Erro ao criar despesa: {e}")
             return False
 
-        valor_total = quantidade * valor_produto
-        despesa = Despesa(
-            id_hospedagem=id_hospedagem,
-            id_produto=id_produto,
-            quantidade=quantidade,
-            valor_produto=valor_produto,
-            valor=valor_total,
-            data=datetime.now()
-        )
+        finally:
+            session.close()
 
-        session.add(despesa)
-        session.commit()
-        session.refresh(despesa)  # <- ESSENCIAL para garantir que o objeto está completo
-        return despesa  # <- Aqui está a mudança principal
-
-    except IntegrityError:
-        session.rollback()
-        print("Erro de integridade ao criar a despesa.")
-        return False
-
-    except Exception as e:
-        session.rollback()
-        print(f"Erro ao criar despesa: {e}")
-        return False
-
-    finally:
-        session.close()
-
-
-
-from sqlalchemy.orm import joinedload
 
 def buscar_despesas_por_id_hospedagem(id_hospedagem):
     with Session() as session:

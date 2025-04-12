@@ -18,7 +18,6 @@ def style_label_menu_lateral():
 
     QListWidget::item:hover {
         background-color: #3d566e;
-        cursor: pointer;
     }
     QListWidget::item:selected {
         background-color: #05452f;
