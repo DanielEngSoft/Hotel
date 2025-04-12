@@ -15,18 +15,13 @@ def style_label_menu_lateral():
         border-radius: 10px;
     }
 
-    QListWidget::item:selected {
-        background-color: #34495e;
-        color: #ffffff;
-    }
-
     QListWidget::item:hover {
         background-color: #3d566e;
     }
     QListWidget::item:selected {
-        background-color: #4E9A06;
+        background-color: 4E9A06;
         color: white;
-        border-radius: 5px;
+        border-radius: 0px;
         padding: 5px;
     }
     """
@@ -106,10 +101,10 @@ def style_botao_branco():
             font-weight: bold;
         }
         QPushButton:hover {
-            background-color: #27ae60;
+            background-color: #f0f0f0;
         }
         QPushButton:pressed {
-            background-color: #219653;
+            background-color: #e0e0e0;
         }
     """
 
@@ -130,3 +125,23 @@ def style_groupbox():
             padding: 0 5px;
         }
     """
+
+def menu_superior_pages():
+    return """
+            QListWidget {
+                background-color: #2c3e50;
+                border: none;
+                padding-left: 10px;
+            }
+            QListWidget::item {
+                color: #ffffff;
+                padding: 10px 20px;
+                border-bottom: 2px solid transparent;
+            }
+            QListWidget::item:hover {
+                background-color: #3d566e;
+            }
+            QListWidget::item:selected {
+                border-bottom: 2px solid #4E9A06;
+            }
+        """

@@ -1,97 +1,72 @@
-# Importações do PySide6 para criação de interfaces gráficas
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QCursor
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QFrame, QHBoxLayout, QPushButton,
-    QStackedWidget, QLabel
+    QWidget, QVBoxLayout, QFrame, QListWidget,
+    QStackedWidget, QSizePolicy, QLabel
 )
 
-# Importa a interface da tela de cadastro de hóspedes
 from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar
 from views.PagesMenu.PagesHospedes.page_editar import Ui_page_editar
+from styles.styles import menu_superior_pages
 
 
 class PageHospedes(QWidget):
     def __init__(self, parent=None):
-        super().__init__(parent)  # Inicializa a superclasse QWidget
-        self.setupUi()  # Chama o método para configurar a interface
+        super().__init__(parent)
+        self.setupUi()
 
     def setupUi(self):
-        self.setObjectName("PageHospedes")  # Define o nome do objeto (opcional, útil para QSS ou debug)
+        self.setObjectName("PageHospedes")
 
-        # Cria o layout principal da página (vertical)
+        # ========== LAYOUT PRINCIPAL ==========
         self.layout_principal = QVBoxLayout(self)
         self.layout_principal.setContentsMargins(0, 0, 0, 0)
         self.layout_principal.setSpacing(0)
 
-        # ========== MENU SUPERIOR ==========
-        # Cria um QFrame para conter os botões do menu superior
+        # ========== MENU SUPERIOR (QListWidget) ==========
         self.menu_superior = QFrame(self)
-        self.menu_superior.setMinimumSize(QSize(600, 0))  # Tamanho mínimo da largura
-        self.menu_superior.setMaximumSize(QSize(1800, 1200))  # Tamanho máximo
-        self.menu_superior.setFrameShape(QFrame.Shape.StyledPanel)  # Define uma borda estilizada
+        self.menu_superior.setMinimumSize(QSize(600, 45))
+        self.menu_superior.setMaximumSize(QSize(1800, 45))
+        self.menu_superior.setFrameShape(QFrame.Shape.StyledPanel)
 
-        # Layout horizontal para organizar os botões dentro do menu superior
-        self.horizontalLayout = QHBoxLayout(self.menu_superior)
-        self.horizontalLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Centraliza os botões
+        self.lista_menu = QListWidget(self.menu_superior)
+        self.lista_menu.setFlow(QListWidget.LeftToRight)
+        self.lista_menu.setWrapping(False)
+        self.lista_menu.setSpacing(10)
+        self.lista_menu.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.lista_menu.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.lista_menu.setFixedHeight(45)
+        self.lista_menu.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.lista_menu.setStyleSheet(menu_superior_pages())
+        self.lista_menu.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
-        # Cria o botão "Cadastrar", aplica estilo e adiciona ao layout
-        self.button_cadastrar = QPushButton("Cadastrar", self.menu_superior)
-        self._estilizar_botao(self.button_cadastrar)
-        self.horizontalLayout.addWidget(self.button_cadastrar)
+        # Adiciona os itens do menu
+        self.lista_menu.addItem("Cadastrar")
+        self.lista_menu.addItem("Editar")
+        self.lista_menu.addItem("Alterar")
 
-        # Cria o botão "Editar", aplica estilo e adiciona ao layout
-        self.button_editar = QPushButton("Editar", self.menu_superior)
-        self._estilizar_botao(self.button_editar)
-        self.horizontalLayout.addWidget(self.button_editar)
-
-        # Cria o botão "Alterar", aplica estilo e adiciona ao layout
-        self.button_alterar = QPushButton("Alterar", self.menu_superior)
-        self._estilizar_botao(self.button_alterar)
-        self.horizontalLayout.addWidget(self.button_alterar)
-
-        # Adiciona o menu superior ao layout principal da tela
+        # Adiciona o menu ao layout
         self.layout_principal.addWidget(self.menu_superior)
+        menu_layout = QVBoxLayout(self.menu_superior)
+        menu_layout.setContentsMargins(0, 0, 0, 0)
+        menu_layout.addWidget(self.lista_menu)
 
         # ========== ÁREA DAS PÁGINAS ==========
-        # Cria o QStackedWidget que vai conter as páginas (estilo "aba invisível")
         self.pages = QStackedWidget(self)
 
-        # Cria a página de cadastro (importada de outro módulo)
         self.page_cadastrar = Ui_page_cadastrar()
-        self.pages.addWidget(self.page_cadastrar)  # Adiciona ao QStackedWidget
+        self.pages.addWidget(self.page_cadastrar)
 
-        # Cria a página "Editar" (temporária com QLabel)
         self.page_editar = Ui_page_editar()
-        self.page_editar.setLayout(QVBoxLayout())
         self.pages.addWidget(self.page_editar)
 
-        # Cria a página "Alterar" (temporária com QLabel)
         self.page_alterar = QWidget()
-        self.page_alterar.setLayout(QVBoxLayout())
-        self.page_alterar.layout().addWidget(QLabel("Página Alterar"))
+        layout_alterar = QVBoxLayout(self.page_alterar)
+        layout_alterar.addWidget(QLabel("Página Alterar"))
         self.pages.addWidget(self.page_alterar)
 
-        # Adiciona o QStackedWidget ao layout principal
         self.layout_principal.addWidget(self.pages)
 
-        # ========== CONEXÕES DOS BOTÕES ==========
-        # Quando o botão "Cadastrar" é clicado, muda para a página de cadastro
-        self.button_cadastrar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_cadastrar))
-
-        # Quando o botão "Editar" é clicado, muda para a página de listagem
-        self.button_editar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_editar))
-
-        # Quando o botão "Alterar" é clicado, muda para a página de alteração
-        self.button_alterar.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_alterar))
-
-    # ========== MÉTODO AUXILIAR ==========
-    def _estilizar_botao(self, botao):
-        """
-        Aplica um estilo visual padrão aos botões:
-        - Define o tamanho mínimo e máximo
-        - Altera o cursor para a "mão" quando o mouse passa por cima
-        """
-        botao.setMinimumSize(QSize(100, 50))  # Tamanho mínimo do botão
-        botao.setMaximumSize(QSize(200, 70))  # Tamanho máximo do botão
-        botao.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))  # Cursor de apontar (mãozinha)
+        # ========== CONEXÃO ENTRE ITENS E PÁGINAS ==========
+        self.lista_menu.currentRowChanged.connect(self.pages.setCurrentIndex)
+        self.lista_menu.setCurrentRow(0)

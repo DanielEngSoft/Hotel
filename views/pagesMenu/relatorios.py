@@ -1,16 +1,16 @@
-# Importações do PySide6 para criação de interfaces gráficas
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QCursor
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QFrame, QHBoxLayout, QPushButton,
-    QSpacerItem, QSizePolicy, QStackedWidget
+    QWidget, QVBoxLayout, QFrame, QListWidget, QListWidgetItem,
+    QStackedWidget, QSizePolicy
 )
+from styles.styles import menu_superior_pages
 
 
 class PageRelatorios(QWidget):
     def __init__(self, parent=None):
-        super().__init__(parent)  # Inicializa o QWidget
-        self.setupUi()  # Configura a interface
+        super().__init__(parent)
+        self.setupUi()
 
     def setupUi(self):
         self.setObjectName("PageRelatorios")
@@ -20,32 +20,33 @@ class PageRelatorios(QWidget):
         self.layout_principal.setContentsMargins(0, 0, 0, 0)
         self.layout_principal.setSpacing(0)
 
-        # ========== MENU SUPERIOR ==========
+        # ========== MENU SUPERIOR (QListWidget) ==========
         self.menu_superior = QFrame(self)
-        self.menu_superior.setMinimumSize(QSize(600, 0))
-        self.menu_superior.setMaximumSize(QSize(1800, 1200))
+        self.menu_superior.setMinimumSize(QSize(600, 45))
+        self.menu_superior.setMaximumSize(QSize(1800, 45))
         self.menu_superior.setFrameShape(QFrame.Shape.StyledPanel)
 
-        self.horizontalLayout = QHBoxLayout(self.menu_superior)
-        self.horizontalLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lista_menu = QListWidget(self.menu_superior)
+        self.lista_menu.setFlow(QListWidget.LeftToRight)
+        self.lista_menu.setWrapping(False)
+        self.lista_menu.setSpacing(10)
+        self.lista_menu.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.lista_menu.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.lista_menu.setFixedHeight(45)
+        self.lista_menu.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.lista_menu.setStyleSheet(menu_superior_pages())
+        self.lista_menu.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
-        # Botão "Geral"
-        self.button_geral = QPushButton("Geral", self.menu_superior)
-        self._estilizar_botao(self.button_geral)
-        self.horizontalLayout.addWidget(self.button_geral)
+        # Adiciona os itens (substituindo os botões)
+        self.lista_menu.addItem("Geral")
+        self.lista_menu.addItem("Hospede")
+        self.lista_menu.addItem("Data")
 
-        # Botão "Hóspede"
-        self.button_hospede = QPushButton("Hospede", self.menu_superior)
-        self._estilizar_botao(self.button_hospede)
-        self.horizontalLayout.addWidget(self.button_hospede)
-
-        # Botão "Data"
-        self.button_data = QPushButton("Data", self.menu_superior)
-        self._estilizar_botao(self.button_data)
-        self.horizontalLayout.addWidget(self.button_data)
-
-        # Adiciona o menu superior ao layout principal
+        # Adiciona o menu ao layout
         self.layout_principal.addWidget(self.menu_superior)
+        menu_layout = QVBoxLayout(self.menu_superior)
+        menu_layout.setContentsMargins(0, 0, 0, 0)
+        menu_layout.addWidget(self.lista_menu)
 
         # ========== ÁREA DAS PÁGINAS ==========
         self.pages = QStackedWidget(self)
@@ -61,21 +62,8 @@ class PageRelatorios(QWidget):
 
         self.layout_principal.addWidget(self.pages)
 
-        # ========== CONEXÕES DOS BOTÕES ==========
-        self.button_geral.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_geral))
-        self.button_hospede.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_hospede))
-        self.button_data.clicked.connect(lambda: self.pages.setCurrentWidget(self.page_data))
+        # ========== CONEXÃO ENTRE ITENS E PÁGINAS ==========
+        self.lista_menu.currentRowChanged.connect(self.pages.setCurrentIndex)
 
-        # Página inicial
-        self.pages.setCurrentWidget(self.page_geral)
-
-    # ========== MÉTODO AUXILIAR ==========
-    def _estilizar_botao(self, botao):
-        """
-        Aplica estilo padrão aos botões:
-        - Define tamanho mínimo e máximo
-        - Altera o cursor para o formato de mão ao passar por cima
-        """
-        botao.setMinimumSize(QSize(100, 50))
-        botao.setMaximumSize(QSize(200, 70))
-        botao.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        # Seleciona a primeira página por padrão
+        self.lista_menu.setCurrentRow(0)

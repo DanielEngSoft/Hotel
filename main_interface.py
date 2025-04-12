@@ -51,6 +51,7 @@ class Ui_MainWindow(object):
 
         # Frame superior (barra de topo)
         self.frame_superior = QFrame(self.centralwidget)
+        self.frame_superior.setStyleSheet("background-color: #05452f;")
         self.frame_superior.setObjectName("frame_superior")
         self.frame_superior.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_superior.setFrameShadow(QFrame.Shadow.Raised)

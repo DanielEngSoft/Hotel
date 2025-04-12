@@ -18,7 +18,7 @@ from views.PagesMenu.PagesHospedagem.page_ficha import JanelaHospedagem
 
 
 class Ui_page_listar(QWidget):
-    COR_DISPONIVEL = "#2c3e50"
+    COR_DISPONIVEL = "#05452f"
     COR_OCUPADO = "#A52A2A"
 
     def __init__(self, parent=None):
