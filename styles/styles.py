@@ -6,6 +6,7 @@ def style_label_menu_lateral():
         border: none;
         padding: 10px;
         font-size: 16px;
+        outline: 0;
     }
 
     QListWidget::item {
@@ -17,15 +18,19 @@ def style_label_menu_lateral():
 
     QListWidget::item:hover {
         background-color: #3d566e;
+        cursor: pointer;
     }
     QListWidget::item:selected {
-        background-color: 4E9A06;
+        background-color: #05452f;
+        border-bottom: 2px solid #4E9A06;
         color: white;
         border-radius: 0px;
         padding: 5px;
+        outline: 0;
     }
     """
-
+# #05452f é a cor do menu superior da MainWindows, como é so esse style que a página usa não criei nenhuma função aqui
+# fica na linha 54 de main_interface.py
 
 def nome_menu_superior():
     return """
@@ -132,10 +137,11 @@ def menu_superior_pages():
                 background-color: #2c3e50;
                 border: none;
                 padding-left: 10px;
+                outline: 0;
             }
             QListWidget::item {
                 color: #ffffff;
-                padding: 10px 20px;
+                padding: 0px 28px;
                 border-bottom: 2px solid transparent;
             }
             QListWidget::item:hover {
