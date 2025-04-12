@@ -11,7 +11,6 @@ from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_h
 from operations.Ui.quartos_operations import listar_quartos_disponiveis
 from operations.Ui.despesas_operations import create_despesa
 from operations.Ui.produtos_operations import buscar_produto_por_id
-from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 # Estilo personalizado

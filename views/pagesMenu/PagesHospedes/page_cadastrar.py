@@ -4,10 +4,8 @@ from PySide6.QtWidgets import (
     QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox
 )
-from sqlalchemy.orm import sessionmaker
-from models.models import Hospede, db
 
-from operations.Ui.hospedes_operations import varifica_cpf_existe, cadastra_hospede
+from operations.Ui.hospedes_operations import varifica_cpf_existe, cadastra_hospede, procura_hospede_por_cpf
 from styles.styles import style_botao_verde, style_groupbox
 from utils.validadores_ui import valida_cpf, formata_nome, valida_telefone
 
@@ -56,9 +54,7 @@ class Ui_page_cadastrar(QWidget):
         def update_cpf_label():
             cpf = self.lineEdit_cpf.text()
             if len(cpf) == 14:
-                Session = sessionmaker(bind=db.engine)
-                with Session() as session:
-                    hospede = session.query(Hospede).filter(Hospede.cpf == cpf).first()
+                hospede = procura_hospede_por_cpf(cpf)
         # CPF
         self.lineEdit_cpf = QLineEdit()
         self.lineEdit_cpf.setInputMask("000.000.000-00;_")

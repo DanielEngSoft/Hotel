@@ -135,7 +135,7 @@ class Ui_MainWindow(object):
         self.pages.addWidget(PageHospedes())     # Index 3
         self.pages.addWidget(PageRelatorios())   # Index 4
 
-        self.pages.setCurrentIndex(0)  # Define página inicial como "Hospedagem"
+        self.pages.setCurrentWidget(self.pages.findChild(QWidget, "PageHospedagem"))  # Define página inicial como "Hospedagem"
 
         # Adiciona o widget de páginas ao layout horizontal
         self.horizontalLayout.addWidget(self.pages)

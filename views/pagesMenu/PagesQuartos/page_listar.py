@@ -14,7 +14,7 @@ from operations.Ui.quartos_operations import listar_quartos
 from operations.Ui.hospedagem_operations import listar_hospedagens
 
 # Importação da janela de ficha de hospedagem
-from views.PagesMenu.PagesHospedagem.page_ficha import JanelaHospedagem
+from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
 
 
 class Ui_page_listar(QWidget):
@@ -31,7 +31,7 @@ class Ui_page_listar(QWidget):
         self.layout_principal.setSpacing(15)
 
         # ========== TÍTULO DA PÁGINA ==========
-        label_titulo = QLabel("Quartos")
+        label_titulo = QLabel("🟩 Livres | 🟥 Ocupados")
         label_titulo.setAlignment(Qt.AlignCenter)
         label_titulo.setFont(QFont("Segoe UI", 14, QFont.Bold))
         self.layout_principal.addWidget(label_titulo)
@@ -94,7 +94,7 @@ class Ui_page_listar(QWidget):
                 return
 
         try:
-            janela = JanelaHospedagem(hospedagem)
+            janela = Ui_page_ficha(hospedagem)
             self.janelas_abertas.append(janela)
             janela.setAttribute(Qt.WA_DeleteOnClose)
             janela.destroyed.connect(lambda: self.janelas_abertas.remove(janela))

@@ -43,7 +43,6 @@ class PageHospedagem(QWidget):
         # Adiciona os itens do menu
         self.lista_menu.addItem("Listar")
         self.lista_menu.addItem("Abrir")
-        self.lista_menu.addItem("Fechar")
 
         # Adiciona o menu ao layout
         self.layout_principal.addWidget(self.menu_superior)
@@ -59,11 +58,6 @@ class PageHospedagem(QWidget):
 
         self.page_abrir = Ui_page_abrir()
         self.pages.addWidget(self.page_abrir)
-
-        self.page_fechar = QWidget()
-        layout_fechar = QVBoxLayout(self.page_fechar)
-        layout_fechar.addWidget(QLabel("Página Fechar"))
-        self.pages.addWidget(self.page_fechar)
 
         self.layout_principal.addWidget(self.pages)
 

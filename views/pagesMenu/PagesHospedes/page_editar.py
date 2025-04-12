@@ -5,8 +5,6 @@ from PySide6.QtWidgets import (
     QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox,
     QTableWidget, QTableWidgetItem, QHeaderView
 )
-from sqlalchemy.orm import sessionmaker
-from models.models import Hospede, db
 from operations.Ui.hospedes_operations import procura_hospede_completo, procura_hospedes_por_nome, atualiza_hospede
 from styles.styles import style_botao_verde, style_groupbox
 from utils.validadores_ui import formata_nome, valida_telefone
