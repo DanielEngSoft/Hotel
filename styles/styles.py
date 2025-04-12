@@ -155,6 +155,7 @@ def tabelas():
     return """
         QTableWidget{
             outline: 0;
+            background-color: #2c3e50;
         }
         QTableWidget::item{
             background-color: #05452f;

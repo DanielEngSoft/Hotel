@@ -71,7 +71,7 @@ def listar_hospedagens():
 def buscar_hospedagem_por_quarto(id_quarto):
     with Session() as session:
         # Busca a hospedagem com base no ID do quarto
-        hospedagem = session.query(Hospedagem).filter_by(id_quarto=id_quarto).first()
+        hospedagem = session.query(Hospedagem).filter(Hospedagem.id_quarto == id_quarto, Hospedagem.aberta == True).first()
         if hospedagem:
             return hospedagem
         else:

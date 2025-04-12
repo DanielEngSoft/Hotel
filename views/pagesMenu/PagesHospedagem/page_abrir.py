@@ -187,12 +187,14 @@ class Ui_page_abrir(QWidget):
         # Tabela de hóspedes encontrados
         self.tableWidget_hospedes = QTableWidget(0, 3, self.widget)
         self.tableWidget_hospedes.setHorizontalHeaderLabels(["Nome", "Empresa", "CPF"])
+        self.tableWidget_hospedes.setStyleSheet(tabelas())
         self.tableWidget_hospedes.setSelectionBehavior(QTableWidget.SelectRows)
         self.tableWidget_hospedes.setSelectionMode(QTableWidget.SingleSelection)
         self.tableWidget_hospedes.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tableWidget_hospedes.setAlternatingRowColors(True)
         self.tableWidget_hospedes.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableWidget_hospedes.setVisible(False)
+        self.tableWidget_hospedes.verticalHeader().setVisible(False)
         self.verticalLayout_buscar.addWidget(self.tableWidget_hospedes)
 
         self.tableWidget_hospedes.cellClicked.connect(self.pegar_cpf)
@@ -297,6 +299,7 @@ class Ui_page_abrir(QWidget):
                     self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
                     self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
                     self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
+        self._ajustar_altura_tabela()
 
     # Preenche o campo CPF ao clicar em um hóspede da lista
     def pegar_cpf(self, row):
@@ -309,3 +312,19 @@ class Ui_page_abrir(QWidget):
         precos = {1: 100, 2: 150, 3: 200, 4: 250, 5: 300}
         preco = precos.get(valor, 0)
         self.label_preco.setText(f"R$ {preco}")
+    
+    def _ajustar_altura_tabela(self):
+        row_count = self.tableWidget_hospedes.rowCount()
+        if row_count == 0:
+            self.tableWidget_hospedes.setVisible(False)
+            return
+        row_height = self.tableWidget_hospedes.verticalHeader().defaultSectionSize()
+        header_height = self.tableWidget_hospedes.horizontalHeader().height()
+        scrollbar_height = self.tableWidget_hospedes.horizontalScrollBar().height() if self.tableWidget_hospedes.horizontalScrollBar().isVisible() else 0
+
+        # Calcula a altura desejada com base no número de linhas
+        desired_height = row_count * row_height + header_height + scrollbar_height + 2
+
+        self.tableWidget_hospedes.setMaximumHeight(desired_height)
+        self.tableWidget_hospedes.setVisible(True)
+
