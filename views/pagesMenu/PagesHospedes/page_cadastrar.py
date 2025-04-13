@@ -198,7 +198,7 @@ class Ui_page_cadastrar(QWidget):
         
         try:
             cadastra_hospede(nome, cpf, telefone, endereco, empresa)
-            QMessageBox.warning(self, "Cadastro realizado", "Cadastro realizado com sucesso!")
+            QMessageBox.information(self, "Cadastro", "Cadastro realizado com sucesso!")
 
             # Limpa os campos após o cadastro
             self.lineEdit_cpf.clear()
