@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QVBoxLayout, Q
     QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
     QWidget)
 from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
+from views.PagesMenu.PagesHospedagem.page_encerrar import Ui_page_encerrar
 
 class Ui_page_hospedagem(QWidget):
     def __init__(self, hospedagem, parent=None):
@@ -24,7 +25,7 @@ class Ui_page_hospedagem(QWidget):
         self.stacked_widget_hospedagem.setObjectName(u"stacked_widget_hospedagem")
         self.stacked_widget_hospedagem.setGeometry(QRect(10, 20, 851, 531))
 
-        # *** Página Ficha ***
+        # *** Página Ficha *** ----------------------------------------------------------------------------------------------------
         self.page_ficha_widget = QWidget()
         self.page_ficha_layout = QVBoxLayout(self.page_ficha_widget)
         self.page_ficha = Ui_page_ficha(self.hospedagem)
@@ -61,13 +62,16 @@ class Ui_page_hospedagem(QWidget):
         self.page_ficha_layout.insertWidget(0, self.widget_header)
         self.stacked_widget_hospedagem.addWidget(self.page_ficha_widget)
 
-        # *** Página Encerrar ***
+        # *** Página Encerrar *** -------------------------------------------------------------------------------------------------------
         self.page_encerrar_widget = QWidget()
         self.page_encerrar_layout = QVBoxLayout(self.page_encerrar_widget)
+        self.page_encerrar = Ui_page_encerrar(hospedagem=self.hospedagem)
+        self.page_encerrar_layout.addWidget(self.page_encerrar)
 
         # Criando o header para a página de encerramento (similar ao da página ficha)
         self.page_encerrar_header = QWidget(self.page_encerrar_widget)
         self.page_encerrar_header.setObjectName(u"page_encerrar_header")
+        self.page_encerrar_header.setMaximumHeight(40)
         
         self.horizontalLayout_page_encerrar_header = QHBoxLayout(self.page_encerrar_header)
         self.horizontalLayout_page_encerrar_header.setObjectName(u"horizontalLayout_page_encerrar_header")
@@ -96,10 +100,10 @@ class Ui_page_hospedagem(QWidget):
         self.horizontalLayout_page_encerrar_header.addWidget(self.label_encerrar_quarto_header)
 
         # Adicionando o header ao layout da página de encerramento
-        self.page_encerrar_layout.addWidget(self.page_encerrar_header)
+        self.page_encerrar_layout.insertWidget(0, self.page_encerrar_header)
 
 
-# ----------------------------------------------- CHAMAR A PAGINA DE ENCERRAR PRA INSERIR NO WIGDET CRIADO NO VERTICAL LAYOUT----------------------------------------------------------------------------------------------------
+# ------------------------------------- CHAMAR A PAGINA DE ENCERRAR PRA INSERIR NO WIGDET CRIADO NO VERTICAL LAYOUT ---------------------------
         # O widget_encerrar_container agora será adicionado abaixo do header
         self.widget_encerrar_container = QWidget(self.page_encerrar_widget)
         self.widget_encerrar_container.setObjectName(u"widget_encerrar_container")
