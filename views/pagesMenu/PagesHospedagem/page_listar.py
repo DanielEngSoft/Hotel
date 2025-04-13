@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QDate
 from PySide6.QtGui import QFont, QColor
 from datetime import datetime, timedelta
-from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
+from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
 from operations.Ui.hospedagem_operations import hospedagens_ativas
 
 from styles.styles import tabelas
@@ -146,7 +146,7 @@ class Ui_page_listar(QWidget):
     def abrir_janela_hospedagem(self, hospedagem):
         """Abre a janela de ficha da hospedagem"""
         try:
-            janela = Ui_page_ficha(hospedagem)
+            janela = Ui_page_hospedagem(hospedagem)
             self.janelas_abertas.append(janela)
             janela.setWindowModality(Qt.ApplicationModal) # Para bloquear a janela principal
             janela.raise_()

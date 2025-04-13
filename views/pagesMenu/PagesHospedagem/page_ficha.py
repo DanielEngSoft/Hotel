@@ -51,10 +51,8 @@ class LineEditMonetario(QLineEdit):
 class Ui_page_ficha(QWidget):
     def __init__(self, hospedagem, parent=None):
         super().__init__(parent)
-        self.setWindowTitle(f"Hospedagem - Quarto {getattr(hospedagem.quarto, 'numero', 'Desconhecido')}")
         self.hospedagem = hospedagem
-        self.setGeometry(100, 100, 800, 600)
-        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+
 
         # Fontes utilizadas
         font_title = QFont()
@@ -68,25 +66,6 @@ class Ui_page_ficha(QWidget):
         group_box = QGroupBox("Ficha da Hospedagem")
         group_box.setFont(font_content)
         group_layout = QVBoxLayout(group_box)
-
-        # Cabeçalho com nome do hóspede e número do quarto
-        header_layout = QHBoxLayout()
-        self.label_nome = QLabel(hospedagem.hospede.nome)
-        self.label_nome.setFont(font_title)
-        header_layout.addWidget(self.label_nome)
-
-        header_layout.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-
-        self.label_quarto = QLabel(f"Quarto: {hospedagem.quarto.numero}")
-        self.label_quarto.setFont(font_title)
-        header_layout.addWidget(self.label_quarto)
-        group_layout.addLayout(header_layout)
-
-        # Linha separadora
-        line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-        group_layout.addWidget(line)
 
         # Layout com campos para adicionar nova despesa
         input_layout = QHBoxLayout()
