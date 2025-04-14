@@ -1,6 +1,8 @@
-from models.models import Hospedagem, Quarto, Hospede, Session  # Importa os modelos e a conexão com o banco
+from models.models import Hospedagem, Quarto, Hospede, Despesa, Session  # Importa os modelos e a conexão com o banco
 from sqlalchemy.orm import joinedload                           # Utilitários do SQLAlchemy
 from sqlalchemy.exc import IntegrityError                       # Para tratar erros de integridade (ex: chaves duplicadas)
+
+from datetime import time, datetime
 
 # Função que calcula o valor da diária com base na quantidade de pessoas
 def diaria(pessoas):
@@ -8,7 +10,7 @@ def diaria(pessoas):
     return valores.get(pessoas, pessoas * 60)  # Para mais de 4, cobra R$60 por pessoa
 
 # Função para criar uma nova hospedagem
-def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes):
+def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes, valor_diaria):
     # Inicia uma nova sessão com o banco de dados
     with Session() as session:
         try:
@@ -32,7 +34,7 @@ def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes):
                     id_quarto=id_quarto,
                     data_saida=data_saida,
                     qtd_hospedes=qtd_hospedes,
-                    valor_diaria=diaria(qtd_hospedes)
+                    valor_diaria=valor_diaria
                 )
 
                 # Adiciona a nova hospedagem na sessão
@@ -113,3 +115,42 @@ def encerrar_hospedagem(id_hospedagem):
         except Exception as e:
                 print(f"Erro ao encerrar hospedagem: {e}")
                 return False
+        
+def atualiza_diarias():
+    now = datetime.now()
+    with Session() as session:
+        try:
+            # Busca todas as hospedagens ativas e ja carrega os dados do hospede e quarto
+            hospedagens = session.query(Hospedagem).options(
+                joinedload(Hospedagem.hospede),
+                joinedload(Hospedagem.quarto)
+            ).filter(Hospedagem.aberta.is_(True)).all()
+
+            for hospedagem in hospedagens:
+                # Calcula a diferença de dias entre a data de entrada e a data atual
+                dias_hospedados = (now.date() - hospedagem.data_entrada.date()).days
+
+                # Verifica se o hóspede já foi hospedado por mais de um dia
+                if dias_hospedados > 0:
+                    # despesa recebe todas as despesas do hospede
+                    despesas = session.query(Despesa).filter_by(
+                        id_hospedagem=hospedagem.id
+                    ).all()
+
+                    # Percorre as despesas do hóspede
+                    for despesa in despesas:
+                        # Verifica se o produto é uma diária
+                        if despesa.produto and 'DIARIA' in despesa.produto.descricao.upper():
+                            # Se a quantidade de diárias é diferente do número de dias hospedados, atualiza a quantidade e o valor
+                            if despesa.quantidade != dias_hospedados:
+                                despesa.quantidade = dias_hospedados
+                                despesa.valor = dias_hospedados * hospedagem.valor_diaria
+                                # session.commit() # CASO SEJA NECESSARIO FAZER COMMIT POR HOSPEDAGEM ABERTA
+
+            # Salva as alterações no banco de dados de todas as hospedagens de uma vez. ### ANALIZAR SE É MELHOR ASSIM OU FAZENDO COMIT POR HOSPEDAGEM
+            session.commit()
+
+        except Exception as e:
+            print(f"Erro ao atualizar diárias: {e}")
+            return False
+        

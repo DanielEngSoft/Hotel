@@ -248,25 +248,28 @@ class Ui_page_abrir(QWidget):
             self.label_feedback.setText("Hóspede não encontrado.")
             self.label_feedback.setStyleSheet("color: red;")
             return
+            
+        produto = buscar_produto_por_id(qtd_hospedes)
+        valor_diaria = produto.valor
+
+        # Adicionar condições em caso do checkBox estiver marcado
+        if self.checkBox_desconto.isChecked():
+            valor_diaria = produto.valor * (1 - DESCONTO)
         
         # Cria a hospedagem no banco de dados
-        create_hospedagem(cpf, quarto_num, data_saida, qtd_hospedes)
+        create_hospedagem(cpf, quarto_num, data_saida, qtd_hospedes, valor_diaria=valor_diaria) # vALOR DA DIÁRIA = VALOR DO PRODUTO
         self.label_feedback.setText(f"Hospedagem criada para {hospede.nome}")
         self.label_feedback.setStyleSheet("color: green;")
 
         hospedagem = buscar_hospedagem_por_quarto(quarto_num)
-        produto = buscar_produto_por_id(qtd_hospedes)
-        valor_diária = produto.valor
 
-        # Adicionar condições em caso do checkBox estiver marcado
-        if self.checkBox_desconto.isChecked():
-            valor_diária = produto.valor * (1 - DESCONTO)
-        # Adicionando a despesa de Diária no hospede
+        # Adicionando a despesa de Diária no hospede, de acordo com a quantidade de hóspedes. 
+        # Considerando que os produtos das diárias foram criados de acordo com o arquvo de OBSERVAÇÕES.txt
         create_despesa(
             id_hospedagem=hospedagem.id,
             id_produto=qtd_hospedes,  # Despesas de diárias tem o id do produto igual à quantidade de hóspedes
             quantidade=1,  # Quantidade de diárias
-            valor_produto=valor_diária,  # Valor da diária
+            valor_produto=valor_diaria,  # Valor da diária
         )
         # Limpa os campos após sucesso
         self.lineEdit_cpf.setText("..-")
@@ -327,4 +330,3 @@ class Ui_page_abrir(QWidget):
 
         self.tableWidget_hospedes.setMaximumHeight(desired_height)
         self.tableWidget_hospedes.setVisible(True)
-

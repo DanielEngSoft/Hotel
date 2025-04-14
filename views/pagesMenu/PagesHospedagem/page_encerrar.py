@@ -47,7 +47,6 @@ class Ui_page_encerrar(QWidget):
         super().__init__(parent)
         self.hospedagem = hospedagem
         self.setObjectName("page_encerrar")
-        self.page_hospedagem_instance = None # Adicione esta linha para armazenar a instância de Ui_page_hospedagem
 
         # Fonte padrão
         font = QFont()

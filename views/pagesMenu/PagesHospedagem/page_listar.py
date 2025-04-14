@@ -6,7 +6,8 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QColor
 from datetime import datetime, timedelta
 from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
-from operations.Ui.hospedagem_operations import hospedagens_ativas
+from operations.Ui.hospedagem_operations import hospedagens_ativas, atualiza_diarias
+
 
 from styles.styles import tabelas
 
@@ -89,6 +90,7 @@ class Ui_page_listar(QWidget):
 
     def load_data(self, page=0):
         """Carrega os dados da hospedagem usando hospedagens_ativas"""
+        atualiza_diarias()
         try:
             # Obtém todas as hospedagens ativas
             hospedagens = hospedagens_ativas()

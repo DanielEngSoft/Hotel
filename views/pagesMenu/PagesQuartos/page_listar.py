@@ -3,7 +3,7 @@ from PySide6.QtWidgets import (
     QWidget, QPushButton, QVBoxLayout, QGridLayout, QLabel,
     QSizePolicy, QScrollArea
 )
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QTimer
 from PySide6.QtGui import QFont
 
 # Importações auxiliares
@@ -25,20 +25,20 @@ class Ui_page_listar(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.janelas_abertas = []
+        self.page_listar_instance = None
 
         # ========== LAYOUT PRINCIPAL ==========
         self.layout_principal = QVBoxLayout(self)
         self.layout_principal.setContentsMargins(20, 20, 20, 20)
         self.layout_principal.setSpacing(15)
 
-        self.disponiveis = qtd_disponiveis()
-        self.ocupados = qtd_ocupados()
+        
 
         # ========== TÍTULO DA PÁGINA ==========
-        label_titulo = QLabel(f"🟩 Disponíveis[{self.disponiveis}] | 🟥 Ocupados[{self.ocupados}]")
-        label_titulo.setAlignment(Qt.AlignCenter)
-        label_titulo.setFont(QFont("Segoe UI", 14, QFont.Bold))
-        self.layout_principal.addWidget(label_titulo)
+        self.label_titulo = QLabel()
+        self.label_titulo.setAlignment(Qt.AlignCenter)
+        self.label_titulo.setFont(QFont("Segoe UI", 14, QFont.Bold))
+        self.layout_principal.addWidget(self.label_titulo)
 
         # ========== ÁREA DE SCROLL ==========
         self.scroll_area = QScrollArea()
@@ -56,11 +56,19 @@ class Ui_page_listar(QWidget):
         self.setLayout(self.layout_principal)
         self.atualizar_dados()
 
+        # Timer para atualizar automaticamente a tabela a cada 2 segundos
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.atualizar_dados)
+        self.timer.start(2000)
+
     def showEvent(self, event):
         super().showEvent(event)
         self.atualizar_dados()
 
     def atualizar_dados(self):
+        self.disponiveis = qtd_disponiveis()
+        self.ocupados = qtd_ocupados()
+        self.label_titulo.setText(f"🟩 Disponíveis[{self.disponiveis}] | 🟥 Ocupados[{self.ocupados}]")
         while self.grid.count():
             item = self.grid.takeAt(0)
             widget = item.widget()
