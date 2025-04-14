@@ -11,4 +11,5 @@
         O 4° produto precisa ser o da diária quádrupla.
         O 5° produto precisa ser o da diária quíntupla.
 
-2-
+2- alterar preço do desconto está em page_abre de PageHospedagem
+    e o preço das diárias em hospedagens_operations

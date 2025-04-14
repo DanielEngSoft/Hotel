@@ -6,8 +6,8 @@ from datetime import time, datetime
 
 # Função que calcula o valor da diária com base na quantidade de pessoas
 def diaria(pessoas):
-    valores = {1: 100, 2: 150, 3: 200, 4: 250}  # Preço fixo para até 4 pessoas
-    return valores.get(pessoas, pessoas * 60)  # Para mais de 4, cobra R$60 por pessoa
+    valores = {1: 100, 2: 150, 3: 200, 4: 250, 5: 350}  # Preço fixo para até 4 pessoas
+    return valores[pessoas]
 
 # Função para criar uma nova hospedagem
 def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes, valor_diaria):

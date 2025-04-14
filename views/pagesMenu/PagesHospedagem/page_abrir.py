@@ -6,7 +6,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
 # Modelos e operações do sistema
-from operations.Ui.hospedagem_operations import create_hospedagem, buscar_hospedagem_por_quarto
+from operations.Ui.hospedagem_operations import create_hospedagem, buscar_hospedagem_por_quarto, diaria
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
 from operations.Ui.quartos_operations import listar_quartos_disponiveis
 from operations.Ui.despesas_operations import create_despesa
@@ -98,20 +98,24 @@ class Ui_page_abrir(QWidget):
 
         self.checkBox_desconto = QCheckBox("Desconto", self.widget)
         self.checkBox_desconto.setFont(font)
+        self.checkBox_desconto.clicked.connect(self.atualizar_preco)
         qtd_layout.addWidget(self.checkBox_desconto)
 
         self.verticalLayout_abrir.addLayout(qtd_layout)
         self.spinBox_qtd_hospedes.valueChanged.connect(self.atualizar_preco)
 
         # Previsão de saída
+        self.saida_layout = QHBoxLayout()
         self.label_prev_saida = QLabel("Prev. Saída:", self.widget)
         self.label_prev_saida.setFont(font)
-        self.verticalLayout_abrir.addWidget(self.label_prev_saida)
+        self.saida_layout.addWidget(self.label_prev_saida)
 
         self.dateEdit_prev_saida = QDateEdit(QDate.currentDate(), self.widget)
         self.dateEdit_prev_saida.setMaximumWidth(150)
         self.dateEdit_prev_saida.setFont(font)
-        self.verticalLayout_abrir.addWidget(self.dateEdit_prev_saida)
+        self.saida_layout.addWidget(self.dateEdit_prev_saida)
+        self.saida_layout.addStretch()
+        self.verticalLayout_abrir.addLayout(self.saida_layout)
 
         # Quantidade de quartos disponíveis
         self.label_total_quartos = QLabel("Quartos disponíveis: 0", self.widget)
@@ -311,9 +315,10 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setFocus()
 
     # Atualiza o preço de acordo com a quantidade de hóspedes
-    def atualizar_preco(self, valor):
-        precos = {1: 100, 2: 150, 3: 200, 4: 250, 5: 300}
-        preco = precos.get(valor, 0)
+    def atualizar_preco(self, qtd_hospedes):
+        preco = diaria(qtd_hospedes)
+        if self.checkBox_desconto.isChecked():
+            preco = preco * (1 - DESCONTO)
         self.label_preco.setText(f"R$ {preco}")
     
     def _ajustar_altura_tabela(self):
