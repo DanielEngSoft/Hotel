@@ -23,7 +23,7 @@ class Hospedagem(Base):
     quarto = relationship("Quarto", back_populates="hospedagens")
     despesas = relationship("Despesa", back_populates="hospedagem", cascade="all, delete-orphan")
 
- 
+
 class Hospede(Base):
     __tablename__ = 'hospedes'
     id = Column(Integer, primary_key=True, autoincrement=True)
