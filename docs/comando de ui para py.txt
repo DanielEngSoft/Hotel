@@ -1,6 +1,6 @@
 Na pasta que criou o arquivo .ui execultar no terminal o comando:
 
-    pyside6-uic arquivo.ui -o arquivo.pyside6
+    pyside6-uic arquivo.ui -o arquivo.py
 
 
 # Quando terminar de organizar --------------------------------------------------

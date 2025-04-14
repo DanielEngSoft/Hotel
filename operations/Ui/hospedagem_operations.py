@@ -95,3 +95,20 @@ def hospedagens_ativas():
         except Exception as e:
             print(f"Erro ao buscar hospedagens ativas: {e}")
             return []
+        
+def encerrar_hospedagem(id_hospedagem):
+    with Session() as session:
+        try:
+            # Busca a hospedagem com base no ID
+            hospedagem = session.query(Hospedagem).filter_by(id=id_hospedagem).first()
+            if hospedagem:
+                # Atualiza a coluna 'aberta' para False
+                hospedagem.aberta = False
+                session.commit()
+                return True
+            else:
+                print(f"Hospedagem com ID {id_hospedagem} não encontrada.")
+                return False
+        except Exception as e:
+                print(f"Erro ao encerrar hospedagem: {e}")
+                return False

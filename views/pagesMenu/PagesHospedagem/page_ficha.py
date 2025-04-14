@@ -64,6 +64,7 @@ class Ui_page_ficha(QWidget):
 
         # Container da ficha da hospedagem
         group_box = QGroupBox("Ficha da Hospedagem")
+        group_box.setGeometry(10, 10, 600, 450)
         group_box.setFont(font_content)
         group_layout = QVBoxLayout(group_box)
 
