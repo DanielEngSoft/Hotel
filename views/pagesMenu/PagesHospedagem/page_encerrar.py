@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QDateTime
+from PySide6.QtCore import Qt, QDateTime, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QComboBox, QDateTimeEdit, QFormLayout, QGroupBox,
@@ -8,6 +8,38 @@ from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem
 from operations.Ui.hospedagem_operations import encerrar_hospedagem
 
 from styles.styles import style_botao_vermelho
+
+# Campo de entrada monetária customizado com formatação automática
+class LineEditMonetario(QLineEdit):
+    def __init__(self, total, parent=None):
+        super().__init__(parent)
+        self.setText(total)
+        self.valor_cents = 0
+        self.textEdited.connect(self.formatar_valor_monetario)
+
+    # Garante que o cursor vá pro final ao focar no campo
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        QTimer.singleShot(0, lambda: self.setCursorPosition(len(self.text())))
+
+    # Formata o texto digitado como valor monetário (R$ X,XX)
+    def formatar_valor_monetario(self, _):
+        texto = self.text()
+        apenas_numeros = ''.join(filter(str.isdigit, texto))
+        self.valor_cents = int(apenas_numeros) if apenas_numeros else 0
+
+        reais = self.valor_cents // 100
+        centavos = self.valor_cents % 100
+        texto_formatado = f"R$ {reais}.{centavos:02d}"
+
+        self.blockSignals(True)
+        self.setText(texto_formatado)
+        self.blockSignals(False)
+        self.setCursorPosition(len(texto_formatado))
+
+    # Retorna o valor atual como float (em reais)
+    def get_valor_float(self):
+        return self.valor_cents / 100.0
 
 
 class Ui_page_encerrar(QWidget):
@@ -71,7 +103,8 @@ class Ui_page_encerrar(QWidget):
         # Valor recebido
         self.label_recebido = QLabel("Valor recebido:")
         self.label_recebido.setFont(font)
-        self.lineEdit_recebido = QLineEdit()
+
+        self.lineEdit_recebido = LineEditMonetario(f'R$ {str(self.total)}0')
         self.lineEdit_recebido.setFont(font)
         self.lineEdit_recebido.setObjectName("lineEdit_recebido")
         self.formLayout.setWidget(3, QFormLayout.LabelRole, self.label_recebido)

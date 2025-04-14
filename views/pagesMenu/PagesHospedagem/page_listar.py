@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView,
     QDialog, QLabel, QPushButton, QLineEdit, QHBoxLayout
 )
-from PySide6.QtCore import Qt, QDate
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QColor
 from datetime import datetime, timedelta
 from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
@@ -23,6 +23,10 @@ class Ui_page_listar(QWidget):
         self.janelas_abertas = []
 
         self.setup_ui()
+        # Timer para atualizar automaticamente a tabela a cada 2 segundos
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.load_data)
+        self.timer.start(2000)
 
     def setup_ui(self):
         # Layout vertical principal da página
@@ -67,6 +71,7 @@ class Ui_page_listar(QWidget):
 
         # Adiciona a tabela ao layout
         layout.addWidget(self.table)
+        
 
     def showEvent(self, event):
         """Atualiza os dados da tabela ao exibir a página"""
@@ -134,12 +139,14 @@ class Ui_page_listar(QWidget):
                 self.table.setItem(row, 5, saida_item)
 
                 # Destaque para saídas hoje ou atrasadas
+                cor_ocupado = QColor('#A52A2A')  # Vermelho claro
                 if saida_data <= today:
-                    cor = QColor('#A52A2A')  # Vermelho claro
                     for col in range(6):
                         item = self.table.item(row, col)
                         if item:
-                            item.setBackground(cor)  # Vermelho claro
+                            item.setData(Qt.ItemDataRole.BackgroundRole, cor_ocupado)
+
+
         except Exception as e:
             print("Erro ao carregar dados:", e)
 

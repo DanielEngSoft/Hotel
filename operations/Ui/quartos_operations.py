@@ -31,14 +31,39 @@ def listar_quartos():
     
 def listar_quartos_disponiveis():
     with Session() as session:
-        quartos = session.query(Quarto).filter_by(disponivel=True).all()
-        return quartos
+        try:
+            quartos = session.query(Quarto).filter(Quarto.disponivel == True).all()
+            return quartos
+        except Exception as e:
+            print(f"Erro ao listar quartos disponíveis: {e}")
+            return False
+
+
+def qtd_disponiveis():
+    with Session() as session:
+        try:
+            quartos = session.query(Quarto).filter(Quarto.disponivel == True).count()
+            return quartos
+        except Exception as e:
+            print(f"Erro ao listar quartos disponíveis: {e}")
+            return False
+
+
+def qtd_ocupados():
+    with Session() as session:
+        try:
+            quartos = session.query(Quarto).filter(Quarto.disponivel == False).count()
+            return quartos
+        except Exception as e:
+            print(f"Erro ao listar quartos ocupados: {e}")
+            return False
+
 
 def listar_quartos_ocupados():
     with Session() as session:
         try:
-                quartos = session.query(Quarto).filter(Quarto.disponivel == False).all()
-                return quartos
+            quartos = session.query(Quarto).filter(Quarto.disponivel == False).all()
+            return quartos
         except Exception as e:
             print(f"Erro ao listar quartos ocupados: {e}")
             return False

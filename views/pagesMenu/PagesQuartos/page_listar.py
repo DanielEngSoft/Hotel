@@ -15,6 +15,7 @@ from operations.Ui.hospedagem_operations import hospedagens_ativas
 
 # Importação da janela de ficha de hospedagem
 from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
+from operations.Ui.quartos_operations import qtd_disponiveis, qtd_ocupados
 
 
 class Ui_page_listar(QWidget):
@@ -30,8 +31,11 @@ class Ui_page_listar(QWidget):
         self.layout_principal.setContentsMargins(20, 20, 20, 20)
         self.layout_principal.setSpacing(15)
 
+        self.disponiveis = qtd_disponiveis()
+        self.ocupados = qtd_ocupados()
+
         # ========== TÍTULO DA PÁGINA ==========
-        label_titulo = QLabel("🟩 Livres | 🟥 Ocupados")
+        label_titulo = QLabel(f"🟩 Disponíveis[{self.disponiveis}] | 🟥 Ocupados[{self.ocupados}]")
         label_titulo.setAlignment(Qt.AlignCenter)
         label_titulo.setFont(QFont("Segoe UI", 14, QFont.Bold))
         self.layout_principal.addWidget(label_titulo)
