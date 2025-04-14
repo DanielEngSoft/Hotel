@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 
 from operations.Ui.produtos_operations import buscar_produto_por_nome
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem, create_despesa
-from styles.styles import tabelas
+from styles.styles import tabelas, style_botao_verde
 
 # Constante para valor inicial monetário
 VALOR_ZERO = "R$ 0,00"
@@ -83,6 +83,7 @@ class Ui_page_ficha(QWidget):
         input_layout.addWidget(self.input_quantidade)
 
         self.btn_adicionar = QPushButton("Adicionar")
+        self.btn_adicionar.setStyleSheet(style_botao_verde())
         input_layout.addWidget(self.btn_adicionar)
 
         group_layout.addLayout(input_layout)

@@ -13,6 +13,8 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QVBoxLayout, Q
 from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
 from views.PagesMenu.PagesHospedagem.page_encerrar import Ui_page_encerrar
 
+from styles.styles import style_botao_branco, style_botao_vermelho
+
 class Ui_page_hospedagem(QWidget):
     def __init__(self, hospedagem, parent=None):
         super().__init__(parent)
@@ -31,7 +33,10 @@ class Ui_page_hospedagem(QWidget):
         self.page_ficha = Ui_page_ficha(self.hospedagem)
         self.page_ficha_layout.addWidget(self.page_ficha)
 
-        self.widget_header = QWidget(self.page_ficha) # Agora 'page_ficha' é um atributo de Ui_page_hospedagem
+        self.widget_header = QFrame(self.page_ficha) # Agora 'page_ficha' é um atributo de Ui_page_hospedagem
+        self.widget_header.setMinimumHeight(35)
+        self.widget_header.setContentsMargins(5, 5, 5, 5)
+        self.widget_header.setStyleSheet("background-color: #05452f;")
         self.widget_header.setObjectName(u"widget_header")
         self.horizontalLayout_header = QHBoxLayout(self.widget_header)
         self.horizontalLayout_header.setObjectName(u"horizontalLayout_header")
@@ -56,7 +61,7 @@ class Ui_page_hospedagem(QWidget):
 
         self.button_encerrar_hospedagem = QPushButton("Encerrar")
         self.button_encerrar_hospedagem.setObjectName(u"button_encerrar_hospedagem")
-        self.button_encerrar_hospedagem.setStyleSheet(u"background-color: rgb(170, 0, 0);")
+        self.button_encerrar_hospedagem.setStyleSheet(style_botao_vermelho())
         self.horizontalLayout_header.addWidget(self.button_encerrar_hospedagem)
 
         self.page_ficha_layout.insertWidget(0, self.widget_header)
@@ -66,20 +71,25 @@ class Ui_page_hospedagem(QWidget):
         self.page_encerrar_widget = QWidget()
         self.page_encerrar_layout = QVBoxLayout(self.page_encerrar_widget)
         self.page_encerrar = Ui_page_encerrar(hospedagem=self.hospedagem)
+        # Passe a instância de Ui_page_hospedagem para Ui_page_encerrar
+        self.page_encerrar.set_page_hospedagem_instance(self)
         self.page_encerrar_layout.addWidget(self.page_encerrar)
 
         # Criando o header para a página de encerramento (similar ao da página ficha)
-        self.page_encerrar_header = QWidget(self.page_encerrar_widget)
+        self.page_encerrar_header = QFrame(self.page_encerrar_widget)
+        self.page_encerrar_header.setContentsMargins(5, 5, 5, 5)
+        self.page_encerrar_header.setStyleSheet("background-color: #05452f;")
         self.page_encerrar_header.setObjectName(u"page_encerrar_header")
         self.page_encerrar_header.setMaximumHeight(35)
-        
+
         self.horizontalLayout_page_encerrar_header = QHBoxLayout(self.page_encerrar_header)
         self.horizontalLayout_page_encerrar_header.setObjectName(u"horizontalLayout_page_encerrar_header")
         self.horizontalLayout_page_encerrar_header.setContentsMargins(0, 0, 0, 0)
 
         self.button_voltar = QPushButton("Voltar")
+
         self.button_voltar.setObjectName(u"button_voltar")
-        self.button_voltar.setStyleSheet(u"background-color: rgb(8, 127, 38);\ncolor: rgb(0, 0, 0);")
+        self.button_voltar.setStyleSheet(style_botao_branco())
         self.horizontalLayout_page_encerrar_header.addWidget(self.button_voltar)
 
         self.horizontalSpacer_encerrar_header = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -124,3 +134,6 @@ class Ui_page_hospedagem(QWidget):
     def mostrar_pagina_ficha(self):
         self.stacked_widget_hospedagem.setCurrentIndex(0) # Índice da página da ficha
         self.resize(800, 650)
+
+    def close_page_hospedagem(self):
+        self.close()

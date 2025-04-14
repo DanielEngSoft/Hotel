@@ -11,10 +11,10 @@ from functools import partial
 
 # Importações das operações para buscar dados
 from operations.Ui.quartos_operations import listar_quartos
-from operations.Ui.hospedagem_operations import listar_hospedagens
+from operations.Ui.hospedagem_operations import hospedagens_ativas
 
 # Importação da janela de ficha de hospedagem
-from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
+from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
 
 
 class Ui_page_listar(QWidget):
@@ -64,7 +64,7 @@ class Ui_page_listar(QWidget):
                 widget.deleteLater()
 
         quartos = listar_quartos()
-        hospedagens = listar_hospedagens()
+        hospedagens = hospedagens_ativas()
         hospedagens_por_quarto = {h.id_quarto: h for h in hospedagens}
 
         for i, quarto in enumerate(quartos):
@@ -94,7 +94,7 @@ class Ui_page_listar(QWidget):
                 return
 
         try:
-            janela = Ui_page_ficha(hospedagem)
+            janela = Ui_page_hospedagem(hospedagem)
             self.janelas_abertas.append(janela)
             janela.setAttribute(Qt.WA_DeleteOnClose)
             janela.destroyed.connect(lambda: self.janelas_abertas.remove(janela))

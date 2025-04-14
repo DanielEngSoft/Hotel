@@ -104,6 +104,7 @@ def encerrar_hospedagem(id_hospedagem):
             if hospedagem:
                 # Atualiza a coluna 'aberta' para False
                 hospedagem.aberta = False
+                hospedagem.quarto.disponivel = True
                 session.commit()
                 return True
             else:

@@ -7,12 +7,15 @@ from PySide6.QtWidgets import (
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem
 from operations.Ui.hospedagem_operations import encerrar_hospedagem
 
+from styles.styles import style_botao_vermelho
+
 
 class Ui_page_encerrar(QWidget):
     def __init__(self, hospedagem, parent=None):
         super().__init__(parent)
         self.hospedagem = hospedagem
         self.setObjectName("page_encerrar")
+        self.page_hospedagem_instance = None # Adicione esta linha para armazenar a instância de Ui_page_hospedagem
 
         # Fonte padrão
         font = QFont()
@@ -33,7 +36,7 @@ class Ui_page_encerrar(QWidget):
         self.label_data.setFont(font)
 
         self.dateTimeEdit = QDateTimeEdit(QDateTime.currentDateTime())
-        
+
         self.dateTimeEdit.setFont(font)
         self.dateTimeEdit.setObjectName("dateTimeEdit")
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_data)
@@ -80,26 +83,28 @@ class Ui_page_encerrar(QWidget):
         self.button_encerrar = QPushButton("Encerrar")
         self.button_encerrar.setFont(font)
         self.button_encerrar.setObjectName("button_encerrar")
-        self.button_encerrar.setStyleSheet(
-            "background-color: rgb(170, 0, 0); color: black;"
-        )
-        self.button_encerrar.clicked.connect(self.set_button_encerrar_clicked)
+        self.button_encerrar.setStyleSheet(style_botao_vermelho())
+        self.button_encerrar.clicked.connect(self.button_encerrar_clicked)
         self.verticalLayout_groupBox.addWidget(self.button_encerrar)
-        
+
 
         # --- Layout principal ---
         self.outer_layout = QVBoxLayout(self)  # Layout vertical principal da página
-        self.inner_layout = QHBoxLayout()      # Layout horizontal para centralizar o groupBox
+        self.inner_layout = QHBoxLayout()    # Layout horizontal para centralizar o groupBox
         self.inner_layout.addStretch(1)
         self.inner_layout.addWidget(self.groupBox)
         self.inner_layout.addStretch(1)
 
         self.outer_layout.addLayout(self.inner_layout)
 
-    def set_button_encerrar_clicked(self):
-        QMessageBox.warning(self, "Atenção", "Deseja realmente encerrar a hospedagem?", QMessageBox.Yes | QMessageBox.No)
-        if QMessageBox.Yes:
+    def set_page_hospedagem_instance(self, instance):
+        """Define a instância da página de hospedagem para poder fechá-la."""
+        self.page_hospedagem_instance = instance
+
+    def button_encerrar_clicked(self):
+        reply = QMessageBox.warning(self, "Atenção", "Deseja realmente encerrar a hospedagem?", QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
             encerrar_hospedagem(self.hospedagem.id)
             QMessageBox.information(self, "Sucesso", "Hospedagem encerrada com sucesso!")
-            
-
+            if self.page_hospedagem_instance:
+                self.page_hospedagem_instance.close()

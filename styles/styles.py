@@ -105,7 +105,24 @@ def style_botao_branco():
             font-weight: bold;
         }
         QPushButton:hover {
-            background-color: #f0f0f0;
+            background-color: #A9A9A9;
+        }
+        QPushButton:pressed {
+            background-color: #e0e0e0;
+        }
+    """
+def style_botao_vermelho():
+    return """
+        QPushButton {
+            background-color: #A52A2A;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 15px;
+            font-weight: bold;
+        }
+        QPushButton:hover {
+            background-color: #800000;
         }
         QPushButton:pressed {
             background-color: #e0e0e0;
