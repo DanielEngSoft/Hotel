@@ -5,9 +5,10 @@ from sqlalchemy.exc import IntegrityError                       # Para tratar er
 from datetime import time, datetime
 
 # Função que calcula o valor da diária com base na quantidade de pessoas
-def diaria(pessoas):
-    valores = {1: 100, 2: 150, 3: 200, 4: 250, 5: 350}  # Preço fixo para até 4 pessoas
-    return valores[pessoas]
+def diaria(qtd):
+    valores = {1: 100, 2: 150, 3: 200, 4: 250, 5: 350}
+    return valores.get(qtd, 350 + max(0, qtd - 5) * 100)
+
 
 # Função para criar uma nova hospedagem
 def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes, valor_diaria):

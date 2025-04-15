@@ -6,7 +6,7 @@ from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
+    QPalette, QPixmap, QKeyEvent, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QVBoxLayout, QLabel,
     QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
     QWidget)
@@ -139,3 +139,10 @@ class Ui_page_hospedagem(QWidget):
 
     def close_page_hospedagem(self):
         self.close()
+    
+    
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_F5:
+            self.mostrar_pagina_encerrar()
+        if event.key() == Qt.Key_Escape:
+            self.mostrar_pagina_ficha()

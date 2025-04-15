@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload         # Utilitários do SQLAlchemy
 from sqlalchemy.exc import IntegrityError                   # Para tratar erros de integridade (ex: chaves duplicadas)
 from datetime import datetime
 
-def create_despesa(id_hospedagem, id_produto, quantidade, valor_produto):
+def create_despesa(id_hospedagem, id_produto, quantidade, valor_produto, data=None):
     with Session() as session:
         try:
             hospedagem = session.query(Hospedagem).filter_by(id=id_hospedagem).first()
@@ -17,13 +17,16 @@ def create_despesa(id_hospedagem, id_produto, quantidade, valor_produto):
                 return False
 
             valor_total = quantidade * valor_produto
+            if data is None:
+                data = datetime.now()
+                
             despesa = Despesa(
                 id_hospedagem=id_hospedagem,
                 id_produto=id_produto,
                 quantidade=quantidade,
                 valor_produto=valor_produto,
                 valor=valor_total,
-                data=datetime.now()
+                data=data
             )
 
             session.add(despesa)

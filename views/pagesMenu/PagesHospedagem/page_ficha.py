@@ -1,8 +1,8 @@
 # Imports necessários do PySide6 e operações personalizadas
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, QDateTime
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
-    QAbstractItemView, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+    QAbstractItemView, QDateTimeEdit, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
     QSpacerItem, QSizePolicy, QFrame, QLineEdit, QSpinBox,
     QPushButton, QTableWidget, QTableWidgetItem, QListWidget, QListWidgetItem
 )
@@ -81,6 +81,10 @@ class Ui_page_ficha(QWidget):
         self.input_quantidade = QSpinBox()
         self.input_quantidade.setMinimum(1)
         input_layout.addWidget(self.input_quantidade)
+
+        self.input_data = QDateTimeEdit(QDateTime.currentDateTime())
+        self.input_data.setMaximumWidth(150)
+        input_layout.addWidget(self.input_data)
 
         self.btn_adicionar = QPushButton("Adicionar")
         self.btn_adicionar.setStyleSheet(style_botao_verde())
@@ -204,12 +208,14 @@ class Ui_page_ficha(QWidget):
 
         quantidade = self.input_quantidade.value()
         valor_digitado = self.input_valor.get_valor_float()
+        data = self.input_data.dateTime().toPython()
 
         despesa = create_despesa(
             id_hospedagem=self.hospedagem.id,
             id_produto=produto.id,
             quantidade=quantidade,
-            valor_produto=valor_digitado
+            valor_produto=valor_digitado,
+            data=data
         )
 
         row = self.tabela.rowCount()
@@ -233,7 +239,7 @@ class Ui_page_ficha(QWidget):
     # Atualiza os totais de despesas, diárias e valor total
     def atualizar_totais(self):
         total_despesas = 0.0
-        for row in range(self.tabela.rowCount()):
+        for row in range(1, self.tabela.rowCount()):
             item_total = self.tabela.item(row, 4)
             if item_total:
                 valor = float(item_total.text().replace("R$", "").replace(",", "."))
@@ -257,7 +263,7 @@ class Ui_page_ficha(QWidget):
         for despesa in despesas:
             row = self.tabela.rowCount()
             self.tabela.insertRow(row)
-            data_formatada = despesa.data.strftime("%d/%m/%Y")
+            data_formatada = despesa.data.strftime("%d/%m/%Y %H:%M")
             descricao = despesa.produto.descricao
             self.tabela.setItem(row, 0, QTableWidgetItem(data_formatada))
             self.tabela.setItem(row, 1, QTableWidgetItem(descricao))
