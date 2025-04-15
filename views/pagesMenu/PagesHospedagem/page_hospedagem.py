@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QVBoxLayout, Q
     QWidget)
 from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
 from views.PagesMenu.PagesHospedagem.page_encerrar import Ui_page_encerrar
+from views.PagesMenu.PagesHospedagem.page_alterar import Ui_page_alterar
 
 from styles.styles import style_botao_branco, style_botao_vermelho
 
@@ -73,8 +74,11 @@ class Ui_page_hospedagem(QWidget):
         self.page_encerrar_widget = QWidget()
         self.page_encerrar_layout = QVBoxLayout(self.page_encerrar_widget)
         self.page_encerrar = Ui_page_encerrar(hospedagem=self.hospedagem)
+
         # Passe a instância de Ui_page_hospedagem para Ui_page_encerrar
-        self.page_encerrar.set_page_hospedagem_instance(self) # Recebe a instância de Ui_page_hospedagem para que quando o botão "Encerrar" seja clicado, a página de encerramento seja fechada
+        # Recebe a instância de Ui_page_hospedagem para que quando o botão "Encerrar" seja clicado, a página de encerramento seja fechada
+        self.page_encerrar.set_page_hospedagem_instance(self) 
+
         self.page_encerrar_layout.addWidget(self.page_encerrar)
 
         # Criando o cabeçalho para a página de encerramento (similar ao da página ficha)
@@ -115,6 +119,56 @@ class Ui_page_hospedagem(QWidget):
         self.page_encerrar_layout.insertWidget(0, self.page_encerrar_header)
 
         self.stacked_widget_hospedagem.addWidget(self.page_encerrar_widget)
+        # *** Página Alterar *** -------------------------------------------------------------------------------------------------------
+        self.page_alterar_widget = QWidget()
+        self.page_alterar_layout = QVBoxLayout(self.page_alterar_widget)
+        self.page_alterar = Ui_page_alterar(hospedagem=self.hospedagem)
+        # Passe a instância de Ui_page_hospedagem para Ui_page_encerrar
+        # Recebe a instância de Ui_page_hospedagem para que quando o botão "Encerrar" seja clicado, a página de encerramento seja fechada
+
+        self.page_alterar.set_page_hospedagem_instance(self) 
+        
+        self.page_alterar_layout.addWidget(self.page_alterar)
+
+        # Criando o cabeçalho para a página de encerramento (similar ao da página ficha)
+        self.page_alterar_header = QFrame(self.page_alterar_widget)
+        self.page_alterar_header.setContentsMargins(5, 5, 5, 5)
+        self.page_alterar_header.setStyleSheet("background-color: #05452f;")
+        self.page_alterar_header.setObjectName(u"page_alterar_header")
+        self.page_alterar_header.setMaximumHeight(35)
+
+        self.horizontalLayout_page_alterar_header = QHBoxLayout(self.page_alterar_header)
+        self.horizontalLayout_page_alterar_header.setObjectName(u"horizontalLayout_page_alterar_header")
+        self.horizontalLayout_page_alterar_header.setContentsMargins(0, 0, 0, 0)
+
+        self.button_voltar_2 = QPushButton("Voltar")
+
+        self.button_voltar_2.setObjectName(u"button_voltar_2")
+        self.button_voltar_2.setStyleSheet(style_botao_branco())
+        self.horizontalLayout_page_alterar_header.addWidget(self.button_voltar_2)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_page_alterar_header.addItem(self.horizontalSpacer_2)
+
+        self.label_nome_2 = QLabel(f"Hóspede: {getattr(hospedagem.hospede, 'nome', 'Nome Desconhecido')}")
+        self.label_nome_2.setObjectName(u"label_alterar_nome_header")
+        self.horizontalLayout_page_alterar_header.addWidget(self.label_nome_2)
+
+        self.separador = QFrame(self.page_alterar_header)
+        self.separador.setObjectName(u"line_alterar_separator_header")
+        self.separador.setFrameShape(QFrame.Shape.VLine)
+        self.separador.setFrameShadow(QFrame.Shadow.Sunken)
+        self.horizontalLayout_page_alterar_header.addWidget(self.separador)
+
+        self.label_encerrar_quarto_header_2 = QLabel(f"Quarto: {getattr(hospedagem.quarto, 'numero', 'Desconhecido')}")
+        self.label_encerrar_quarto_header_2.setObjectName(u"label_alterar_quarto_header")
+        self.horizontalLayout_page_alterar_header.addWidget(self.label_encerrar_quarto_header_2)
+
+        # Adicionando o header ao layout da página de encerramento
+        self.page_alterar_layout.insertWidget(0, self.page_alterar_header)
+
+        self.stacked_widget_hospedagem.addWidget(self.page_alterar_widget)
+        #--------------------------------------------------------------------------------------------------------------------------------------
 
         # Layout principal do seu widget Ui_page_hospedagem
         self.main_layout = QVBoxLayout(self)
@@ -128,14 +182,19 @@ class Ui_page_hospedagem(QWidget):
         # Conecte os sinais dos botões aos slots (funções que serão chamadas)
         self.button_encerrar_hospedagem.clicked.connect(self.mostrar_pagina_encerrar)
         self.button_voltar.clicked.connect(self.mostrar_pagina_ficha)
+        self.button_voltar_2.clicked.connect(self.mostrar_pagina_ficha)
+
+    def mostrar_pagina_ficha(self):
+        self.stacked_widget_hospedagem.setCurrentIndex(0) # Índice da página da ficha
+        self.resize(800, 650)
 
     def mostrar_pagina_encerrar(self):
         self.stacked_widget_hospedagem.setCurrentIndex(1) # Índice da página de encerramento
         self.adjustSize()
 
-    def mostrar_pagina_ficha(self):
-        self.stacked_widget_hospedagem.setCurrentIndex(0) # Índice da página da ficha
-        self.resize(800, 650)
+    def mostrar_pagina_alterar(self):
+        self.stacked_widget_hospedagem.setCurrentIndex(2) # Índice da página de alteração
+        self.adjustSize()
 
     def close_page_hospedagem(self):
         self.close()
@@ -146,3 +205,5 @@ class Ui_page_hospedagem(QWidget):
             self.mostrar_pagina_encerrar()
         if event.key() == Qt.Key_Escape:
             self.mostrar_pagina_ficha()
+        if event.key() == Qt.Key_F6:
+            self.mostrar_pagina_alterar()

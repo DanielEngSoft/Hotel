@@ -7,7 +7,7 @@ from datetime import time, datetime
 # Função que calcula o valor da diária com base na quantidade de pessoas
 def diaria(qtd):
     valores = {1: 100, 2: 150, 3: 200, 4: 250, 5: 350}
-    return valores.get(qtd, 350 + max(0, qtd - 5) * 100)
+    return valores.get(qtd, 350 + max(0, qtd - 5) * 70)
 
 
 # Função para criar uma nova hospedagem
@@ -155,3 +155,37 @@ def atualiza_diarias():
             print(f"Erro ao atualizar diárias: {e}")
             return False
         
+def alterar_hospedagem(id_hospedagem, novo_quarto, data_entrada, data_saida):
+    with Session() as session:
+        try:
+            # Busca a hospedagem com base no ID
+            hospedagem = session.query(Hospedagem).filter_by(id=id_hospedagem).first()
+            if not hospedagem:
+                print("Hospedagem não encontrada.")
+                return False
+
+            # Atualiza status do quarto atual
+            if hospedagem.quarto:
+                hospedagem.quarto.disponivel = True
+
+            # Atualiza o quarto da hospedagem
+            hospedagem.quarto = novo_quarto
+            novo_quarto.disponivel = False
+
+            # Atualiza datas da hospedagem
+            hospedagem.data_entrada = data_entrada
+            hospedagem.data_saida = data_saida
+
+            # Atualiza data das despesas com "DIÁRIA"
+            despesas = session.query(Despesa).filter_by(id_hospedagem=id_hospedagem).all()
+            for despesa in despesas:
+                if despesa.produto and 'DIARIA' in despesa.produto.descricao.upper():
+                    despesa.data = data_entrada
+
+            session.commit()
+            return True
+
+        except Exception as e:
+            session.rollback()
+            print(f"Erro ao alterar hospedagem: {e}")
+            return False

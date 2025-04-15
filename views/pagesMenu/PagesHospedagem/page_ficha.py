@@ -148,7 +148,7 @@ class Ui_page_ficha(QWidget):
         main_layout.addWidget(group_box)
 
         # Atalhos exibidos no fim da janela
-        self.label_atalhos = QLabel("[ + ] aumenta [ - ] diminui [Del] Exclui [F5] Encerra")
+        self.label_atalhos = QLabel("[ + ] Aumenta | [ - ] Diminui | [Del] Exclui | [F6] Alterar | [F5] Encerrar")
         self.label_atalhos.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(self.label_atalhos)
 

@@ -86,7 +86,7 @@ class Ui_page_abrir(QWidget):
         self.spinBox_qtd_hospedes = QSpinBox(self.widget)
         self.spinBox_qtd_hospedes.setFont(font)
         self.spinBox_qtd_hospedes.setMaximumWidth(80)
-        self.spinBox_qtd_hospedes.setRange(1, 5)
+        self.spinBox_qtd_hospedes.setRange(1, 10)
         self.spinBox_qtd_hospedes.setValue(1)
         qtd_layout.addWidget(self.spinBox_qtd_hospedes)
 
