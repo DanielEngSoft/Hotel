@@ -6,7 +6,9 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QColor
 from datetime import datetime, timedelta
 from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
-from operations.Ui.hospedagem_operations import hospedagens_ativas, atualiza_diarias
+from operations.Ui.hospedagem_operations import (hospedagens_ativas, atualiza_diarias, 
+    total_pessoas_hospedadas, saidas_amanha)
+
 
 
 from styles.styles import tabelas
@@ -72,6 +74,40 @@ class Ui_page_listar(QWidget):
 
         # Adiciona a tabela ao layout
         layout.addWidget(self.table)
+
+        self.rodape = QWidget()
+        self.rodape_layout = QHBoxLayout(self.rodape)
+        self.rodape_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.fonte_rodape = QFont("Calibri", 12)
+
+        self.total_pessoas = total_pessoas_hospedadas()
+        self.label_total_hospedes = QLabel(f"Total de pessoas: {self.total_pessoas}")
+        self.label_total_hospedes.setContentsMargins(0, 0, 30, 0)
+        self.label_total_hospedes.setFont(self.fonte_rodape)
+
+        self.label_total_hospedages = QLabel("Total de hospedagens: 0")
+        self.label_total_hospedages.setContentsMargins(0, 0, 30, 0)
+        self.label_total_hospedages.setFont(self.fonte_rodape)
+
+        self.saidas_amanha = saidas_amanha()
+        self.label_saidas_amanha = QLabel(f"Saidas amanhã: {self.saidas_amanha}")
+        self.label_saidas_amanha.setContentsMargins(0, 0, 30, 0)
+        self.label_saidas_amanha.setFont(self.fonte_rodape)
+
+        self.label_chegadas_amanha = QLabel("Chegadas amanhã: 0")
+        self.label_chegadas_amanha.setContentsMargins(0, 0, 30, 0)
+        self.label_chegadas_amanha.setFont(self.fonte_rodape)
+
+        self.rodape_layout.addWidget(self.label_total_hospedes)
+        self.rodape_layout.addWidget(self.label_total_hospedages)
+        self.rodape_layout.addStretch()
+        self.rodape_layout.addWidget(self.label_saidas_amanha)
+        self.rodape_layout.addWidget(self.label_chegadas_amanha)
+
+        layout.addWidget(self.rodape)
+
+
         
 
     def showEvent(self, event):

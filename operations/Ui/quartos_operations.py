@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, sessionmaker
-from models.models import Quarto, db
+from models.models import Quarto, Hospedagem, db
 from sqlalchemy.exc import IntegrityError
 
 Session = sessionmaker(bind=db)
@@ -71,3 +71,12 @@ def listar_quartos_ocupados():
 def verifica_quarto_existe(numero):
     with Session() as session:
         return session.query(Quarto).filter(Quarto.numero == numero).first()
+    
+def quarto_por_id_hospedagem(id_hospedagem):
+    with Session() as session:
+        try:
+            quarto = session.query(Quarto).join(Hospedagem).filter(Hospedagem.id == id_hospedagem).first()
+            return quarto
+        except Exception as e:
+            print(f"Erro ao buscar quarto por ID da hospedagem: {e}")
+            return None

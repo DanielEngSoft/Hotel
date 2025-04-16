@@ -1,8 +1,9 @@
 from models.models import Hospedagem, Quarto, Hospede, Despesa, Session  # Importa os modelos e a conexão com o banco
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload                           # Utilitários do SQLAlchemy
 from sqlalchemy.exc import IntegrityError                       # Para tratar erros de integridade (ex: chaves duplicadas)
 
-from datetime import time, datetime
+from datetime import time, datetime, timedelta
 
 # Função que calcula o valor da diária com base na quantidade de pessoas
 def diaria(qtd):
@@ -81,13 +82,13 @@ def buscar_hospedagem_por_quarto(id_quarto):
             print(f"Hospedagem não encontrada para o quarto {id_quarto}.")
             return None
 
-def hospedagem_com_dados_do_hospede():
-    with Session() as session:
-        query = session.query(Hospedagem).options(
-                    joinedload(Hospedagem.hospede),
-                    joinedload(Hospedagem.quarto)
-                ).join(Hospede)
-        return query
+# def hospedagem_com_dados_do_hospede():
+#     with Session() as session:
+#         query = session.query(Hospedagem).options(
+#                     joinedload(Hospedagem.hospede),
+#                     joinedload(Hospedagem.quarto)
+#                 ).join(Hospede)
+#         return query
     
 def hospedagens_ativas():
     with Session() as session:
@@ -164,6 +165,12 @@ def alterar_hospedagem(id_hospedagem, novo_quarto, data_entrada, data_saida):
                 print("Hospedagem não encontrada.")
                 return False
 
+            # Busca o novo quarto com base no número
+            novo_quarto = session.query(Quarto).filter_by(numero=novo_quarto).first()
+            if not novo_quarto:
+                print("Quarto não encontrado.")
+                return False
+
             # Atualiza status do quarto atual
             if hospedagem.quarto:
                 hospedagem.quarto.disponivel = True
@@ -189,3 +196,34 @@ def alterar_hospedagem(id_hospedagem, novo_quarto, data_entrada, data_saida):
             session.rollback()
             print(f"Erro ao alterar hospedagem: {e}")
             return False
+
+        
+def total_pessoas_hospedadas():
+    with Session() as session:
+        try:
+            # Soma o total de hóspedes nas hospedagens abertas
+            total_pessoas = session.query(func.sum(Hospedagem.qtd_hospedes)).filter_by(aberta=True).scalar()
+            return total_pessoas or 0  # Retorna 0 caso o resultado seja None
+        except Exception as e:
+            print(f"Erro ao calcular total de pessoas hospedadas: {e}")
+            return 0
+
+def saidas_amanha():
+    with Session() as session:
+        try:
+            # Define o início e fim do dia de amanhã
+            amanha_inicio = datetime.combine(datetime.now().date() + timedelta(days=1), datetime.min.time())
+            amanha_fim = datetime.combine(datetime.now().date() + timedelta(days=1), datetime.max.time())
+
+            # Conta as hospedagens abertas com data de saída entre o início e o fim do dia de amanhã
+            quantidade = session.query(Hospedagem).filter(
+                Hospedagem.aberta.is_(True),
+                Hospedagem.data_saida >= amanha_inicio,
+                Hospedagem.data_saida <= amanha_fim
+            ).count()
+
+            return quantidade
+        except Exception as e:
+            print(f"Erro ao contar hospedagens com saída amanhã: {e}")
+            return 0
+

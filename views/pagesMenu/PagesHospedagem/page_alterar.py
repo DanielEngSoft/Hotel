@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QMessageBox, QTableWidget, QTableWidgetItem,
 )
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem
-from operations.Ui.quartos_operations import listar_quartos_disponiveis
+from operations.Ui.quartos_operations import listar_quartos_disponiveis, quarto_por_id_hospedagem
 from operations.Ui.hospedagem_operations import alterar_hospedagem
 
 from styles.styles import style_botao_verde, tabelas
@@ -83,23 +83,53 @@ class Ui_page_alterar(QWidget):
         self.outer_layout.addLayout(self.inner_layout)
 
         self.page_alterar_instance = None
+        self.novo_quarto = None
 
     def set_page_hospedagem_instance(self, instance):
         self.page_alterar_instance = instance
 
     def button_alterar_clicked(self):
-        if not hasattr(self, 'novo_quarto'):
-            QMessageBox.warning(self, "Atenção", "Selecione um quarto para continuar.")
+        self.quarto = quarto_por_id_hospedagem(self.hospedagem.id)
+        if self.dateTimeEdit_entrada.dateTime().toPython().date() >= self.dateEdit_saida.date().toPython():
+            QMessageBox.warning(self, "Dados inválidos", "A data de entrada deve ser anterior à data de saída.")
             return
         
+        # Define o mesmo quarto se nenhum tiver sido selecionado
+        if not self.novo_quarto:
+            print("Novo quarto não definido, mantendo o quarto atual.")
+            self.novo_quarto = self.quarto.numero
+        
+        # Pega as novas datas da interface
         self.data_entrada = self.dateTimeEdit_entrada.dateTime().toPython()
         self.data_saida = self.dateEdit_saida.date().toPython()
-        reply = QMessageBox.warning(self, "Atenção", "Deseja realmente alterar a hospedagem?", QMessageBox.Yes | QMessageBox.No)
+
+        # Confirmação do usuário
+        reply = QMessageBox.warning(
+            self,
+            "Atenção",
+            "Deseja realmente alterar a hospedagem?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+
         if reply == QMessageBox.Yes:
-            alterar_hospedagem(id_hospedagem=self.hospedagem.id, novo_quarto=self.novo_quarto, data_entrada=self.data_entrada, data_saida=self.data_saida)
-            QMessageBox.information(self, "Sucesso", "Hospedagem alterada com sucesso!")
-            if self.page_alterar_instance:
-                self.page_alterar_instance.close()
+            try:
+                # Chama a função de alteração
+                alterar_hospedagem(
+                    id_hospedagem=self.hospedagem.id,
+                    novo_quarto=self.novo_quarto,
+                    data_entrada=self.data_entrada,
+                    data_saida=self.data_saida
+                )
+
+                QMessageBox.information(self, "Sucesso", "Hospedagem alterada com sucesso!")
+
+                # Fecha a janela de alteração, se existir
+                if getattr(self, "page_alterar_instance", None):
+                    self.page_alterar_instance.close()
+
+            except Exception as e:
+                QMessageBox.critical(self, "Erro", f"Erro ao alterar hospedagem:\n{str(e)}")
+
 
 
     def showEvent(self, event):
