@@ -42,8 +42,8 @@ class PageQuartos(QWidget):
 
         # Itens do menu
         self.lista_menu.addItem("Listar")
-        self.lista_menu.addItem("Ocupados")
         self.lista_menu.addItem("Cadastrar")
+        self.lista_menu.addItem("Alterar")
 
         menu_layout = QVBoxLayout(self.menu_superior)
         menu_layout.setContentsMargins(0, 0, 0, 0)
@@ -57,13 +57,13 @@ class PageQuartos(QWidget):
         self.page_listar = Ui_page_listar()
         self.pages.addWidget(self.page_listar)
 
-        self.page_ocupados = QWidget()
-        layout_ocupados = QVBoxLayout(self.page_ocupados)
-        layout_ocupados.addWidget(QPushButton("Quartos Ocupados"))  # Placeholder
-        self.pages.addWidget(self.page_ocupados)
-
         self.page_cadastrar = Ui_page_cadastrar()
         self.pages.addWidget(self.page_cadastrar)
+
+        self.page_alterar = QWidget()
+        layout_ocupados = QVBoxLayout(self.page_alterar)
+        layout_ocupados.addWidget(QPushButton("Quartos"))  # Placeholder
+        self.pages.addWidget(self.page_alterar)
 
         self.layout_principal.addWidget(self.pages)
 
