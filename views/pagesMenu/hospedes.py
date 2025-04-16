@@ -43,7 +43,7 @@ class PageHospedes(QWidget):
         # Adiciona os itens do menu
         self.lista_menu.addItem("Cadastrar")
         self.lista_menu.addItem("Editar")
-        self.lista_menu.addItem("Alterar")
+        self.lista_menu.addItem("Listar")
 
         # Adiciona o menu ao layout
         self.layout_principal.addWidget(self.menu_superior)
@@ -60,10 +60,10 @@ class PageHospedes(QWidget):
         self.page_editar = Ui_page_editar()
         self.pages.addWidget(self.page_editar)
 
-        self.page_alterar = QWidget()
-        layout_alterar = QVBoxLayout(self.page_alterar)
-        layout_alterar.addWidget(QLabel("Página Alterar"))
-        self.pages.addWidget(self.page_alterar)
+        self.page_listar = QWidget()
+        layout_listar = QVBoxLayout(self.page_listar)
+        layout_listar.addWidget(QLabel("Página Listar"))
+        self.pages.addWidget(self.page_listar)
 
         self.layout_principal.addWidget(self.pages)
 
