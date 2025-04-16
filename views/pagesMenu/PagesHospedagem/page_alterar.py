@@ -96,7 +96,6 @@ class Ui_page_alterar(QWidget):
         
         # Define o mesmo quarto se nenhum tiver sido selecionado
         if not self.novo_quarto:
-            print("Novo quarto não definido, mantendo o quarto atual.")
             self.novo_quarto = self.quarto.numero
         
         # Pega as novas datas da interface

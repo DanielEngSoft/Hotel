@@ -81,8 +81,7 @@ class Ui_page_listar(QWidget):
 
         self.fonte_rodape = QFont("Calibri", 12)
 
-        self.total_pessoas = total_pessoas_hospedadas()
-        self.label_total_hospedes = QLabel(f"Total de pessoas: {self.total_pessoas}")
+        self.label_total_hospedes = QLabel()
         self.label_total_hospedes.setContentsMargins(0, 0, 30, 0)
         self.label_total_hospedes.setFont(self.fonte_rodape)
 
@@ -90,8 +89,7 @@ class Ui_page_listar(QWidget):
         self.label_total_hospedages.setContentsMargins(0, 0, 30, 0)
         self.label_total_hospedages.setFont(self.fonte_rodape)
 
-        self.saidas_amanha = saidas_amanha()
-        self.label_saidas_amanha = QLabel(f"Saidas amanhã: {self.saidas_amanha}")
+        self.label_saidas_amanha = QLabel()
         self.label_saidas_amanha.setContentsMargins(0, 0, 30, 0)
         self.label_saidas_amanha.setFont(self.fonte_rodape)
 
@@ -106,9 +104,6 @@ class Ui_page_listar(QWidget):
         self.rodape_layout.addWidget(self.label_chegadas_amanha)
 
         layout.addWidget(self.rodape)
-
-
-        
 
     def showEvent(self, event):
         """Atualiza os dados da tabela ao exibir a página"""
@@ -127,6 +122,12 @@ class Ui_page_listar(QWidget):
     def load_data(self, page=0):
         """Carrega os dados da hospedagem usando hospedagens_ativas"""
         atualiza_diarias()
+        # Atualiza os rótulos de rodapé
+        self.total_pessoas_hospedadas = total_pessoas_hospedadas()
+        self.saidas_amanha = saidas_amanha()
+        self.label_total_hospedes.setText(f"Total de hospedes: {self.total_pessoas_hospedadas}")
+        self.label_saidas_amanha.setText(f"Saidas amanhã: {self.saidas_amanha}")
+
         try:
             # Obtém todas as hospedagens ativas
             hospedagens = hospedagens_ativas()
