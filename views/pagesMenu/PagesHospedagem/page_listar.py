@@ -11,7 +11,7 @@ from operations.Ui.hospedagem_operations import (hospedagens_ativas, atualiza_di
 
 
 
-from styles.styles import tabelas
+from styles.styles import tabela_listar
 
 
 # Página de listagem de hospedagens
@@ -55,7 +55,8 @@ class Ui_page_listar(QWidget):
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setFont(QFont("Calibri", 12))
         self.table.setSortingEnabled(False)
-        self.table.setAlternatingRowColors(True)
+        self.table.setStyleSheet(tabela_listar())
+
 
         # Ajuste de largura das colunas
         header = self.table.horizontalHeader()
@@ -70,7 +71,7 @@ class Ui_page_listar(QWidget):
         self.table.horizontalHeader().sectionClicked.connect(self.on_header_clicked)
 
         # Conecta duplo clique para abrir ficha da hospedagem
-        self.table.cellDoubleClicked.connect(self.handle_cell_double_clicked)
+        self.table.cellActivated.connect(self.handle_cell_double_clicked)
 
         # Adiciona a tabela ao layout
         layout.addWidget(self.table)
@@ -104,6 +105,7 @@ class Ui_page_listar(QWidget):
         self.rodape_layout.addWidget(self.label_chegadas_amanha)
 
         layout.addWidget(self.rodape)
+
 
     def showEvent(self, event):
         """Atualiza os dados da tabela ao exibir a página"""
@@ -179,11 +181,17 @@ class Ui_page_listar(QWidget):
 
                 # Destaque para saídas hoje ou atrasadas
                 cor_ocupado = QColor('#A52A2A')  # Vermelho claro
+                cor_livre = QColor('#05452f')  # Verde claro
                 if saida_data <= today:
                     for col in range(6):
                         item = self.table.item(row, col)
                         if item:
                             item.setData(Qt.ItemDataRole.BackgroundRole, cor_ocupado)
+                else:
+                    for col in range(6):
+                        item = self.table.item(row, col)
+                        if item:
+                            item.setData(Qt.ItemDataRole.BackgroundRole, cor_livre)
 
 
         except Exception as e:
@@ -208,3 +216,4 @@ class Ui_page_listar(QWidget):
             self.abrir_janela_hospedagem(hospedagem)
         except IndexError:
             print("Erro: índice fora do intervalo ao tentar abrir ficha de hospedagem.")
+

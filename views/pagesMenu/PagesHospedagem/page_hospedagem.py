@@ -8,13 +8,13 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QKeyEvent, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QVBoxLayout, QLabel,
-    QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
+    QPushButton, QSizePolicy, QSpacerItem, QStackedWidget, QMessageBox,
     QWidget)
 from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
 from views.PagesMenu.PagesHospedagem.page_encerrar import Ui_page_encerrar
 from views.PagesMenu.PagesHospedagem.page_alterar import Ui_page_alterar
 
-from styles.styles import style_botao_branco, style_botao_vermelho
+from styles.styles import style_botao_branco, style_botao_vermelho, style_botao_transparente
 
 class Ui_page_hospedagem(QWidget):
     def __init__(self, hospedagem, parent=None):
@@ -32,7 +32,9 @@ class Ui_page_hospedagem(QWidget):
         self.page_ficha_widget = QWidget()
         self.page_ficha_layout = QVBoxLayout(self.page_ficha_widget)
         self.page_ficha = Ui_page_ficha(self.hospedagem)
+
         self.page_ficha_layout.addWidget(self.page_ficha)
+        
 
         # Criando o cabecalho da página Ficha
         self.widget_header = QFrame(self.page_ficha) # Agora 'page_ficha' é um atributo de Ui_page_hospedagem
@@ -44,9 +46,12 @@ class Ui_page_hospedagem(QWidget):
         self.horizontalLayout_header.setObjectName(u"horizontalLayout_header")
         self.horizontalLayout_header.setContentsMargins(0, 0, 0, 0)
 
-        self.label_hospede_nome = QLabel(getattr(hospedagem.hospede, 'nome', 'Nome Desconhecido'))
-        self.label_hospede_nome.setObjectName(u"label_hospede_nome")
-        self.horizontalLayout_header.addWidget(self.label_hospede_nome)
+
+        self.button_hospede_nome = QPushButton(getattr(hospedagem.hospede, 'nome', 'Nome Desconhecido'))
+        self.button_hospede_nome.setStyleSheet(style_botao_transparente())
+        self.button_hospede_nome.setObjectName(u"button_hospede_nome")
+        self.button_hospede_nome.clicked.connect(self.mostrar_informacoes_hospede)
+        self.horizontalLayout_header.addWidget(self.button_hospede_nome)
 
         self.line_separator = QFrame(self.widget_header)
         self.line_separator.setObjectName(u"line_separator")
@@ -199,11 +204,18 @@ class Ui_page_hospedagem(QWidget):
     def close_page_hospedagem(self):
         self.close()
     
-    
+    def mostrar_informacoes_hospede(self):
+        QMessageBox.information(self, "Informações do Hóspede",
+            f"Nome: {self.hospedagem.hospede.nome}\n"
+            f"CPF: {self.hospedagem.hospede.cpf}\n"
+            f"Telefone: {self.hospedagem.hospede.telefone}\n"
+            f"Endereço: {self.hospedagem.hospede.endereco}\n"
+            f"Empresa: {self.hospedagem.hospede.empresa}")
+                                
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_F5:
             self.mostrar_pagina_encerrar()
-        if event.key() == Qt.Key_Escape:
-            self.mostrar_pagina_ficha()
         if event.key() == Qt.Key_F6:
             self.mostrar_pagina_alterar()
+        if event.key() == Qt.Key_Escape:
+            self.close_page_hospedagem()

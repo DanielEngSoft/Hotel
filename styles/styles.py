@@ -129,6 +129,24 @@ def style_botao_vermelho():
         }
     """
 
+def style_botao_transparente():
+    return """
+        QPushButton {
+            background-color: transparent;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 15px;
+            font-weight: bold;
+        }
+        QPushButton:hover {
+            background-color: #A9A9A9;
+        }
+        QPushButton:pressed {
+            background-color: #e0e0e0;
+        }
+    """
+
 def style_groupbox():
     return """
         QGroupBox {
@@ -187,8 +205,22 @@ def tabelas():
         QHeaderView::section {
             background-color: #2c3e50;
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             border: none;
             padding: 4px;
         }
     """
+
+def tabela_listar():
+    return """
+        QTableWidget{
+            outline: 0;
+        }
+        QTableWidget::item:hover {
+            background-color: #3d566e;
+            color: white;    
+        }
+        QTableWidget::item:selected {
+            background-color: #3d566e;
+        }
+        """

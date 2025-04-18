@@ -1,6 +1,6 @@
 # Imports necessários do PySide6 e operações personalizadas
 from PySide6.QtCore import Qt, QTimer, QDateTime
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QKeyEvent
 from PySide6.QtWidgets import (
     QAbstractItemView, QDateTimeEdit, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
     QSpacerItem, QSizePolicy, QFrame, QLineEdit, QSpinBox,
@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
 from operations.Ui.produtos_operations import buscar_produto_por_nome
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem, create_despesa
 from styles.styles import tabelas, style_botao_verde
+
 
 # Constante para valor inicial monetário
 VALOR_ZERO = "R$ 0,00"
@@ -287,3 +288,4 @@ class Ui_page_ficha(QWidget):
 
         self.tabela_sugestoes.setMaximumHeight(desired_height)
         self.tabela_sugestoes.setVisible(True)
+        
