@@ -70,8 +70,9 @@ class Despesa(Base):
 class Adiantamento(Base):
     __tablename__ = 'adiantamentos'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    data = Column(DateTime, default=datetime.datetime.now, nullable=False)
     id_hospedagem = Column(Integer, ForeignKey('hospedagens.id'), nullable=False)
-    descricao = Column(String, nullable=False)
+    descricao = Column(String, default='PAGAMENTO' ,nullable=False)
     valor = Column(Float, nullable=False)
     metodo_pagamento = Column(String, nullable=False)
 

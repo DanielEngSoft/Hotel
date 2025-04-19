@@ -152,5 +152,5 @@ class Ui_page_alterar(QWidget):
             numero = int(selected_items[0].text())
             for quarto in self.quartos:
                 if quarto.numero == numero:
-                    self.novo_quarto = quarto
+                    self.novo_quarto = quarto.numero
                     break

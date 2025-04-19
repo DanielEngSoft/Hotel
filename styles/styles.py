@@ -125,7 +125,7 @@ def style_botao_vermelho():
             background-color: #800000;
         }
         QPushButton:pressed {
-            background-color: #e0e0e0;
+            background-color: #4d0000;
         }
     """
 
@@ -140,10 +140,10 @@ def style_botao_transparente():
             font-weight: bold;
         }
         QPushButton:hover {
-            background-color: #A9A9A9;
+            background-color: #032c1f;
         }
         QPushButton:pressed {
-            background-color: #e0e0e0;
+            background-color: #021b14;
         }
     """
 

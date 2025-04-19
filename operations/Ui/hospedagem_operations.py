@@ -1,4 +1,4 @@
-from models.models import Hospedagem, Quarto, Hospede, Despesa, Session  # Importa os modelos e a conexão com o banco
+from models.models import Adiantamento, Hospedagem, Quarto, Hospede, Despesa, Session  # Importa os modelos e a conexão com o banco
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload                           # Utilitários do SQLAlchemy
 from sqlalchemy.exc import IntegrityError                       # Para tratar erros de integridade (ex: chaves duplicadas)
@@ -227,3 +227,28 @@ def saidas_amanha():
             print(f"Erro ao contar hospedagens com saída amanhã: {e}")
             return 0
 
+def adicionar_adiantamento(data, id_hospedagem, valor, descricao, metodo_pagamento):
+    with Session() as session:
+        try:
+            # Busca a hospedagem com base no ID
+            hospedagem = session.query(Hospedagem).filter_by(id=id_hospedagem).first()
+            if hospedagem:
+                # Cria um novo registro de adiantamento
+                adiantamento = Adiantamento(
+                    data=data,
+                    id_hospedagem=id_hospedagem,
+                    valor=valor,
+                    descricao=descricao,
+                    metodo_pagamento=metodo_pagamento
+                )
+                # Adiciona o adiantamento à sessão
+                session.add(adiantamento)
+                # Confirma as alterações no banco de dados
+                session.commit()
+                return True
+            else:
+                    print("Hospedagem não encontrada.")
+                    return False
+        except Exception as e:
+            print(f"Erro ao adicionar adiantamento: {e}")
+            return False
