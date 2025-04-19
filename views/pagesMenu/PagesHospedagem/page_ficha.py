@@ -1,6 +1,6 @@
 # Imports necessários do PySide6 e operações personalizadas
 from PySide6.QtCore import Qt, QTimer, QDateTime
-from PySide6.QtGui import QFont, QKeyEvent
+from PySide6.QtGui import QFont, QKeyEvent, QColor
 from PySide6.QtWidgets import (
     QAbstractItemView, QDateTimeEdit, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
     QSpacerItem, QSizePolicy, QFrame, QLineEdit, QSpinBox,
@@ -108,6 +108,7 @@ class Ui_page_ficha(QWidget):
         self.tabela_sugestoes.horizontalHeader().setMaximumHeight(25)
         group_layout.addWidget(self.tabela_sugestoes)
 
+
         # Conexões dos sinais com as ações
         self.produto_selecionado = None
         self.input_descricao.textChanged.connect(self.atualizar_sugestoes)
@@ -130,19 +131,20 @@ class Ui_page_ficha(QWidget):
         group_layout.addWidget(self.tabela)
 
         # Tabela de pagamentos
-        self.tabela_pagamentos = QTableWidget(0, 4)
-        self.tabela_pagamentos.setStyleSheet(tabelas())
-        self.tabela_pagamentos.setMaximumHeight(100)
-        self.tabela_pagamentos.setHorizontalHeaderLabels(["Data", "Descrição", "Forma de Pagamento", "Valor"])
-        self.tabela_pagamentos.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.tabela_pagamentos.setEditTriggers(QTableWidget.NoEditTriggers)
+        # self.tabela_pagamentos = QTableWidget(0, 4)
+        # self.tabela_pagamentos.setStyleSheet(tabelas())
+        # self.tabela_pagamentos.setMaximumHeight(100)
+        # self.tabela_pagamentos.setHorizontalHeaderLabels(["Data", "Descrição", "Forma de Pagamento", "Valor"])
+        # self.tabela_pagamentos.horizontalHeader().setVisible(False)
+        # self.tabela_pagamentos.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        # self.tabela_pagamentos.setEditTriggers(QTableWidget.NoEditTriggers)
 
-        header = self.tabela_pagamentos.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        group_layout.addWidget(self.tabela_pagamentos)
+        # header = self.tabela_pagamentos.horizontalHeader()
+        # header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        # header.setSectionResizeMode(1, QHeaderView.Stretch)
+        # header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        # header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        # group_layout.addWidget(self.tabela_pagamentos)
 
         # Rodapé com totais
         totals_layout = QHBoxLayout()
@@ -198,8 +200,8 @@ class Ui_page_ficha(QWidget):
             self.tabela_sugestoes.setItem(row, 0, valor_item)
             self.tabela_sugestoes.setItem(row, 1, descricao_item)
 
+        self._ajustar_altura_tabela_sugestao()
         self.tabela_sugestoes.setVisible(True)
-        self._ajustar_altura_tabela()
 
     # Preenche os campos ao selecionar uma sugestão
     def selecionar_sugestao(self, row, column):
@@ -279,6 +281,7 @@ class Ui_page_ficha(QWidget):
         self.label_pagamentos.setText(f"Pagamentos: R${valor_pagamentos:.2f}")
         self.label_total.setText(f"Total: R${valor_diarias + total_despesas - valor_pagamentos}0  ")
 
+
     # Carrega despesas da hospedagem e insere na tabela
     def carregar_despesas(self):
         self.tabela.setRowCount(0)
@@ -296,6 +299,16 @@ class Ui_page_ficha(QWidget):
             self.tabela.setItem(row, 3, QTableWidgetItem(f"R${despesa.valor_produto:.2f}"))
             self.tabela.setItem(row, 4, QTableWidgetItem(f"R${despesa.valor:.2f}"))
 
+        # for pagamento in pagamentos:
+        #     row = self.tabela_pagamentos.rowCount()
+        #     self.tabela_pagamentos.insertRow(row)
+        #     data_formatada = pagamento.data.strftime("%d/%m/%Y %H:%M")
+        #     descricao = pagamento.descricao
+        #     self.tabela_pagamentos.setItem(row, 0, QTableWidgetItem(data_formatada))
+        #     self.tabela_pagamentos.setItem(row, 1, QTableWidgetItem(descricao))
+        #     self.tabela_pagamentos.setItem(row, 2, QTableWidgetItem(str(pagamento.metodo_pagamento)))
+        #     self.tabela_pagamentos.setItem(row, 3, QTableWidgetItem(f"R${pagamento.valor:.2f}"))
+
         for pagamento in pagamentos:
             row = self.tabela.rowCount()
             self.tabela.insertRow(row)
@@ -304,11 +317,19 @@ class Ui_page_ficha(QWidget):
             self.tabela.setItem(row, 0, QTableWidgetItem(data_formatada))
             self.tabela.setItem(row, 1, QTableWidgetItem(descricao))
             self.tabela.setItem(row, 2, QTableWidgetItem(str(pagamento.metodo_pagamento)))
-            self.tabela.setItem(row, 3, QTableWidgetItem(f"R${pagamento.valor:.2f}"))
+            self.tabela.setItem(row, 4, QTableWidgetItem(f"R${pagamento.valor:.2f}"))
 
+        #  Deixa verde as linhas de pagamentos
+        for row in range(self.tabela.rowCount()):
+            item_total = self.tabela.item(row, 3)
+            if not item_total:
+                for col in range(5):
+                    item = self.tabela.item(row, col)
+                    if item:
+                        item.setBackground(QColor("#05452f"))
         self.atualizar_totais()
     
-    def _ajustar_altura_tabela(self):
+    def _ajustar_altura_tabela_sugestao(self):
         row_count = self.tabela_sugestoes.rowCount()
         if row_count == 0:
             self.tabela_sugestoes.setVisible(False)
@@ -322,4 +343,3 @@ class Ui_page_ficha(QWidget):
 
         self.tabela_sugestoes.setMaximumHeight(desired_height)
         self.tabela_sugestoes.setVisible(True)
-        
