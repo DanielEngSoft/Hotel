@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 )
 
 from operations.Ui.produtos_operations import buscar_produto_por_nome
-from operations.Ui.hospedagem_operations import somar_adiantamento
+from operations.Ui.hospedagem_operations import somar_adiantamentos, adiantamentos_hospedagem
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem, create_despesa
 from styles.styles import tabelas, style_botao_verde
 
@@ -116,10 +116,10 @@ class Ui_page_ficha(QWidget):
 
         # Tabela que exibe as despesas
         self.tabela = QTableWidget(0, 5)
+        self.tabela.setHorizontalHeaderLabels(["Data", "Descrição", "QTD", "Valor", "TOTAL"])
+        self.tabela.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.tabela.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tabela.setAlternatingRowColors(True)
-        self.tabela.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.tabela.setHorizontalHeaderLabels(["Data", "Descrição", "QTD", "Valor", "TOTAL"])
 
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -128,6 +128,21 @@ class Ui_page_ficha(QWidget):
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         group_layout.addWidget(self.tabela)
+
+        # Tabela de pagamentos
+        self.tabela_pagamentos = QTableWidget(0, 4)
+        self.tabela_pagamentos.setStyleSheet(tabelas())
+        self.tabela_pagamentos.setMaximumHeight(100)
+        self.tabela_pagamentos.setHorizontalHeaderLabels(["Data", "Descrição", "Forma de Pagamento", "Valor"])
+        self.tabela_pagamentos.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tabela_pagamentos.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        header = self.tabela_pagamentos.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        group_layout.addWidget(self.tabela_pagamentos)
 
         # Rodapé com totais
         totals_layout = QHBoxLayout()
@@ -246,7 +261,7 @@ class Ui_page_ficha(QWidget):
     # Atualiza os totais de despesas, diárias e valor total
     def atualizar_totais(self):
         total_despesas = 0.0
-        valor_pagamentos = somar_adiantamento(self.hospedagem.id)
+        valor_pagamentos = somar_adiantamentos(self.hospedagem.id)
         for row in range(1, self.tabela.rowCount()):
             item_total = self.tabela.item(row, 4)
             if item_total:
@@ -268,6 +283,7 @@ class Ui_page_ficha(QWidget):
     def carregar_despesas(self):
         self.tabela.setRowCount(0)
         despesas = buscar_despesas_por_id_hospedagem(self.hospedagem.id)
+        pagamentos = adiantamentos_hospedagem(self.hospedagem.id)
 
         for despesa in despesas:
             row = self.tabela.rowCount()
@@ -279,6 +295,16 @@ class Ui_page_ficha(QWidget):
             self.tabela.setItem(row, 2, QTableWidgetItem(str(despesa.quantidade)))
             self.tabela.setItem(row, 3, QTableWidgetItem(f"R${despesa.valor_produto:.2f}"))
             self.tabela.setItem(row, 4, QTableWidgetItem(f"R${despesa.valor:.2f}"))
+
+        for pagamento in pagamentos:
+            row = self.tabela.rowCount()
+            self.tabela.insertRow(row)
+            data_formatada = pagamento.data.strftime("%d/%m/%Y %H:%M")
+            descricao = pagamento.descricao
+            self.tabela.setItem(row, 0, QTableWidgetItem(data_formatada))
+            self.tabela.setItem(row, 1, QTableWidgetItem(descricao))
+            self.tabela.setItem(row, 2, QTableWidgetItem(str(pagamento.metodo_pagamento)))
+            self.tabela.setItem(row, 3, QTableWidgetItem(f"R${pagamento.valor:.2f}"))
 
         self.atualizar_totais()
     

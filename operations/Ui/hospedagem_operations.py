@@ -245,7 +245,7 @@ def adicionar_adiantamento(data, id_hospedagem, valor, descricao, metodo_pagamen
             print(f"Erro ao adicionar adiantamento: {e}")
             return False
         
-def somar_adiantamento(id_hospedagem):
+def somar_adiantamentos(id_hospedagem):
     with Session() as session:
         try:
             adiantamentos = session.query(Adiantamento).filter_by(id_hospedagem=id_hospedagem).all()
@@ -254,3 +254,12 @@ def somar_adiantamento(id_hospedagem):
         except Exception as e:
             print(f'Erro ao somar adiantamento: {e}')
             return 0
+        
+def adiantamentos_hospedagem(id_hospedagem):
+    with Session() as session:
+        try:
+            adiantamentos = session.query(Adiantamento).filter_by(id_hospedagem=id_hospedagem).all()
+            return adiantamentos
+        except Exception as e:
+            print(f'Erro ao buscar adiantamentos da hospedagem: {e}')
+            return []

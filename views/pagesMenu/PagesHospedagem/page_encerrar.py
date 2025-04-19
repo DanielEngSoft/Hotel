@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QMessageBox
 )
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem, somar_despesas
-from operations.Ui.hospedagem_operations import encerrar_hospedagem, somar_adiantamento
+from operations.Ui.hospedagem_operations import encerrar_hospedagem, somar_adiantamentos
 
 from styles.styles import style_botao_vermelho
 
@@ -133,7 +133,7 @@ class Ui_page_encerrar(QWidget):
     def atualizar_informacoes(self):
         """Atualiza os dados da tela com base nas despesas da hospedagem."""
         self.total = somar_despesas(self.hospedagem.id) 
-        self.recebido = somar_adiantamento(self.hospedagem.id)
+        self.recebido = somar_adiantamentos(self.hospedagem.id)
         self.a_pagar = self.total - self.recebido
 
         self.lineEdit_total.setText(f"R$ {self.total:.2f}")
