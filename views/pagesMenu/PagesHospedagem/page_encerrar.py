@@ -4,8 +4,8 @@ from PySide6.QtWidgets import (
     QComboBox, QDateTimeEdit, QFormLayout, QGroupBox,
     QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QMessageBox
 )
-from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem
-from operations.Ui.hospedagem_operations import encerrar_hospedagem
+from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem, somar_despesas
+from operations.Ui.hospedagem_operations import encerrar_hospedagem, somar_adiantamento
 
 from styles.styles import style_botao_vermelho
 
@@ -66,10 +66,7 @@ class Ui_page_encerrar(QWidget):
         self.label_total = QLabel("Total:")
         self.label_total.setFont(font)
 
-        self.total = 0
-        self.despesas = buscar_despesas_por_id_hospedagem(self.hospedagem.id)
-        for despesa in self.despesas:
-            self.total += despesa.valor
+        self.total = somar_despesas(self.hospedagem.id)
 
         self.lineEdit_total = QLineEdit(f"R$ {self.total:.2f}")
         self.lineEdit_total.setReadOnly(True)
@@ -89,11 +86,20 @@ class Ui_page_encerrar(QWidget):
 
         self.label_recebido = QLabel("Valor recebido:")
         self.label_recebido.setFont(font)
-        self.lineEdit_recebido = LineEditMonetario(f'R$ {str(self.total)}0')
+        self.lineEdit_recebido = QLineEdit(f'R$ {str(self.total)}0')
+        self.lineEdit_recebido.setReadOnly(True)
         self.lineEdit_recebido.setFont(font)
         self.lineEdit_recebido.setObjectName("lineEdit_recebido")
         self.formLayout.setWidget(3, QFormLayout.LabelRole, self.label_recebido)
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.lineEdit_recebido)
+
+        self.total_a_pagar = QLabel("Total a pagar:")
+        self.total_a_pagar.setFont(font)
+        self.lineEdit_a_pagar = LineEditMonetario(f'R$ {str(self.total)}0')
+        self.lineEdit_a_pagar.setFont(font)
+        self.lineEdit_a_pagar.setObjectName("lineEdit_a_pagar")
+        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.total_a_pagar)
+        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.lineEdit_a_pagar)
 
         self.verticalLayout_groupBox.addLayout(self.formLayout)
 
@@ -126,14 +132,14 @@ class Ui_page_encerrar(QWidget):
 
     def atualizar_informacoes(self):
         """Atualiza os dados da tela com base nas despesas da hospedagem."""
-        self.total = 0
-        self.despesas = buscar_despesas_por_id_hospedagem(self.hospedagem.id)
-        for despesa in self.despesas:
-            self.total += despesa.valor
+        self.total = somar_despesas(self.hospedagem.id) 
+        self.recebido = somar_adiantamento(self.hospedagem.id)
+        self.a_pagar = self.total - self.recebido
 
         self.lineEdit_total.setText(f"R$ {self.total:.2f}")
-        self.lineEdit_recebido.setText(f"R$ {str(self.total)}0")
+        self.lineEdit_recebido.setText(f"R$ {str(self.recebido)}0")
         self.lineEdit_recebido.valor_cents = int(self.total * 100)
+        self.lineEdit_a_pagar.setText(f"R$ {str(self.a_pagar)}0")
 
     def showEvent(self, event):
         self.atualizar_informacoes()

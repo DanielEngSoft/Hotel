@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
 )
 
 from operations.Ui.produtos_operations import buscar_produto_por_nome
+from operations.Ui.hospedagem_operations import somar_adiantamento
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem, create_despesa
 from styles.styles import tabelas, style_botao_verde
 
@@ -245,6 +246,7 @@ class Ui_page_ficha(QWidget):
     # Atualiza os totais de despesas, diárias e valor total
     def atualizar_totais(self):
         total_despesas = 0.0
+        valor_pagamentos = somar_adiantamento(self.hospedagem.id)
         for row in range(1, self.tabela.rowCount()):
             item_total = self.tabela.item(row, 4)
             if item_total:
@@ -259,7 +261,8 @@ class Ui_page_ficha(QWidget):
             valor_diarias = 0.0
 
         self.label_diarias.setText(f"  Diárias: R${valor_diarias:.2f}")
-        self.label_total.setText(f"Total: R${valor_diarias + total_despesas:.2f}  ")
+        self.label_pagamentos.setText(f"Pagamentos: R${valor_pagamentos:.2f}")
+        self.label_total.setText(f"Total: R${valor_diarias + total_despesas - valor_pagamentos}0  ")
 
     # Carrega despesas da hospedagem e insere na tabela
     def carregar_despesas(self):

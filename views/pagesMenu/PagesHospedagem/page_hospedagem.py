@@ -49,6 +49,7 @@ class Ui_page_hospedagem(QWidget):
         self.button_encerrar.setStyleSheet(style_botao_vermelho())
         self.button_encerrar.setMaximumWidth(150)
         self.button_encerrar.clicked.connect(self.mostrar_pagina_encerrar)
+        header_ficha.layout().addSpacerItem(QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         header_ficha.layout().addWidget(self.button_encerrar)
 
         self.layout_ficha.addWidget(header_ficha)

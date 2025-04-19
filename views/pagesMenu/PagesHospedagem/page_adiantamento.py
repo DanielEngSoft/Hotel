@@ -4,8 +4,8 @@ from PySide6.QtWidgets import (
     QComboBox, QDateTimeEdit, QFormLayout, QGroupBox,
     QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QMessageBox
 )
-from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem
-from operations.Ui.hospedagem_operations import adicionar_adiantamento
+from operations.Ui.despesas_operations import somar_despesas
+from operations.Ui.hospedagem_operations import adicionar_adiantamento, somar_adiantamento
 
 from styles.styles import style_botao_verde
 
@@ -125,10 +125,7 @@ class Ui_page_adiantamento(QWidget):
 
     def atualizar_informacoes(self):
         """Atualiza os dados da tela com base nas despesas da hospedagem."""
-        self.total = 0
-        self.despesas = buscar_despesas_por_id_hospedagem(self.hospedagem.id)
-        for despesa in self.despesas:
-            self.total += despesa.valor
+        self.total = somar_despesas(self.hospedagem.id) - somar_adiantamento(self.hospedagem.id)
 
         self.lineEdit_recebido.setText(f"R$ {str(self.total)}0")
         self.lineEdit_recebido.valor_cents = int(self.total * 100)

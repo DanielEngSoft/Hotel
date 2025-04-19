@@ -82,14 +82,6 @@ def buscar_hospedagem_por_quarto(id_quarto):
             print(f"Hospedagem não encontrada para o quarto {id_quarto}.")
             return None
 
-# def hospedagem_com_dados_do_hospede():
-#     with Session() as session:
-#         query = session.query(Hospedagem).options(
-#                     joinedload(Hospedagem.hospede),
-#                     joinedload(Hospedagem.quarto)
-#                 ).join(Hospede)
-#         return query
-    
 def hospedagens_ativas():
     with Session() as session:
         try:
@@ -252,3 +244,13 @@ def adicionar_adiantamento(data, id_hospedagem, valor, descricao, metodo_pagamen
         except Exception as e:
             print(f"Erro ao adicionar adiantamento: {e}")
             return False
+        
+def somar_adiantamento(id_hospedagem):
+    with Session() as session:
+        try:
+            adiantamentos = session.query(Adiantamento).filter_by(id_hospedagem=id_hospedagem).all()
+            total = sum(adiantamento.valor for adiantamento in adiantamentos)
+            return total
+        except Exception as e:
+            print(f'Erro ao somar adiantamento: {e}')
+            return 0

@@ -57,3 +57,18 @@ def buscar_despesas_por_id_hospedagem(id_hospedagem):
             .all()
         )
         return despesas
+    
+def somar_despesas(id_hospedagem):
+    with Session() as session:
+        try:
+            despesas = (
+                session.query(Despesa)
+                .filter(Despesa.id_hospedagem == id_hospedagem)
+                .all()
+            )
+            total = sum(despesa.valor for despesa in despesas)
+            return total
+        except Exception as e:
+            print(f"Erro ao somar despesas: {e}")
+            return 0.0
+            

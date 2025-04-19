@@ -19,7 +19,7 @@ class Ui_page_alterar(QWidget):
         font = QFont()
         font.setPointSize(14)
 
-        self.groupBox = QGroupBox("Dados da hospedagem", self)
+        self.groupBox = QGroupBox("Alterar dados da hospedagem", self)
         self.groupBox.setObjectName("groupBox")
         self.groupBox.setMaximumWidth(600)
 
