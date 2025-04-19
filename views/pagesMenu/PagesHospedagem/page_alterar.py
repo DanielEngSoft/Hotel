@@ -90,7 +90,7 @@ class Ui_page_alterar(QWidget):
 
     def button_alterar_clicked(self):
         self.quarto = quarto_por_id_hospedagem(self.hospedagem.id)
-        if self.dateTimeEdit_entrada.dateTime().toPython().date() >= self.dateEdit_saida.date().toPython():
+        if self.dateTimeEdit_entrada.dateTime().toPython().date() > self.dateEdit_saida.date().toPython():
             QMessageBox.warning(self, "Dados inválidos", "A data de entrada deve ser anterior à data de saída.")
             return
         

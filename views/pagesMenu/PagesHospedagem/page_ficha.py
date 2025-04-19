@@ -140,6 +140,11 @@ class Ui_page_ficha(QWidget):
         self.label_despesas.setFont(font_title)
         totals_layout.addWidget(self.label_despesas)
 
+        self.label_pagamentos = QLabel("Pagamentos: R$0,00")
+        self.label_pagamentos.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label_pagamentos.setFont(font_title)
+        totals_layout.addWidget(self.label_pagamentos)
+
         self.label_total = QLabel("Total: R$0,00  ")
         self.label_total.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.label_total.setFont(font_title)

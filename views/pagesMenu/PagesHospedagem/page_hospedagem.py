@@ -219,3 +219,4 @@ class Ui_page_hospedagem(QWidget):
             self.mostrar_pagina_alterar()
         if event.key() == Qt.Key_Escape:
             self.close_page_hospedagem()
+        # ADICIONAR O F4, PARA CHAMAR A PAGINA DE PAGAMENTO ADIANTADO

@@ -66,7 +66,14 @@ class Despesa(Base):
 
     hospedagem = relationship("Hospedagem", back_populates="despesas")
     produto = relationship("Produto", back_populates="despesas")
-    
+
+class Adiantamento(Base):
+    __tablename__ = 'adiantamentos'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_hospedagem = Column(Integer, ForeignKey('hospedagens.id'), nullable=False)
+    descricao = Column(String, nullable=False)
+    valor = Column(Float, nullable=False)
+    metodo_pagamento = Column(String, nullable=False)
 
 class Produto(Base):
     __tablename__ = 'produtos'

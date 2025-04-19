@@ -10,10 +10,6 @@ from operations.Ui.hospedagem_operations import (hospedagens_ativas, atualiza_di
     total_pessoas_hospedadas, saidas_amanha)
 
 
-
-from styles.styles import tabela_listar
-
-
 # Página de listagem de hospedagens
 class Ui_page_listar(QWidget):
     def __init__(self):
@@ -55,7 +51,6 @@ class Ui_page_listar(QWidget):
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setFont(QFont("Calibri", 12))
         self.table.setSortingEnabled(False)
-        self.table.setStyleSheet(tabela_listar())
 
 
         # Ajuste de largura das colunas
@@ -126,8 +121,10 @@ class Ui_page_listar(QWidget):
         atualiza_diarias()
         # Atualiza os rótulos de rodapé
         self.total_pessoas_hospedadas = total_pessoas_hospedadas()
+        self.total_hospedagens = len(hospedagens_ativas())
         self.saidas_amanha = saidas_amanha()
         self.label_total_hospedes.setText(f"Total de hospedes: {self.total_pessoas_hospedadas}")
+        self.label_total_hospedages.setText(f"Total de hospedagens: {self.total_hospedagens}")
         self.label_saidas_amanha.setText(f"Saidas amanhã: {self.saidas_amanha}")
 
         try:
