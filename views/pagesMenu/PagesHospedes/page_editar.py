@@ -31,23 +31,24 @@ class Ui_page_editar(QWidget):
         font.setPointSize(14)
 
         # Campo de busca por nome
+
+        self.label_buscar = QLabel("Buscar:")
+        self.label_buscar.setFont(font)
+        self.label_buscar.setMaximumWidth(100)
+        self.label_buscar.setFont(font)
+        self.label_buscar.setStyleSheet(style_botao_verde())
+
         self.lineEdit_busca = QLineEdit()
         self.lineEdit_busca.setPlaceholderText("Nome do hóspede")
         self.lineEdit_busca.setFont(font)
         self.lineEdit_busca.setMaximumWidth(700)        
         self.lineEdit_busca.textChanged.connect(self.buscar_hospede) 
 
-        self.pushButton_buscar = QPushButton("Buscar")
-        self.pushButton_buscar.setMaximumWidth(100)
-        self.pushButton_buscar.setFont(font)
-        self.pushButton_buscar.setStyleSheet(style_botao_verde())
-        self.pushButton_buscar.clicked.connect(self.buscar_hospede)
-
         # Layout horizontal para campo de busca + botão
         busca_layout = QHBoxLayout()
         busca_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        busca_layout.addWidget(self.label_buscar)
         busca_layout.addWidget(self.lineEdit_busca)
-        busca_layout.addWidget(self.pushButton_buscar)
         self.verticalLayout.addLayout(busca_layout)
 
         # Tabela de resultados da busca
@@ -177,6 +178,7 @@ class Ui_page_editar(QWidget):
                         self.tabela_resultados.setItem(i, j, QTableWidgetItem(str(val)))
         else:
             self.tabela_resultados.setVisible(False)
+        self._ajustar_altura_tabela()
 
     def carregar_dados_hospede(self, row, column):
         nome = self.tabela_resultados.item(row, 0).text()
@@ -248,3 +250,18 @@ class Ui_page_editar(QWidget):
         self.comboBox_estado.setCurrentIndex(0)
         self.label_confirmacao.setText("")
         self.hospede_selecionado = None
+    
+    def _ajustar_altura_tabela(self):
+        row_count = self.tabela_resultados.rowCount()
+        if row_count == 0:
+            self.tabela_resultados.setVisible(False)
+            return
+        row_height = self.tabela_resultados.verticalHeader().defaultSectionSize()
+        header_height = self.tabela_resultados.horizontalHeader().height()
+        scrollbar_height = self.tabela_resultados.horizontalScrollBar().height() if self.tabela_resultados.horizontalScrollBar().isVisible() else 0
+
+        # Calcula a altura desejada com base no número de linhas
+        desired_height = row_count * row_height + header_height + scrollbar_height + 2
+
+        self.tabela_resultados.setMaximumHeight(desired_height)
+        self.tabela_resultados.setVisible(True)

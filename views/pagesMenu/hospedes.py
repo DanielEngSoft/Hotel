@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
 
 from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar
 from views.PagesMenu.PagesHospedes.page_editar import Ui_page_editar
+from views.PagesMenu.PagesHospedes.page_listar import Ui_page_listar
 from styles.styles import menu_superior_pages
 
 
@@ -60,9 +61,7 @@ class PageHospedes(QWidget):
         self.page_editar = Ui_page_editar()
         self.pages.addWidget(self.page_editar)
 
-        self.page_listar = QWidget()
-        layout_listar = QVBoxLayout(self.page_listar)
-        layout_listar.addWidget(QLabel("Página Listar"))
+        self.page_listar = Ui_page_listar()
         self.pages.addWidget(self.page_listar)
 
         self.layout_principal.addWidget(self.pages)
