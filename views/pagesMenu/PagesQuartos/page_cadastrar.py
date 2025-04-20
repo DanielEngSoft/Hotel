@@ -85,7 +85,6 @@ class Ui_page_cadastrar(QWidget):
         # Adiciona GroupBox ao layout
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.groupBox, alignment=Qt.AlignHCenter)
-        self.verticalLayout.addStretch()
 
         # Botão cadastrar centralizado
         self.horizontalLayout_button = QHBoxLayout()

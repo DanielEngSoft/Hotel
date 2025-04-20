@@ -19,26 +19,36 @@ class Ui_page_cadastrar(QWidget):
         if not page_cadastrar.objectName():
             page_cadastrar.setObjectName("page_cadastrar")
 
-        layout = QHBoxLayout()
-        self.setLayout(layout)
+        # Layout principal vertical para centralizar o conteúdo
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
 
-        self.widget = QWidget(page_cadastrar)
-        self.widget.setObjectName("widget")
+        # Espaço superior
+        layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        self.verticalLayout = QVBoxLayout(self.widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        # Container central que agrupa todo o conteúdo da tela
+        center_container = QWidget()
+        center_layout = QVBoxLayout(center_container)
+        center_layout.setAlignment(Qt.AlignCenter)
+        center_layout.setContentsMargins(0, 0, 0, 0)
 
+        # Fonte padrão
         font = QFont()
         font.setPointSize(14)
 
-        # GroupBox com estilo
-        self.groupBox = QGroupBox("Dados do hóspede", self.widget)
+        # GroupBox estilizado com layout de formulário
+        self.groupBox = QGroupBox("Dados do hóspede", self)
         self.groupBox.setFont(font)
         self.groupBox.setStyleSheet(style_groupbox())
         self.groupBoxLayout = QFormLayout(self.groupBox)
         self.groupBoxLayout.setSpacing(30)
         self.groupBoxLayout.setContentsMargins(10, 10, 10, 10)
 
+        # Layout da seção principal
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+
+        # Função auxiliar para adicionar campo + label de erro
         def create_input_with_error(input_widget, error_label):
             container = QWidget()
             layout = QHBoxLayout(container)
@@ -47,6 +57,14 @@ class Ui_page_cadastrar(QWidget):
             layout.addWidget(error_label)
             return container
 
+        # CPF
+        self.lineEdit_cpf = QLineEdit()
+        self.lineEdit_cpf.setInputMask("000.000.000-00;_")
+        self.lineEdit_cpf.setPlaceholderText("000.000.000-00")
+        self.lineEdit_cpf.setFont(font)
+        self.lineEdit_cpf.setMinimumWidth(150)
+
+        # Garante que o cursor vai para o início ao focar no campo
         def cpf_focus_in_event(event):
             QLineEdit.focusInEvent(self.lineEdit_cpf, event)
             QTimer.singleShot(0, lambda: self.lineEdit_cpf.setCursorPosition(0))
@@ -54,16 +72,10 @@ class Ui_page_cadastrar(QWidget):
         def update_cpf_label():
             cpf = self.lineEdit_cpf.text()
             if len(cpf) == 14:
-                hospede = procura_hospede_por_cpf(cpf)
-        # CPF
-        self.lineEdit_cpf = QLineEdit()
-        self.lineEdit_cpf.setInputMask("000.000.000-00;_")
-        self.lineEdit_cpf.setPlaceholderText("000.000.000-00")
-        self.lineEdit_cpf.setFont(font)
-        self.lineEdit_cpf.setMinimumWidth(150)
+                procura_hospede_por_cpf(cpf)
+
         self.lineEdit_cpf.focusInEvent = cpf_focus_in_event
         self.lineEdit_cpf.textChanged.connect(update_cpf_label)
-
 
         self.label_error_cpf = QLabel("")
         self.label_error_cpf.setStyleSheet("color: red;")
@@ -95,7 +107,7 @@ class Ui_page_cadastrar(QWidget):
 
         self.groupBoxLayout.addRow("Telefone:", create_input_with_error(self.lineEdit_telefone, self.label_error_telefone))
 
-        # Endereço (UF + Cidade)
+        # Endereço: UF + Cidade
         endereco_container = QWidget()
         endereco_layout = QHBoxLayout(endereco_container)
         endereco_layout.setContentsMargins(0, 0, 0, 0)
@@ -131,25 +143,32 @@ class Ui_page_cadastrar(QWidget):
 
         self.groupBoxLayout.addRow("Empresa:", self.lineEdit_empresa)
 
+        # Adiciona o GroupBox centralizado
         self.verticalLayout.addWidget(self.groupBox, alignment=Qt.AlignCenter)
 
-        # Botão cadastrar
-        self.horizontalLayout_button = QHBoxLayout()
-        self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-
+        # Botão cadastrar com espaçamento lateral
         self.pushButton = QPushButton("Cadastrar")
         self.pushButton.setFont(font)
         self.pushButton.setMinimumWidth(150)
         self.pushButton.setStyleSheet(style_botao_verde())
         self.pushButton.clicked.connect(self.abrir_cadastro)
 
+        self.horizontalLayout_button = QHBoxLayout()
+        self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         self.horizontalLayout_button.addWidget(self.pushButton)
         self.horizontalLayout_button.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
 
         self.verticalLayout.addLayout(self.horizontalLayout_button)
+
+        # Espaço inferior dentro do container central
         self.verticalLayout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        layout.addWidget(self.widget)
+        # Adiciona o layout centralizado ao container principal
+        center_layout.addLayout(self.verticalLayout)
+        layout.addWidget(center_container)
+
+        # Espaço inferior externo
+        layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
     def abrir_cadastro(self):
         # Limpa mensagens de erro
@@ -158,19 +177,16 @@ class Ui_page_cadastrar(QWidget):
         self.label_error_telefone.setText("")
         self.label_error_cidade.setText("")
 
+        # Coleta e formata dados
         cpf = self.lineEdit_cpf.text()
         telefone = self.lineEdit_telefone.text()
-
-        nome = self.lineEdit_nome.text()
-        nome = formata_nome(nome)
-        cidade = self.lineEdit_cidade.text()
-        cidade = formata_nome(cidade)
+        nome = formata_nome(self.lineEdit_nome.text())
+        cidade = formata_nome(self.lineEdit_cidade.text())
         endereco = self.comboBox.currentText() + " - " + cidade
-        empresa = self.lineEdit_empresa.text()
-        empresa = formata_nome(empresa)
-
+        empresa = formata_nome(self.lineEdit_empresa.text())
         erro = False
 
+        # Validações
         if not valida_cpf(cpf):
             self.label_error_cpf.setText(" CPF inválido*")
             erro = True
@@ -180,7 +196,7 @@ class Ui_page_cadastrar(QWidget):
         if not nome:
             self.label_error_nome.setText(" Nome obrigatório*")
             erro = True
-        if len(nome) < 4:
+        elif len(nome) < 4:
             self.label_error_nome.setText(" Nome muito curto*")
             erro = True
         if not cidade:
@@ -193,9 +209,11 @@ class Ui_page_cadastrar(QWidget):
         if erro:
             return
 
+        # Preenche valor padrão para empresa se vazio
         if not empresa:
             empresa = "------"
-        
+
+        # Tenta cadastrar o hóspede
         try:
             cadastra_hospede(nome, cpf, telefone, endereco, empresa)
             QMessageBox.information(self, "Cadastro", "Cadastro realizado com sucesso!")
@@ -209,4 +227,3 @@ class Ui_page_cadastrar(QWidget):
 
         except Exception as e:
             QMessageBox.warning(self, "Erro ao cadastrar", "Tente novamente")
-
