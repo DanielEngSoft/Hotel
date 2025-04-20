@@ -7,6 +7,8 @@ from PySide6.QtWidgets import (
 
 from views.PagesMenu.PagesQuartos.page_cadastrar import Ui_page_cadastrar
 from views.PagesMenu.PagesQuartos.page_listar import Ui_page_listar
+from views.PagesMenu.PagesQuartos.page_alterar import Ui_page_alterar
+
 from styles.styles import menu_superior_pages
 
 
@@ -60,9 +62,7 @@ class PageQuartos(QWidget):
         self.page_cadastrar = Ui_page_cadastrar()
         self.pages.addWidget(self.page_cadastrar)
 
-        self.page_alterar = QWidget()
-        layout_ocupados = QVBoxLayout(self.page_alterar)
-        layout_ocupados.addWidget(QPushButton("Quartos"))  # Placeholder
+        self.page_alterar = Ui_page_alterar()
         self.pages.addWidget(self.page_alterar)
 
         self.layout_principal.addWidget(self.pages)

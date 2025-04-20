@@ -80,3 +80,17 @@ def quarto_por_id_hospedagem(id_hospedagem):
         except Exception as e:
             print(f"Erro ao buscar quarto por ID da hospedagem: {e}")
             return None
+    
+def alterar_quarto(numero, tipo):
+    with Session() as session:
+        try:
+            quarto = session.query(Quarto).filter(Quarto.numero == numero).first()
+            if quarto:
+                quarto.tipo = tipo
+                session.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print(f"Erro ao alterar quarto: {e}")
+            return False
