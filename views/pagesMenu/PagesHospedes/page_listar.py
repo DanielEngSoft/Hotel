@@ -40,8 +40,8 @@ class Ui_page_listar(QWidget):
         # Tabela de hóspedes
         self.tableWidget = QTableWidget()
         self.tableWidget.setAlternatingRowColors(True)
-        self.tableWidget.setColumnCount(4)
-        self.tableWidget.setHorizontalHeaderLabels(["Nome", "CPF", "Telefone", "Endereço"])
+        self.tableWidget.setColumnCount(5)
+        self.tableWidget.setHorizontalHeaderLabels(["Nome", "CPF", "Telefone", "Endereço", "Empresa"])
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -87,3 +87,4 @@ class Ui_page_listar(QWidget):
             self.tableWidget.setItem(row, 1, QTableWidgetItem(hospede.cpf))
             self.tableWidget.setItem(row, 2, QTableWidgetItem(hospede.telefone))
             self.tableWidget.setItem(row, 3, QTableWidgetItem(hospede.endereco))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem(hospede.empresa))
