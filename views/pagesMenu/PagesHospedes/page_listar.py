@@ -63,25 +63,27 @@ class Ui_page_listar(QWidget):
         self.buscar_hospedes(todos=True)
 
     def buscar_hospedes(self, todos=False):
-        nome = self.lineEdit_busca.text().strip()
+        termo = self.lineEdit_busca.text().strip().lower()
         self.label_info.setText("")
         self.tableWidget.setRowCount(0)
 
-        if not nome:
-            resultados = procura_hospedes_por_nome("")
-        else:
-            resultados = procura_hospedes_por_nome(nome)
+        # Busca inicial traz todos os hóspedes
+        resultados = procura_hospedes_por_nome("")
+
+        # Filtra por nome ou empresa
+        if termo:
+            resultados = [
+                h for h in resultados
+                if termo in h.nome.lower() or termo in h.empresa.lower()
+            ]
 
         if not resultados:
             self.label_info.setStyleSheet("color: gray;")
             self.label_info.setText("Nenhum hóspede encontrado.")
             return
 
-        # Ordenar por nome (opcional)
-        resultados.sort(key=lambda x: x.nome)
-
+        # Popular tabela
         self.tableWidget.setRowCount(len(resultados))
-
         for row, hospede in enumerate(resultados):
             self.tableWidget.setItem(row, 0, QTableWidgetItem(hospede.nome))
             self.tableWidget.setItem(row, 1, QTableWidgetItem(hospede.cpf))
