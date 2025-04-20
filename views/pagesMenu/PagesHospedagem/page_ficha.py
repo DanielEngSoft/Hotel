@@ -172,7 +172,7 @@ class Ui_page_ficha(QWidget):
         main_layout.addWidget(group_box)
 
         # Atalhos exibidos no fim da janela
-        self.label_atalhos = QLabel("[ + ] Aumenta | [ - ] Diminui | [Del] Exclui | [F6] Alterar | [F5] Encerrar")
+        self.label_atalhos = QLabel("[ + ] Aumenta  |  [ - ] Diminui  |  [Del] Exclui  |  [F6] Alterar  |  [F5] Encerrar")
         self.label_atalhos.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(self.label_atalhos)
 
@@ -317,11 +317,11 @@ class Ui_page_ficha(QWidget):
             self.tabela.setItem(row, 0, QTableWidgetItem(data_formatada))
             self.tabela.setItem(row, 1, QTableWidgetItem(descricao))
             self.tabela.setItem(row, 2, QTableWidgetItem(str(pagamento.metodo_pagamento)))
-            self.tabela.setItem(row, 4, QTableWidgetItem(f"R${pagamento.valor:.2f}"))
+            self.tabela.setItem(row, 3, QTableWidgetItem(f"R${pagamento.valor:.2f}"))
 
         #  Deixa verde as linhas de pagamentos
         for row in range(self.tabela.rowCount()):
-            item_total = self.tabela.item(row, 3)
+            item_total = self.tabela.item(row, 4)
             if not item_total:
                 for col in range(5):
                     item = self.tabela.item(row, col)

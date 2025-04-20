@@ -36,7 +36,8 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName("MainWindow")
 
         # Tamanho e título da janela
-        MainWindow.resize(1108, 706)
+        # MainWindow.resize(1108, 706)
+        MainWindow.showFullScreen()
         MainWindow.setWindowTitle("Horizonte Prime")
         MainWindow.setWindowIcon(QIcon("imgs/icons/hotel.png"))  # Ícone da janela
 

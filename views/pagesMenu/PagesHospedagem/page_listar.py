@@ -178,17 +178,11 @@ class Ui_page_listar(QWidget):
 
                 # Destaque para saídas hoje ou atrasadas
                 cor_ocupado = QColor('#A52A2A')  # Vermelho claro
-                cor_livre = QColor('#05452f')  # Verde claro
                 if saida_data <= today:
                     for col in range(6):
                         item = self.table.item(row, col)
                         if item:
                             item.setData(Qt.ItemDataRole.BackgroundRole, cor_ocupado)
-                else:
-                    for col in range(6):
-                        item = self.table.item(row, col)
-                        if item:
-                            item.setData(Qt.ItemDataRole.BackgroundRole, cor_livre)
 
 
         except Exception as e:
