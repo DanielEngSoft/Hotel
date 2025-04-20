@@ -48,10 +48,15 @@ class Ui_page_abrir(QWidget):
         # ====== LADO ESQUERDO (ABERTURA DE HOSPEDAGEM) ======
         self.verticalLayout_abrir = QVBoxLayout()
 
-        # Campo CPF
+        # Layout para o formulário
+        self.form_layout = QFormLayout()
+        self.form_layout.setSpacing(20)
+
+        # CPF----------------------------------------------------
+        self.layout_cpf = QHBoxLayout()
+        
         self.label_cpf = QLabel("CPF:", self.widget)
         self.label_cpf.setFont(font)
-        self.verticalLayout_abrir.addWidget(self.label_cpf)
 
         self.lineEdit_cpf = QLineEdit(self.widget)
         self.lineEdit_cpf.setInputMask("000.000.000-00;_")
@@ -59,7 +64,13 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setFont(font)
         self.lineEdit_cpf.setMinimumSize(150, 0)
         self.lineEdit_cpf.setMaximumSize(150, 16777215)
-        self.verticalLayout_abrir.addWidget(self.lineEdit_cpf)
+        self.layout_cpf.addWidget(self.lineEdit_cpf)
+
+        self.label_nome = QLabel("", self.widget)
+        self.label_nome.setFont(font)
+        self.layout_cpf.addWidget(self.label_nome)
+
+        self.form_layout.addRow(self.label_cpf, self.layout_cpf)
 
         # Evento para posicionar cursor no início do campo CPF
         def cpf_focus_in_event(event):
@@ -71,56 +82,51 @@ class Ui_page_abrir(QWidget):
             cpf = self.lineEdit_cpf.text()
             if len(cpf) == 14:
                 hospede = procura_hospede_por_cpf(cpf)
-                self.label_cpf.setText(f"CPF: {hospede.nome}" if hospede else "CPF: Nenhum encontrado")
+                self.label_nome.setText(f"{hospede.nome}" if hospede else "Nenhum encontrado")
 
         self.lineEdit_cpf.focusInEvent = cpf_focus_in_event
         self.lineEdit_cpf.textChanged.connect(update_cpf_label)
         self.lineEdit_cpf.editingFinished.connect(update_cpf_label)
 
         # Quantidade de hóspedes + Preço
-        self.label_qtd_hospedes = QLabel("Quantidade de hospedes:", self.widget)
+        qtd_price_layout = QHBoxLayout()
+        self.label_qtd_hospedes = QLabel("Quantidade de hóspedes:", self.widget)
         self.label_qtd_hospedes.setFont(font)
-        self.verticalLayout_abrir.addWidget(self.label_qtd_hospedes)
 
-        qtd_layout = QHBoxLayout()
         self.spinBox_qtd_hospedes = QSpinBox(self.widget)
         self.spinBox_qtd_hospedes.setFont(font)
         self.spinBox_qtd_hospedes.setMaximumWidth(80)
         self.spinBox_qtd_hospedes.setRange(1, 10)
         self.spinBox_qtd_hospedes.setValue(1)
-        qtd_layout.addWidget(self.spinBox_qtd_hospedes)
+        qtd_price_layout.addWidget(self.spinBox_qtd_hospedes)
 
         self.label_preco = QLabel("R$ 100", self.widget)
         self.label_preco.setFont(font)
         self.label_preco.setMaximumWidth(80)
         self.label_preco.setStyleSheet("color: green; font-weight: bold;")
-        qtd_layout.addWidget(self.label_preco)
+        qtd_price_layout.addWidget(self.label_preco)
 
         self.checkBox_desconto = QCheckBox("Desconto", self.widget)
         self.checkBox_desconto.setFont(font)
         self.checkBox_desconto.clicked.connect(self.atualizar_preco)
-        qtd_layout.addWidget(self.checkBox_desconto)
+        qtd_price_layout.addWidget(self.checkBox_desconto)
+        qtd_price_layout.addStretch()
 
-        self.verticalLayout_abrir.addLayout(qtd_layout)
+        self.form_layout.addRow(self.label_qtd_hospedes, qtd_price_layout)
         self.spinBox_qtd_hospedes.valueChanged.connect(self.atualizar_preco)
 
         # Previsão de saída
-        self.saida_layout = QHBoxLayout()
-        self.label_prev_saida = QLabel("Prev. Saída:", self.widget)
+        self.label_prev_saida = QLabel("Previsão de saída:", self.widget)
         self.label_prev_saida.setFont(font)
-        self.saida_layout.addWidget(self.label_prev_saida)
 
         self.dateEdit_prev_saida = QDateEdit(QDate.currentDate(), self.widget)
         self.dateEdit_prev_saida.setMaximumWidth(150)
         self.dateEdit_prev_saida.setFont(font)
-        self.saida_layout.addWidget(self.dateEdit_prev_saida)
-        self.saida_layout.addStretch()
-        self.verticalLayout_abrir.addLayout(self.saida_layout)
+        self.form_layout.addRow(self.label_prev_saida, self.dateEdit_prev_saida)
 
         # Quantidade de quartos disponíveis
-        self.label_total_quartos = QLabel("Quartos disponíveis: 0", self.widget)
+        self.label_total_quartos = QLabel("Selecione o quarto:", self.widget)
         self.label_total_quartos.setFont(font)
-        self.verticalLayout_abrir.addWidget(self.label_total_quartos)
 
         # Tabela de quartos disponíveis
         self.tableWidget_quartos = QTableWidget(0, 2, self.widget)
@@ -134,15 +140,24 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_quartos.setColumnWidth(0, 50)
         self.tableWidget_quartos.horizontalHeader().setStretchLastSection(True)
         self.tableWidget_quartos.verticalHeader().setVisible(False)
-        self.verticalLayout_abrir.addWidget(self.tableWidget_quartos)
+        self.form_layout.addRow(self.label_total_quartos, self.tableWidget_quartos)
 
+        self.verticalLayout_abrir.addLayout(self.form_layout) 
         self.update_quartos()
+
+        # Feedback de mensagens (erro/sucesso)
+        self.label_feedback = QLabel("", self.widget)
+        self.label_feedback.setFont(font)
+        self.label_feedback.setAlignment(Qt.AlignCenter)
+        self.verticalLayout_abrir.addWidget(self.label_feedback)
+
+        self.verticalLayout_abrir.addStretch()
 
         # Botão abrir hospedagem
         self.pushButton_abrir = QPushButton("Abrir", self.widget)
         self.pushButton_abrir.setFont(font)
         self.pushButton_abrir.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushButton_abrir.setMaximumWidth(150)
+        self.pushButton_abrir.setMinimumWidth(500)
         self.pushButton_abrir.setStyleSheet(style_botao_verde())
         self.pushButton_abrir.clicked.connect(self.button_abrir_clicked)
 
@@ -151,12 +166,6 @@ class Ui_page_abrir(QWidget):
         abrir_layout.addWidget(self.pushButton_abrir)
         abrir_layout.addStretch()
         self.verticalLayout_abrir.addLayout(abrir_layout)
-
-        # Feedback de mensagens (erro/sucesso)
-        self.label_feedback = QLabel("", self.widget)
-        self.label_feedback.setFont(font)
-        self.label_feedback.setAlignment(Qt.AlignCenter)
-        self.verticalLayout_abrir.addWidget(self.label_feedback)
 
         # Adiciona layout do lado esquerdo na tela
         self.horizontalLayout.addLayout(self.verticalLayout_abrir)
@@ -219,7 +228,6 @@ class Ui_page_abrir(QWidget):
     def update_quartos(self):
         self.tableWidget_quartos.setRowCount(0)
         quartos = listar_quartos_disponiveis()
-        self.label_total_quartos.setText(f"Quartos disponíveis: {len(quartos)}")
         for quarto in quartos:
             row = self.tableWidget_quartos.rowCount()
             self.tableWidget_quartos.insertRow(row)

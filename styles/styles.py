@@ -207,7 +207,6 @@ def tabelas():
             color: white;
             font-size: 14px;
             border: none;
-            padding: 4px;
         }
     """
 
