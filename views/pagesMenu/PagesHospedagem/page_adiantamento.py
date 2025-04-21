@@ -115,7 +115,7 @@ class Ui_page_adiantamento(QWidget):
         descricao = self.lineEdit_descricao.text()
         valor = self.lineEdit_recebido.get_valor_float()
         metodo_pagamento = self.comboBox_pagamento.currentText()
-        reply = QMessageBox.warning(self, "Atenção", "Deseja realmente encerrar o pagamento?", QMessageBox.Yes | QMessageBox.No)
+        reply = QMessageBox.warning(self, "Atenção", "Deseja realmente incluir esse pagamento", QMessageBox.Yes | QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             adicionar_adiantamento(data, self.hospedagem.id, valor, descricao, metodo_pagamento)

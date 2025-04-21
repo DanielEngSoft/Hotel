@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError                   # Para tratar erros 
 def buscar_produto_por_nome(nome_produto):
     """Busca um produto pelo nome."""
     with Session() as session:
-        produto = session.query(Produto).filter(Produto.descricao.ilike(f"%{nome_produto}%")).limit(5).all()
+        produto = session.query(Produto).filter(Produto.descricao.ilike(f"%{nome_produto}%")).all()
         return produto
     
 def buscar_produto_por_id(id_produto):

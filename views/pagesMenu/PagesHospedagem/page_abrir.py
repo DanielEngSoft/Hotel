@@ -284,11 +284,7 @@ class Ui_page_abrir(QWidget):
             valor_produto=valor_diaria,  # Valor da diária
         )
         # Limpa os campos após sucesso
-        self.lineEdit_cpf.setText("..-")
-        self.dateEdit_prev_saida.setDate(QDate.currentDate())
-        self.spinBox_qtd_hospedes.setValue(1)
-        self.atualizar_preco(1)
-        self.update_quartos()
+        self.limpar_campos()
 
         QTimer.singleShot(4000, lambda: self.label_feedback.setText(""))
 
@@ -343,3 +339,15 @@ class Ui_page_abrir(QWidget):
 
         self.tableWidget_hospedes.setMaximumHeight(desired_height)
         self.tableWidget_hospedes.setVisible(True)
+
+    def limpar_campos(self):
+        self.lineEdit_cpf.setText("..-")
+        self.dateEdit_prev_saida.setDate(QDate.currentDate())
+        self.spinBox_qtd_hospedes.setValue(1)
+        self.atualizar_preco(1)
+        self.update_quartos()
+        self.checkBox_desconto.setChecked(False)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_Escape:
+            self.limpar_campos()

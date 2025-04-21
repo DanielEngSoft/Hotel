@@ -1,5 +1,5 @@
 # Imports necessários do PySide6 e operações personalizadas
-from PySide6.QtCore import Qt, QTimer, QDateTime
+from PySide6.QtCore import Qt, QTimer, QDateTime, QEvent
 from PySide6.QtGui import QFont, QKeyEvent, QColor
 from PySide6.QtWidgets import (
     QAbstractItemView, QDateTimeEdit, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
@@ -74,8 +74,9 @@ class Ui_page_ficha(QWidget):
         input_layout = QHBoxLayout()
         self.input_descricao = QLineEdit()
         self.input_descricao.setPlaceholderText("Descrição do produto")
+        self.input_descricao.installEventFilter(self)
         input_layout.addWidget(self.input_descricao)
-
+        
         self.input_valor = LineEditMonetario()
         self.input_valor.setMaximumWidth(100)
         input_layout.addWidget(self.input_valor)
@@ -90,6 +91,9 @@ class Ui_page_ficha(QWidget):
 
         self.btn_adicionar = QPushButton("Adicionar")
         self.btn_adicionar.setStyleSheet(style_botao_verde())
+        self.btn_adicionar.setFocusPolicy(Qt.StrongFocus)
+        self.btn_adicionar.setDefault(True)
+
         input_layout.addWidget(self.btn_adicionar)
 
         group_layout.addLayout(input_layout)
@@ -98,7 +102,6 @@ class Ui_page_ficha(QWidget):
         self.tabela_sugestoes = QTableWidget(0, 2)
         self.tabela_sugestoes.setStyleSheet(tabelas())
         self.tabela_sugestoes.setHorizontalHeaderLabels(["Preço", "Descrição"])
-        self.tabela_sugestoes.setMaximumHeight(100)
         self.tabela_sugestoes.setVisible(False)
         self.tabela_sugestoes.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tabela_sugestoes.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -108,11 +111,10 @@ class Ui_page_ficha(QWidget):
         self.tabela_sugestoes.horizontalHeader().setMaximumHeight(25)
         group_layout.addWidget(self.tabela_sugestoes)
 
-
         # Conexões dos sinais com as ações
         self.produto_selecionado = None
         self.input_descricao.textChanged.connect(self.atualizar_sugestoes)
-        self.tabela_sugestoes.cellClicked.connect(self.selecionar_sugestao)
+        self.tabela_sugestoes.cellActivated.connect(self.selecionar_sugestao)
         self.btn_adicionar.clicked.connect(self.adicionar_despesa)
 
         # Tabela que exibe as despesas
@@ -129,22 +131,6 @@ class Ui_page_ficha(QWidget):
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         group_layout.addWidget(self.tabela)
-
-        # Tabela de pagamentos
-        # self.tabela_pagamentos = QTableWidget(0, 4)
-        # self.tabela_pagamentos.setStyleSheet(tabelas())
-        # self.tabela_pagamentos.setMaximumHeight(100)
-        # self.tabela_pagamentos.setHorizontalHeaderLabels(["Data", "Descrição", "Forma de Pagamento", "Valor"])
-        # self.tabela_pagamentos.horizontalHeader().setVisible(False)
-        # self.tabela_pagamentos.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        # self.tabela_pagamentos.setEditTriggers(QTableWidget.NoEditTriggers)
-
-        # header = self.tabela_pagamentos.horizontalHeader()
-        # header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        # header.setSectionResizeMode(1, QHeaderView.Stretch)
-        # header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        # header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        # group_layout.addWidget(self.tabela_pagamentos)
 
         # Rodapé com totais
         totals_layout = QHBoxLayout()
@@ -223,7 +209,8 @@ class Ui_page_ficha(QWidget):
         self.input_valor.setCursorPosition(len(texto_formatado))
 
         self.tabela_sugestoes.setVisible(False)
-
+        self.btn_adicionar.setFocus()
+        
     # Adiciona uma nova despesa à tabela e ao banco
     def adicionar_despesa(self):
         produto = self.produto_selecionado
@@ -298,17 +285,8 @@ class Ui_page_ficha(QWidget):
             self.tabela.setItem(row, 2, QTableWidgetItem(str(despesa.quantidade)))
             self.tabela.setItem(row, 3, QTableWidgetItem(f"R${despesa.valor_produto:.2f}"))
             self.tabela.setItem(row, 4, QTableWidgetItem(f"R${despesa.valor:.2f}"))
-
-        # for pagamento in pagamentos:
-        #     row = self.tabela_pagamentos.rowCount()
-        #     self.tabela_pagamentos.insertRow(row)
-        #     data_formatada = pagamento.data.strftime("%d/%m/%Y %H:%M")
-        #     descricao = pagamento.descricao
-        #     self.tabela_pagamentos.setItem(row, 0, QTableWidgetItem(data_formatada))
-        #     self.tabela_pagamentos.setItem(row, 1, QTableWidgetItem(descricao))
-        #     self.tabela_pagamentos.setItem(row, 2, QTableWidgetItem(str(pagamento.metodo_pagamento)))
-        #     self.tabela_pagamentos.setItem(row, 3, QTableWidgetItem(f"R${pagamento.valor:.2f}"))
-
+        
+        # Adiciona pagamentos na tabela
         for pagamento in pagamentos:
             row = self.tabela.rowCount()
             self.tabela.insertRow(row)
@@ -341,5 +319,13 @@ class Ui_page_ficha(QWidget):
         # Calcula a altura desejada com base no número de linhas
         desired_height = row_count * row_height + header_height + scrollbar_height + 2
 
-        self.tabela_sugestoes.setMaximumHeight(desired_height)
+        if desired_height > 150:
+            self.tabela_sugestoes.setMaximumHeight(150)
+        else:
+            self.tabela_sugestoes.setMaximumHeight(desired_height)
         self.tabela_sugestoes.setVisible(True)
+        
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_Down:
+            self.tabela_sugestoes.setFocus()
+            self.tabela_sugestoes.setCurrentCell(0, 0)
