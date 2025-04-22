@@ -27,6 +27,7 @@ from views.PagesMenu.hospedes import PageHospedes
 from views.PagesMenu.quartos import PageQuartos
 from views.PagesMenu.relatorios import PageRelatorios
 from views.PagesMenu.reservas import PageReservas
+from views.PagesMenu.produtos import PageProdutos
 
 
 class Ui_MainWindow(object):
@@ -111,8 +112,8 @@ class Ui_MainWindow(object):
         self.MenuLateral.setStyleSheet(style_label_menu_lateral())  # Estilo externo
 
         # Lista de itens e ícones do menu
-        menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios"]
-        icons = ["🏨", "📅", "🛏️", "👫", "📊"]  # Emojis como ícones simples
+        menu_items = ["Hospedagem", "Reservas", "Quartos", "Hospedes", "Relatorios", "Produtos"]
+        icons = ["🏨", "📅", "🛏️", "👫", "📊", "🍴"]  # Emojis como ícones simples
 
         # Adiciona os itens com ícones ao menu lateral
         for itens, text in enumerate(menu_items):
@@ -135,6 +136,7 @@ class Ui_MainWindow(object):
         self.pages.addWidget(PageQuartos())      # Index 2
         self.pages.addWidget(PageHospedes())     # Index 3
         self.pages.addWidget(PageRelatorios())   # Index 4
+        self.pages.addWidget(PageProdutos())   # Index 5
 
         self.pages.setCurrentWidget(self.pages.findChild(QWidget, "PageHospedagem"))  # Define página inicial como "Hospedagem"
 
