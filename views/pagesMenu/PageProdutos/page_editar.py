@@ -189,9 +189,6 @@ class Ui_page_editar(QWidget):
             return
         descricao = self.lineEdit_descricao.text()
         descricao = descricao.upper()
-        valor = self.lineEdit_valor.text().replace("R$ ", "").replace(",", ".")
-        valor = float(valor)
-
         erro = False
         if not descricao or len(descricao) < 4:
             self.label_error_descricao.setText("Nome Muito curto*")
