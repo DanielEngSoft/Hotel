@@ -258,7 +258,7 @@ def somar_adiantamentos(id_hospedagem):
 def adiantamentos_hospedagem(id_hospedagem):
     with Session() as session:
         try:
-            adiantamentos = session.query(Adiantamento).filter_by(id_hospedagem=id_hospedagem).all()
+            adiantamentos = session.query(Adiantamento).filter_by(id_hospedagem=id_hospedagem).order_by(Adiantamento.data).all()
             return adiantamentos
         except Exception as e:
             print(f'Erro ao buscar adiantamentos da hospedagem: {e}')

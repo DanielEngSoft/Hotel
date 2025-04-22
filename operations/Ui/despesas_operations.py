@@ -54,10 +54,10 @@ def buscar_despesas_por_id_hospedagem(id_hospedagem):
             session.query(Despesa)
             .options(joinedload(Despesa.produto))  # <- carrega o produto junto
             .filter(Despesa.id_hospedagem == id_hospedagem)
+            .order_by(Despesa.data)
             .all()
         )
-        return despesas
-    
+        return despesas    
 def somar_despesas(id_hospedagem):
     with Session() as session:
         try:

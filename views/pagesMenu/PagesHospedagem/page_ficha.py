@@ -229,14 +229,6 @@ class Ui_page_ficha(QWidget):
             data=data
         )
 
-        row = self.tabela.rowCount()
-        self.tabela.insertRow(row)
-        self.tabela.setItem(row, 0, QTableWidgetItem(despesa.data.strftime("%d/%m/%Y %H:%M")))
-        self.tabela.setItem(row, 1, QTableWidgetItem(produto.descricao))
-        self.tabela.setItem(row, 2, QTableWidgetItem(str(despesa.quantidade)))
-        self.tabela.setItem(row, 3, QTableWidgetItem(f"R${despesa.valor_produto:.2f}"))
-        self.tabela.setItem(row, 4, QTableWidgetItem(f"R${despesa.valor:.2f}"))
-
         # Limpa campos após inserção
         self.input_descricao.clear()
         self.input_valor.setText(VALOR_ZERO)
@@ -246,6 +238,7 @@ class Ui_page_ficha(QWidget):
         self.tabela_sugestoes.setVisible(False)
 
         self.atualizar_totais()
+        self.carregar_despesas()
 
     # Atualiza os totais de despesas, diárias e valor total
     def atualizar_totais(self):
