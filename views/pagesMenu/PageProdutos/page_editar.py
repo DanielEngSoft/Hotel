@@ -5,10 +5,36 @@ from PySide6.QtWidgets import (
     QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox,
     QTableWidget, QTableWidgetItem, QHeaderView
 )
-from operations.Ui.hospedes_operations import procura_hospede_completo, procura_hospedes_por_nome, atualiza_hospede
+from operations.Ui.produtos_operations import buscar_produto_por_nome, selecionar_produto, update_produto
 from styles.styles import style_botao_verde, style_groupbox
-from utils.validadores_ui import formata_nome, valida_telefone
+class LineEditMonetario(QLineEdit):
+    def __init__(self, total, parent=None):
+        super().__init__(parent)
+        self.setText(total)
+        self.valor_cents = 0
+        self.textEdited.connect(self.formatar_valor_monetario)
 
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        QTimer.singleShot(0, lambda: self.setCursorPosition(len(self.text())))
+
+    def formatar_valor_monetario(self, _):
+        texto = self.text()
+        apenas_numeros = ''.join(filter(str.isdigit, texto))
+        self.valor_cents = int(apenas_numeros) if apenas_numeros else 0
+
+        reais = self.valor_cents // 100
+        centavos = self.valor_cents % 100
+        texto_formatado = f"R$ {reais}.{centavos:02d}"
+
+        self.blockSignals(True)
+        self.setText(texto_formatado)
+        self.blockSignals(False)
+        self.setCursorPosition(len(texto_formatado))
+
+    def get_valor_float(self):
+        return self.valor_cents / 100.0
+    
 class Ui_page_editar(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -32,17 +58,15 @@ class Ui_page_editar(QWidget):
 
         # Campo de busca por nome
 
-        self.label_buscar = QLabel("Buscar:")
+        self.label_buscar = QLabel("Selecione o produto:")
         self.label_buscar.setFont(font)
-        self.label_buscar.setMaximumWidth(100)
-        self.label_buscar.setFont(font)
-        self.label_buscar.setStyleSheet(style_botao_verde())
+        self.label_buscar.setMaximumWidth(180)
 
         self.lineEdit_busca = QLineEdit()
-        self.lineEdit_busca.setPlaceholderText("Nome do hóspede")
+        self.lineEdit_busca.setPlaceholderText("Buscar")
         self.lineEdit_busca.setFont(font)
         self.lineEdit_busca.setMaximumWidth(700)        
-        self.lineEdit_busca.textChanged.connect(self.buscar_hospede) 
+        self.lineEdit_busca.textChanged.connect(self.buscar_produto) 
 
         # Layout horizontal para campo de busca + botão
         busca_layout = QHBoxLayout()
@@ -56,12 +80,12 @@ class Ui_page_editar(QWidget):
         self.tabela_resultados.setVisible(False)
         self.tabela_resultados.setMaximumHeight(150)
         self.tabela_resultados.setMinimumWidth(800)
-        self.tabela_resultados.setColumnCount(5)
-        self.tabela_resultados.setHorizontalHeaderLabels(["Nome", "CPF", "Empresa", "Telefone", "Endereço"])
+        self.tabela_resultados.setColumnCount(2)
+        self.tabela_resultados.setHorizontalHeaderLabels(["Descrição", "Valor"])
         self.tabela_resultados.setEditTriggers(QTableWidget.NoEditTriggers)  # impede edição direta
         self.tabela_resultados.setAlternatingRowColors(True)
         self.tabela_resultados.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.tabela_resultados.cellClicked.connect(self.carregar_dados_hospede) 
+        self.tabela_resultados.cellClicked.connect(self.carregar_dados_produto)
 
         # Faz o cabeçalho se ajustar ao tamanho da tabela
         self.tabela_resultados.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -76,7 +100,7 @@ class Ui_page_editar(QWidget):
         self.verticalLayout.addWidget(self.line_separador)
 
         # GroupBox estilizado para edição de dados
-        self.groupBox = QGroupBox("Editar dados do hóspede", self.widget)
+        self.groupBox = QGroupBox("Editar dados do produto", self.widget)
         self.groupBox.setFont(font)
         self.groupBox.setStyleSheet(style_groupbox())
         self.groupBoxLayout = QFormLayout(self.groupBox)
@@ -91,55 +115,20 @@ class Ui_page_editar(QWidget):
             layout.addWidget(error_label)
             return container
 
-        # Campo Nome
-        self.lineEdit_nome = QLineEdit()
-        self.lineEdit_nome.setFont(font)
-        self.lineEdit_nome.setMinimumWidth(300)
-        self.label_error_nome = QLabel("")
-        self.label_error_nome.setStyleSheet("color: red;")
-        self.label_error_nome.setFont(font)
-        self.groupBoxLayout.addRow("Nome:", create_input_with_error(self.lineEdit_nome, self.label_error_nome))
+        # Campo Descrição
+        self.lineEdit_descricao = QLineEdit()
+        self.lineEdit_descricao.setFont(font)
+        self.lineEdit_descricao.setMinimumWidth(300)
+        self.label_error_descricao = QLabel("")
+        self.label_error_descricao.setStyleSheet("color: red;")
+        self.label_error_descricao.setFont(font)
+        self.groupBoxLayout.addRow("Produto:", create_input_with_error(self.lineEdit_descricao, self.label_error_descricao))
 
-        # Campo Telefone
-        self.lineEdit_telefone = QLineEdit()
-        self.lineEdit_telefone.setInputMask("(00)00000-0000;_")
-        self.lineEdit_telefone.setFont(font)
-        self.label_error_telefone = QLabel("")
-        self.label_error_telefone.setStyleSheet("color: red;")
-        self.label_error_telefone.setFont(font)
-        self.groupBoxLayout.addRow("Telefone:", create_input_with_error(self.lineEdit_telefone, self.label_error_telefone))
-
-        # Campo Endereço (Estado + Cidade)
-        endereco_container = QWidget()
-        endereco_layout = QHBoxLayout(endereco_container)
-        endereco_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.comboBox_estado = QComboBox()
-        self.comboBox_estado.setFont(font)
-        self.comboBox_estado.addItems([
-            "PI", "MA", "CE", "PE", "BA", "TO", "PB", "RN", "AL", "SE", "DF", "GO",
-            "PA", "MT", "MG", "ES", "RJ", "SP", "RO", "AM", "RR", "AC", "AP", "MS", "PR", "SC", "RS"
-        ])
-
-        self.lineEdit_cidade = QLineEdit()
-        self.lineEdit_cidade.setFont(font)
-        self.lineEdit_cidade.setMinimumWidth(150)
-        self.label_error_cidade = QLabel("")
-        self.label_error_cidade.setStyleSheet("color: red;")
-        self.label_error_cidade.setFont(font)
-
-        endereco_layout.addWidget(self.comboBox_estado)
-        endereco_layout.addSpacing(10)
-        endereco_layout.addWidget(self.lineEdit_cidade)
-        endereco_layout.addWidget(self.label_error_cidade)
-
-        self.groupBoxLayout.addRow("Endereço:", endereco_container)
-
-        # Campo Empresa
-        self.lineEdit_empresa = QLineEdit()
-        self.lineEdit_empresa.setFont(font)
-        self.lineEdit_empresa.setMinimumWidth(300)
-        self.groupBoxLayout.addRow("Empresa:", self.lineEdit_empresa)
+        # Campo Valor
+        self.lineEdit_valor = LineEditMonetario(total='R$ 0,00')
+        self.lineEdit_valor.setFont(font)
+        self.lineEdit_valor.setMinimumWidth(300)
+        self.groupBoxLayout.addRow("Valor:", self.lineEdit_valor)
 
         # Adiciona GroupBox centralizado
         self.verticalLayout.addWidget(self.groupBox, alignment=Qt.AlignCenter)
@@ -160,96 +149,69 @@ class Ui_page_editar(QWidget):
         self.verticalLayout.addWidget(self.label_confirmacao, alignment=Qt.AlignCenter)
 
         layout.addWidget(self.widget)
-        self.hospede_selecionado = None
+        self.produto_selecionado = None
 
-    def buscar_hospede(self):
-        nome = self.lineEdit_busca.text()
+    def buscar_produto(self):
+        descricao = self.lineEdit_busca.text()
         self.tabela_resultados.setRowCount(0)
 
-        hospedes = procura_hospedes_por_nome(nome)
-        if hospedes:
+        produtos = buscar_produto_por_nome(descricao)
+        if produtos:
             if self.lineEdit_busca.text() == "":
                 self.tabela_resultados.setVisible(False)
             else:
                 self.tabela_resultados.setVisible(True)
-                for i, h in enumerate(hospedes):
+                for i, h in enumerate(produtos):
                     self.tabela_resultados.insertRow(i)
-                    for j, val in enumerate([h.nome, h.cpf, h.empresa, h.telefone, h.endereco]):
+                    for j, val in enumerate([h.descricao, h.valor]):
                         self.tabela_resultados.setItem(i, j, QTableWidgetItem(str(val)))
         else:
             self.tabela_resultados.setVisible(False)
         self._ajustar_altura_tabela()
 
-    def carregar_dados_hospede(self, row, column):
-        nome = self.tabela_resultados.item(row, 0).text()
-        empresa = self.tabela_resultados.item(row, 2).text()
-        telefone = self.tabela_resultados.item(row, 3).text()
-        endereco = self.tabela_resultados.item(row, 4).text()
+    def carregar_dados_produto(self, row, column):
+        descricao = self.tabela_resultados.item(row, 0).text()
+        valor = self.tabela_resultados.item(row, 1).text()
 
-        self.lineEdit_nome.setText(nome)
-        self.lineEdit_telefone.setText(telefone)
-        self.lineEdit_empresa.setText(empresa)
+        self.lineEdit_descricao.setText(descricao)
+        self.lineEdit_valor.setText(valor)
 
-        if " - " in endereco:
-            uf, cidade = endereco.split(" - ")
-            self.comboBox_estado.setCurrentText(uf)
-            self.lineEdit_cidade.setText(cidade)
-        else:
-            self.comboBox_estado.setCurrentIndex(0)
-            self.lineEdit_cidade.clear()
+        self.produto_selecionado = selecionar_produto(descricao=descricao)
 
-        self.hospede_selecionado = procura_hospede_completo(nome, empresa, telefone, endereco)
-
+        self.lineEdit_busca.clear()
+        self.lineEdit_busca.setPlaceholderText(descricao)
     def salvar_alteracoes(self):
-        self.label_error_nome.setText("")
-        self.label_error_telefone.setText("")
-        self.label_error_cidade.setText("")
+        self.label_error_descricao.setText("")
         self.label_confirmacao.setText("")
 
-        if not self.hospede_selecionado:
+        if not self.produto_selecionado:
+            self.label_confirmacao.setText("Selecione um produto para editar!")
             return
-        cpf = self.hospede_selecionado.cpf
-        nome = formata_nome(self.lineEdit_nome.text())
-        telefone = self.lineEdit_telefone.text()
-        cidade = formata_nome(self.lineEdit_cidade.text())
-        uf = self.comboBox_estado.currentText()
-        endereco = f"{uf} - {cidade}"
-        empresa = formata_nome(self.lineEdit_empresa.text())
-        if empresa == "":
-            empresa = "------"
+        descricao = self.lineEdit_descricao.text()
+        descricao = descricao.upper()
+        valor = self.lineEdit_valor.text().replace("R$ ", "").replace(",", ".")
+        valor = float(valor)
 
         erro = False
-        if not nome or len(nome) < 4:
-            self.label_error_nome.setText("Nome Muito curto*")
-            self.label_error_nome.setMinimumWidth(200)
-            erro = True
-        if not valida_telefone(telefone):
-            self.label_error_telefone.setText("Telefone inválido*")
-            self.label_error_telefone.setMinimumWidth(200)
-            erro = True
-        if not cidade:
-            self.label_error_cidade.setText("Cidade obrigatória*")
-            self.label_error_cidade.setMinimumWidth(200)
+        if not descricao or len(descricao) < 4:
+            self.label_error_descricao.setText("Nome Muito curto*")
+            self.label_error_descricao.setMinimumWidth(200)
             erro = True
 
         if erro:
             return
 
-        atualiza_hospede(cpf=cpf, nome=nome, telefone=telefone, endereco=endereco, empresa=empresa)
+        update_produto(id_produto=self.produto_selecionado.id, descricao=descricao, valor=self.lineEdit_valor.get_valor_float())
 
         self.label_confirmacao.setText("Dados atualizados com sucesso!")
-
-        self.buscar_hospede()
+        self.buscar_produto()
         QTimer.singleShot(2000, self.limpar_campos)
 
     def limpar_campos(self):
-        self.lineEdit_nome.clear()
-        self.lineEdit_telefone.clear()
-        self.lineEdit_cidade.clear()
-        self.lineEdit_empresa.clear()
-        self.comboBox_estado.setCurrentIndex(0)
+        self.lineEdit_descricao.clear()
+        self.lineEdit_valor.setText("R$ 0,00")
         self.label_confirmacao.setText("")
-        self.hospede_selecionado = None
+        self.produto_selecionado = None
     
     def _ajustar_altura_tabela(self):
         row_count = self.tabela_resultados.rowCount()

@@ -55,7 +55,6 @@ class Ui_page_ficha(QWidget):
         super().__init__(parent)
         self.hospedagem = hospedagem
 
-
         # Fontes utilizadas
         font_title = QFont()
         font_title.setPointSize(14)
@@ -221,7 +220,7 @@ class Ui_page_ficha(QWidget):
         valor_digitado = self.input_valor.get_valor_float()
         data = self.input_data.dateTime().toPython()
 
-        despesa = create_despesa(
+        create_despesa(
             id_hospedagem=self.hospedagem.id,
             id_produto=produto.id,
             quantidade=quantidade,
@@ -322,3 +321,7 @@ class Ui_page_ficha(QWidget):
         if event.key() == Qt.Key_Down:
             self.tabela_sugestoes.setFocus()
             self.tabela_sugestoes.setCurrentCell(0, 0)
+        if event.key() == Qt.Key_Escape:
+            self.input_descricao.setFocus()
+            self.input_descricao.clear()
+            

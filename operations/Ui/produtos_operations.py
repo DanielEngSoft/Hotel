@@ -23,10 +23,10 @@ def listar_produtos():
         produtos = session.query(Produto).order_by(Produto.descricao).all()
         return produtos
 
-def buscar_produto_por_nome(nome_produto):
+def buscar_produto_por_nome(descricao):
     """Busca um produto pelo nome."""
     with Session() as session:
-        produto = session.query(Produto).filter(Produto.descricao.ilike(f"%{nome_produto}%")).all()
+        produto = session.query(Produto).filter(Produto.descricao.ilike(f"%{descricao}%")).order_by(Produto.descricao).all()
         return produto
     
 def buscar_produto_por_id(id_produto):
@@ -35,7 +35,7 @@ def buscar_produto_por_id(id_produto):
         produto = session.query(Produto).filter(Produto.id == id_produto).first()
         return produto
     
-def editar_produto(id_produto, descricao, valor):
+def update_produto(id_produto, descricao, valor):
     """Edita um produto existente."""
     with Session() as session:
         produto = session.query(Produto).filter(Produto.id == id_produto).first()
@@ -57,3 +57,13 @@ def verifica_produto_existente(descricao):
         if produto:
             return True
         return False
+    
+def selecionar_produto(descricao):
+    """Seleciona um produto pelo nome."""
+    with Session() as session:
+        try:
+            produto = session.query(Produto).filter(Produto.descricao == descricao).first()
+            return produto
+        except IntegrityError:
+            session.rollback()
+            return False
