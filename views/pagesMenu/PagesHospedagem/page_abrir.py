@@ -140,6 +140,7 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_quartos.setColumnWidth(0, 50)
         self.tableWidget_quartos.horizontalHeader().setStretchLastSection(True)
         self.tableWidget_quartos.verticalHeader().setVisible(False)
+        self.tableWidget_quartos.currentCellChanged.connect(self.selecionar_quarto)
         self.form_layout.addRow(self.label_total_quartos, self.tableWidget_quartos)
 
         self.verticalLayout_abrir.addLayout(self.form_layout) 
@@ -243,7 +244,7 @@ class Ui_page_abrir(QWidget):
         cpf = self.lineEdit_cpf.text()
 
         self.label_feedback.setText("")
-        self.label_feedback.setStyleSheet("")
+        self.label_nome.setText("")
 
         if row == -1 or len(cpf) != 14:
             self.label_feedback.setText("Selecione um quarto e preencha o CPF.")
@@ -344,9 +345,17 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setText("..-")
         self.dateEdit_prev_saida.setDate(QDate.currentDate())
         self.spinBox_qtd_hospedes.setValue(1)
+        self.checkBox_desconto.setChecked(False)
         self.atualizar_preco(1)
         self.update_quartos()
-        self.checkBox_desconto.setChecked(False)
+
+    def selecionar_quarto(self, row, col):
+        item = self.tableWidget_quartos.item(row, 0)
+        if item is not None:
+            quarto = item.text()
+        else:
+            quarto = ''
+        self.label_total_quartos.setText(f"Selecione o quarto: {quarto}")
 
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:

@@ -50,9 +50,6 @@ class PageReservas(QWidget):
         self.lista_menu.addItem("Listar")
         self.lista_menu.addItem("Fechar")
 
-        # Removidos botões antigos: self.button_abrir, self.button_listar, self.button_fechar
-        # Removida função auxiliar: _estilizar_botao
-
         # Adiciona o menu (frame) ao layout principal
         self.layout_principal.addWidget(self.menu_superior)
 
