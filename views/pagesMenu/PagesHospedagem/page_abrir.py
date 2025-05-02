@@ -100,9 +100,9 @@ class Ui_page_abrir(QWidget):
         self.spinBox_qtd_hospedes.setValue(1)
         qtd_price_layout.addWidget(self.spinBox_qtd_hospedes)
 
-        self.label_preco = QLabel("R$ 100", self.widget)
+        self.label_preco = QLabel()
         self.label_preco.setFont(font)
-        self.label_preco.setMaximumWidth(80)
+        self.label_preco.setMaximumWidth(100)
         self.label_preco.setStyleSheet("color: green; font-weight: bold;")
         qtd_price_layout.addWidget(self.label_preco)
 
@@ -211,7 +211,7 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.verticalHeader().setVisible(False)
         self.verticalLayout_buscar.addWidget(self.tableWidget_hospedes)
 
-        self.tableWidget_hospedes.cellClicked.connect(self.pegar_cpf)
+        self.tableWidget_hospedes.cellActivated.connect(self.pegar_cpf)
 
         # Espaçamento final
         self.verticalLayout_buscar.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
@@ -244,12 +244,14 @@ class Ui_page_abrir(QWidget):
         cpf = self.lineEdit_cpf.text()
 
         self.label_feedback.setText("")
-        self.label_nome.setText("")
 
         if row == -1 or len(cpf) != 14:
             self.label_feedback.setText("Selecione um quarto e preencha o CPF.")
             self.label_feedback.setStyleSheet("color: red;")
             return
+            
+        self.label_nome.setText("")
+        self.lineEdit_nome.setText("")
 
         quarto_num = self.tableWidget_quartos.item(row, 0).text()
         qtd_hospedes = self.spinBox_qtd_hospedes.value()
@@ -321,10 +323,12 @@ class Ui_page_abrir(QWidget):
 
     # Atualiza o preço de acordo com a quantidade de hóspedes
     def atualizar_preco(self, qtd_hospedes):
-        preco = diaria(qtd_hospedes)
         if self.checkBox_desconto.isChecked():
-            preco = preco * (1 - DESCONTO)
-        self.label_preco.setText(f"R$ {preco}")
+            preco = diaria(qtd_hospedes) * (1 - DESCONTO)
+            self.spinBox_qtd_hospedes.setValue(qtd_hospedes)
+        else:
+            preco = diaria(qtd_hospedes)
+        self.label_preco.setText(f"R$ {preco:.2f}")
     
     def _ajustar_altura_tabela(self):
         row_count = self.tableWidget_hospedes.rowCount()

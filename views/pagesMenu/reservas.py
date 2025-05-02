@@ -27,9 +27,6 @@ class PageReservas(QWidget):
         self.menu_superior.setMinimumSize(QSize(600, 45))
         self.menu_superior.setMaximumSize(QSize(1800, 45))
         self.menu_superior.setFrameShape(QFrame.Shape.StyledPanel)
-        # self.menu_superior.setFrameShadow(QFrame.Raised) # Removido ou ajustado conforme necessário
-
-        # Removido layout antigo de botões: self.layout_menu = QHBoxLayout(self.menu_superior)
 
         # Novo QListWidget para o menu
         self.lista_menu = QListWidget(self.menu_superior)
@@ -77,10 +74,6 @@ class PageReservas(QWidget):
         self.layout_principal.addWidget(self.pages)
 
         # ========== CONEXÃO ENTRE ITENS E PÁGINAS ==========
-        # Removidas conexões antigas dos botões
-        # Nova conexão: mudar a página no QStackedWidget quando o item selecionado na lista mudar
         self.lista_menu.currentRowChanged.connect(self.pages.setCurrentIndex)
 
-        # Seleciona a primeira página por padrão ("Abrir")
-        # Removido: self.pages.setCurrentWidget(self.page_abrir)
         self.lista_menu.setCurrentRow(0) # Seleciona o primeiro item ("Abrir") na lista
