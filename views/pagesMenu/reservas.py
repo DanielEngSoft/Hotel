@@ -8,6 +8,8 @@ from PySide6.QtWidgets import (
 )
 from styles.styles import menu_superior_pages
 
+from views.PagesMenu.PagesReservas.page_abrir import Ui_page_abrir
+
 class PageReservas(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -59,7 +61,7 @@ class PageReservas(QWidget):
         self.pages = QStackedWidget(self)
 
         # As páginas continuam as mesmas
-        self.page_abrir = QWidget()
+        self.page_abrir = Ui_page_abrir()
         # Adicione aqui os widgets da página "Abrir"
         self.pages.addWidget(self.page_abrir)
 

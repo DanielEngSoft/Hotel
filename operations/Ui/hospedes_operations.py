@@ -31,7 +31,7 @@ def procura_hospede_completo(nome, empresa, telefone, endereco):
         
 def procura_hospedes_por_nome(nome):
     with Session() as session:
-        hospedes = session.query(Hospede).filter(Hospede.nome.ilike(f"%{nome}%")).all()
+        hospedes = session.query(Hospede).filter(Hospede.nome.ilike(f"%{nome}%")).order_by(Hospede.nome).all()
         if hospedes:
             return hospedes
         else:
