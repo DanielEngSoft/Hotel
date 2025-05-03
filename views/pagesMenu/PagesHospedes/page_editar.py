@@ -201,7 +201,6 @@ class Ui_page_editar(QWidget):
         self.hospede_selecionado = procura_hospede_completo(nome, empresa, telefone, endereco)
 
         self.lineEdit_busca.clear()
-        self.lineEdit_busca.setPlaceholderText(nome)
 
     def salvar_alteracoes(self):
         self.label_error_nome.setText("")
