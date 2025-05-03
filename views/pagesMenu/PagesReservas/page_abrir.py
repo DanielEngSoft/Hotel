@@ -139,37 +139,27 @@ class Ui_page_abrir(QWidget):
         # Adiciona os widgets ao formulário
         self.form_layout.addRow(self.dataSaida_label, self.dataSaida_DateTimeEdit)
 
-        # Quantidade de pessoas(label e spinbox)
+        # Quantidade de pessoas Label
         self.qtd_pessoas_label = QLabel(self.groupBox)
         self.qtd_pessoas_label.setObjectName("quantidadeDePessoasLabel")
         self.qtd_pessoas_label.setText("Quantidade de pessoas:")
         self.qtd_pessoas_label.setFont(font)
 
-        self.form_layout.setWidget(3, QFormLayout.LabelRole, self.qtd_pessoas_label)
-
-        # Quantidade de pessoas(spinbox)+()
+        # Widget de SpinBox + Checkbox + Label de valor
         self.qtd_pessoas_widget = QWidget(self.groupBox)
         self.qtd_pessoas_widget.setObjectName("quantidadeDePessoasWidget")
         self.qtd_pessoas_widget.setMinimumSize(QSize(0, 30))
         self.qtd_pessoas_widget.setMaximumSize(QSize(16777215, 50))
         self.qtd_pessoas_widget.setFont(font)
 
-        self.verticalLayout_4 = QVBoxLayout(self.qtd_pessoas_widget)
-        self.verticalLayout_4.setSpacing(0)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-
-        self.widget = QWidget(self.qtd_pessoas_widget)
-        self.widget.setObjectName("widget")
-        self.widget.setMinimumSize(QSize(0, 25))
-        self.widget.setMaximumSize(QSize(300, 16777215))
-        self.horizontalLayout = QHBoxLayout(self.widget)
+        # Layout horizontal do Widget
+        self.horizontalLayout = QHBoxLayout(self.qtd_pessoas_widget)
         self.horizontalLayout.setSpacing(0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.horizontalLayout.setObjectName("verticalLayout_4")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
 
         # Spinbox qtd pessoas
-        self.spinBox = QSpinBox(self.widget)
+        self.spinBox = QSpinBox(page_abrir)
         self.spinBox.setObjectName("spinBox")
         self.spinBox.setMinimumSize(QSize(0, 25))
         self.spinBox.setFont(font)
@@ -177,7 +167,7 @@ class Ui_page_abrir(QWidget):
         self.horizontalLayout.addWidget(self.spinBox)
 
         # Checkbox desconto
-        self.checkBox = QCheckBox(self.widget)
+        self.checkBox = QCheckBox(page_abrir)
         self.checkBox.setObjectName("checkBox")
         self.checkBox.setFont(font)
         self.checkBox.setText('Desconto')
@@ -185,16 +175,16 @@ class Ui_page_abrir(QWidget):
         self.horizontalLayout.addWidget(self.checkBox)
 
         # Valor da diária
-        self.label = QLabel(self.widget)
+        self.label = QLabel(page_abrir)
         self.label.setObjectName("label")
         # Arrumar depois
         self.label.setText("R$ 100,00")
         self.label.setFont(font)
 
         self.horizontalLayout.addWidget(self.label)
-        self.verticalLayout_4.addWidget(self.widget)
 
-        self.form_layout.setWidget(3, QFormLayout.FieldRole, self.qtd_pessoas_widget)
+        # Adiciona os widgets ao formulário
+        self.form_layout.addRow(self.qtd_pessoas_label, self.qtd_pessoas_widget)
 
         # Adiantamento
         self.adiantamentoLabel = QLabel(self.groupBox)
@@ -209,13 +199,13 @@ class Ui_page_abrir(QWidget):
         self.form_layout.addRow(self.adiantamentoLabel, self.adiantamentoLineEdit)
 
         # Quartos
-        self.quartosLabel = QLabel(self.groupBox)
-        self.quartosLabel.setObjectName("quartosLabel")
-        self.quartosLabel.setText(f"Selecione o quarto: ")
-        self.quartosLabel.setFont(font)
+        self.label_quartos = QLabel(self.groupBox)
+        self.label_quartos.setObjectName("quartosLabel")
+        self.label_quartos.setText(f"Selecione o quarto: ")
+        self.label_quartos.setFont(font)
 
         # Tabela de quartos disponíveis
-        self.tableWidget_quartos = QTableWidget(0, 2, self.widget)
+        self.tableWidget_quartos = QTableWidget(0, 2, page_abrir)
         self.tableWidget_quartos.setStyleSheet(tabelas())
         self.tableWidget_quartos.setAlternatingRowColors(True)
         self.tableWidget_quartos.setMaximumHeight(150)
@@ -228,34 +218,37 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_quartos.verticalHeader().setVisible(False)
         self.tableWidget_quartos.currentCellChanged.connect(self.selecionar_quarto)
         
-        self.form_layout.addRow(self.quartosLabel, self.tableWidget_quartos)
+        self.form_layout.addRow(self.label_quartos, self.tableWidget_quartos)
         self.update_quartos()
 
-        # Observações
-        self.ObsLabel = QLabel(self.groupBox)
-        self.ObsLabel.setObjectName("ObsLabel")
-        self.ObsLabel.setText("Observações:")
-        self.ObsLabel.setFont(font)
+        # Observações Label
+        self.label_obs = QLabel(self.groupBox)
+        self.label_obs.setObjectName("ObsLabel")
+        self.label_obs.setText("Observações:")
+        self.label_obs.setFont(font)
 
-        self.plainTextEdit = QPlainTextEdit(self.widget)
-        self.plainTextEdit.setObjectName("plainTextEdit")
-        self.plainTextEdit.setMaximumSize(QSize(300, 100))
+        # Observações Input
+        self.plainTextEdit_obs = QPlainTextEdit(page_abrir)
+        self.plainTextEdit_obs.setObjectName("plainTextEdit")
+        self.plainTextEdit_obs.setMaximumSize(QSize(300, 100))
 
-        self.form_layout.addRow(self.ObsLabel, self.plainTextEdit)
+        # Adiciona os widgets ao formulário
+        self.form_layout.addRow(self.label_obs, self.plainTextEdit_obs)
 
-        # Adiciona o layout do Form ao layout principal
+        # Adiciona o layout do Form ao layout do groupbox
         self.layout_groupBox.addLayout(self.form_layout)
 
+        # Adiciona o groupbox ao layout principal
         self.layout_central.addWidget(self.groupBox)
 
         # Botão "Abrir reserva"
-        self.pushButton = QPushButton(page_abrir)
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton.setText("Abrir reserva")
-        self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet(style_botao_verde())
+        self.pushButton_abrir = QPushButton(page_abrir)
+        self.pushButton_abrir.setObjectName("pushButton")
+        self.pushButton_abrir.setText("Abrir reserva")
+        self.pushButton_abrir.setFont(font)
+        self.pushButton_abrir.setStyleSheet(style_botao_verde())
 
-        self.layout_central.addWidget(self.pushButton)
+        self.layout_central.addWidget(self.pushButton_abrir)
         self.layout_central.addStretch()
 
         self.layout_principal.addStretch()
@@ -299,7 +292,7 @@ class Ui_page_abrir(QWidget):
             quarto = item.text()
         else:
             quarto = ''
-        self.quartosLabel.setText(f"Selecione o quarto: {quarto}")
+        self.label_quartos.setText(f"Selecione o quarto: {quarto}")
 
     def update_quartos(self):
         self.tableWidget_quartos.setRowCount(0)

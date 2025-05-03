@@ -17,7 +17,7 @@ from styles.styles import style_botao_verde, tabelas
 DESCONTO = 0.1  # 10% de desconto
 
 # ====== CLASSE PRINCIPAL DA PÁGINA ABRIR HOSPEDAGEM ======
-class Ui_page_abrir(QWidget):
+class Ui_page_abrir2(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)  # Inicializa a interface
@@ -32,7 +32,7 @@ class Ui_page_abrir(QWidget):
 
         # Layout vertical principal
         self.layout_central = QVBoxLayout()
-        self.layout_central.setObjectName(u"layout_central")
+        self.layout_central.setObjectName("layout_central")
         self.layout_central.setContentsMargins(-1, 30, -1, -1)
 
         # Fonte padrão para o texto

@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 from styles.styles import menu_superior_pages
 
 from views.PagesMenu.PagesReservas.page_abrir import Ui_page_abrir
-from views.PagesMenu.PagesReservas.page_abrir2 import Ui_page_abrir2
+from views.PagesMenu.PagesReservas.page_listar import Ui_page_abrir2
 
 class PageReservas(QWidget):
     def __init__(self, parent=None):
