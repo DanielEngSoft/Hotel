@@ -16,12 +16,30 @@ class Hospedagem(Base):
     data_entrada = Column(DateTime, default=datetime.datetime.now)
     data_saida = Column(DateTime)
     qtd_hospedes = Column(Integer)
+    acompanhantes = Column(String)
     valor_diaria = Column(Float)
+    obs = Column(String)
     aberta = Column(Boolean, default=True)  # True se a hospedagem estiver aberta, False se já tiver sido encerrada
 
     hospede = relationship("Hospede", back_populates="hospedagens")
     quarto = relationship("Quarto", back_populates="hospedagens")
     despesas = relationship("Despesa", back_populates="hospedagem", cascade="all, delete-orphan")
+
+class Reserva(Base):
+    __tablename__ = 'reservas'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_hospede = Column(String, ForeignKey('hospedes.cpf')) 
+    id_quarto = Column(Integer, ForeignKey('quartos.numero'))
+    data_entrada = Column(DateTime)
+    data_saida = Column(DateTime)
+    qtd_hospedes = Column(Integer)
+    acompanhantes = Column(String)
+    adiantamento = Column(Float, default=0)
+    valor_diaria = Column(Float)
+    obs = Column(String)
+
+    hospede = relationship("Hospede", back_populates="reservas")
+    quarto = relationship("Quarto", back_populates="reservas")
 
 
 class Hospede(Base):
@@ -34,6 +52,7 @@ class Hospede(Base):
     empresa = Column(String, default="------")
 
     hospedagens = relationship("Hospedagem", back_populates="hospede")
+    reservas = relationship("Reserva", back_populates="hospede")
 
 
 class Quarto(Base):
@@ -43,6 +62,7 @@ class Quarto(Base):
     disponivel = Column(Boolean)
 
     hospedagens = relationship("Hospedagem", back_populates="quarto")
+    reservas = relationship("Reserva", back_populates="quarto")
 
 
 class Usuario(Base):
