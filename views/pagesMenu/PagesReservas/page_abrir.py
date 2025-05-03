@@ -281,7 +281,10 @@ class Ui_page_abrir(QWidget):
                     self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
                     self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
                     self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
+<<<<<<< HEAD
         self._ajustar_altura_tabela()
+=======
+>>>>>>> 476c0206a34431d8b8b65afb642850c2943eb110
 
     def selecionar_quarto(self, row, col):
         item = self.tableWidget_quartos.item(row, 0)
@@ -302,6 +305,7 @@ class Ui_page_abrir(QWidget):
             self.tableWidget_quartos.setItem(row, 0, item_num)
             self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
 
+<<<<<<< HEAD
     def _ajustar_altura_tabela(self):
         row_count = self.tableWidget_hospedes.rowCount()
         if row_count == 0:
@@ -317,6 +321,8 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.setMaximumHeight(desired_height)
         self.tableWidget_hospedes.setVisible(True)
 
+=======
+>>>>>>> 476c0206a34431d8b8b65afb642850c2943eb110
 
 
 class LineEditMonetario(QLineEdit):
