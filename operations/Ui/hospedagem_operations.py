@@ -12,7 +12,7 @@ def diaria(qtd):
 
 
 # Função para criar uma nova hospedagem
-def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes, valor_diaria):
+def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes, valor_diaria, obs, acompanhantes=None):
     # Inicia uma nova sessão com o banco de dados
     with Session() as session:
         try:
@@ -36,7 +36,9 @@ def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes, valor_dia
                     id_quarto=id_quarto,
                     data_saida=data_saida,
                     qtd_hospedes=qtd_hospedes,
-                    valor_diaria=valor_diaria
+                    valor_diaria=valor_diaria,
+                    obs=obs,
+                    acompanhantes=acompanhantes
                 )
 
                 # Adiciona a nova hospedagem na sessão

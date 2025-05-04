@@ -115,6 +115,7 @@ class Ui_page_cadastrar(QWidget):
         self.label_error_numero.setText("")
         self.label_feedback.setText("")
         self.lineEdit_numero.setStyleSheet(BORDA_PADRAO)
+        self.lineEdit_numero.setFocus()
 
         numero_texto = self.lineEdit_numero.text().strip()
         tipo = self.comboBox_tipo.currentText()

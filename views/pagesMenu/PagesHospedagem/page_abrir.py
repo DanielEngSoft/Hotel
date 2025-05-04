@@ -33,7 +33,7 @@ class Ui_page_abrir(QWidget):
         # Layout vertical principal
         self.layout_central = QVBoxLayout()
         self.layout_central.setObjectName(u"layout_central")
-        self.layout_central.setContentsMargins(-1, 30, -1, -1)
+        self.layout_central.setContentsMargins(0, 10, 0, 0)
 
         # Fonte padrão para o texto
         font = QFont()
@@ -66,6 +66,8 @@ class Ui_page_abrir(QWidget):
 
         # Grupo dos dados da reserva
         self.groupBox = QGroupBox(page_abrir)
+        self.groupBox.setMaximumWidth(550)
+        self.groupBox.setMaximumHeight(700)
         self.groupBox.setObjectName("groupBox")
         self.groupBox.setFont(font)
         self.groupBox.setAlignment(Qt.AlignCenter)
@@ -79,7 +81,7 @@ class Ui_page_abrir(QWidget):
         self.form_layout = QFormLayout()
         self.form_layout.setObjectName("formLayout")
         self.form_layout.setHorizontalSpacing(35)
-        self.form_layout.setVerticalSpacing(20)
+        self.form_layout.setVerticalSpacing(10)
 
         # CPF Label
         self.label_cpf = QLabel("CPF:", self.groupBox)
@@ -151,7 +153,7 @@ class Ui_page_abrir(QWidget):
         # Spinbox qtd pessoas
         self.spinBox = QSpinBox(page_abrir)
         self.spinBox.setObjectName("spinBox")
-        self.spinBox.setMinimumSize(QSize(1, 25))
+        self.spinBox.setMinimumWidth(30)
         self.spinBox.setRange(1, 10)
         self.spinBox.setValue(1)
         self.spinBox.setFont(font)
@@ -163,18 +165,34 @@ class Ui_page_abrir(QWidget):
         self.checkBox = QCheckBox(page_abrir)
         self.checkBox.setObjectName("checkBox")
         self.checkBox.setFont(font)
-        self.checkBox.setText('Desconto')
+        self.checkBox.setText('- 10%')
+        self.checkBox.stateChanged.connect(self.atualizar_preco)
 
         self.horizontalLayout.addWidget(self.checkBox)
 
         # Valor da diária
-        self.label = QLabel('R$ 100,00',page_abrir)
+        self.label = QLabel(page_abrir)
+        self.label.setText("R$ 100.00")
         self.label.setObjectName("label")
         self.label.setFont(font)
 
         self.horizontalLayout.addWidget(self.label)
 
         self.form_layout.addRow(self.qtd_pessoas_label, self.qtd_pessoas_widget)
+
+        # Acompanhantes Label
+        self.acompanhantes_label = QLabel(self.groupBox)
+        self.acompanhantes_label.setObjectName("acompanhantes_label")
+        self.acompanhantes_label.setText("acompanhantes:")
+        self.acompanhantes_label.setFont(font)
+
+        # Acompanhantes Input
+        self.acompanhantes_plainTextEdit = QPlainTextEdit(page_abrir)
+        self.acompanhantes_plainTextEdit.setObjectName("acompanhantes_plainTextEdit")
+        self.acompanhantes_plainTextEdit.setMaximumSize(QSize(300, 100))
+
+        # Adiciona os widgets ao formulário
+        self.form_layout.addRow(self.acompanhantes_label, self.acompanhantes_plainTextEdit)
 
         # Quantidade de quartos disponíveis
         self.label_quartos = QLabel("Selecione o quarto:", self.groupBox)
@@ -282,6 +300,8 @@ class Ui_page_abrir(QWidget):
         quarto_num = self.tableWidget_quartos.item(row, 0).text()
         qtd_hospedes = self.spinBox.value()
         data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+        obs = self.plainTextEdit_obs.toPlainText().strip()
+        acompanhantes = self.acompanhantes_plainTextEdit.toPlainText()
 
         # Verifica se o hóspede existe no banco de dados
         hospede = procura_hospede_por_cpf(cpf)
@@ -298,7 +318,7 @@ class Ui_page_abrir(QWidget):
             valor_diaria = produto.valor * (1 - DESCONTO)
         
         # Cria a hospedagem no banco de dados
-        create_hospedagem(cpf, quarto_num, data_saida, qtd_hospedes, valor_diaria=valor_diaria) # vALOR DA DIÁRIA = VALOR DO PRODUTO
+        create_hospedagem(id_hospede=cpf, id_quarto=quarto_num, data_saida=data_saida, qtd_hospedes=qtd_hospedes, valor_diaria=valor_diaria, obs=obs, acompanhantes=acompanhantes) # vALOR DA DIÁRIA = VALOR DO PRODUTO
         self.label_feedback.setText(f"Hospedagem criada para {hospede.nome}")
         self.label_feedback.setStyleSheet("color: green;")
 
@@ -350,12 +370,12 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.setVisible(False)
 
     # Atualiza o preço de acordo com a quantidade de hóspedes
-    def atualizar_preco(self, qtd_hospedes):
+    def atualizar_preco(self):
+        qtd = self.spinBox.value()
         if self.checkBox.isChecked():
-            preco = diaria(qtd_hospedes) * (1 - DESCONTO)
-            self.spinBox.setValue(qtd_hospedes)
+            preco = diaria(qtd) * (1 - DESCONTO)
         else:
-            preco = diaria(qtd_hospedes)
+            preco = diaria(qtd)
         self.label.setText(f"R$ {preco:.2f}")
     
     def _ajustar_altura_tabela(self):
@@ -371,6 +391,9 @@ class Ui_page_abrir(QWidget):
         desired_height = row_count * row_height + header_height + scrollbar_height + 2
 
         self.tableWidget_hospedes.setMaximumHeight(desired_height)
+        self.tableWidget_hospedes.setMinimumHeight(desired_height)
+        if desired_height > 250:
+            self.tableWidget_hospedes.setMaximumHeight(250)
         self.tableWidget_hospedes.setVisible(True)
 
     def limpar_campos(self):
@@ -379,7 +402,7 @@ class Ui_page_abrir(QWidget):
         self.groupBox.setTitle("")
         self.spinBox.setValue(1)
         self.checkBox.setChecked(False)
-        self.atualizar_preco(1)
+        self.label.setText("R$ 100.00")
         self.update_quartos()
 
     def selecionar_quarto(self, row, col):
@@ -388,7 +411,7 @@ class Ui_page_abrir(QWidget):
             quarto = item.text()
         else:
             quarto = ''
-        self.label_quartos.setText(f"Selecione o quarto: {quarto}")
+        self.label_quartos.setText(f"Selecione o quarto: [{quarto}]")
 
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:
