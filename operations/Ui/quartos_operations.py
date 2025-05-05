@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, sessionmaker
-from models.models import Quarto, Hospedagem, db
+from models.models import Quarto, Hospedagem, Reserva, db
 from sqlalchemy.exc import IntegrityError
 
 Session = sessionmaker(bind=db)
@@ -94,3 +94,34 @@ def alterar_quarto(numero, tipo):
         except Exception as e:
             print(f"Erro ao alterar quarto: {e}")
             return False
+
+def listar_quartos_por_data(data_entrada, data_saida):
+    with Session() as session:
+        try:
+            # Todos os quartos cadastrados
+            todos_quartos = session.query(Quarto).all()
+
+            # Quartos com reservas no período
+            quartos_reservados = session.query(Quarto).join(Reserva).filter(
+                Reserva.data_entrada <= data_saida,
+                Reserva.data_saida >= data_entrada
+            ).all()
+
+            # Quartos com hospedagens no período
+            quartos_hospedados = session.query(Quarto).join(Hospedagem).filter(
+                Hospedagem.data_entrada <= data_saida,
+                Hospedagem.data_saida >= data_entrada
+            ).all()
+
+            # IDs dos quartos ocupados (por reserva ou hospedagem)
+            quartos_ocupados_ids = {q.numero for q in quartos_reservados + quartos_hospedados}
+
+            # Filtra os disponíveis
+            quartos_disponiveis = [q for q in todos_quartos if q.numero not in quartos_ocupados_ids]
+
+            # Ordena por número
+            return sorted(quartos_disponiveis, key=lambda x: x.numero)
+
+        except Exception as e:
+            print(f"Erro ao listar quartos disponíveis por data: {e}")
+            return 0

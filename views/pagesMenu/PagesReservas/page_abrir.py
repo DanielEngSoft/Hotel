@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (QCheckBox, QDateTimeEdit, QFormLayout,
     QSpinBox, QTableWidget, QTableWidgetItem,QVBoxLayout, QWidget, QHeaderView)
 
 from styles.styles import style_botao_verde, tabelas
-from operations.Ui.quartos_operations import listar_quartos_disponiveis
+from operations.Ui.quartos_operations import listar_quartos_disponiveis, listar_quartos_por_data
 from operations.Ui.produtos_operations import buscar_produto_por_id
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
 from operations.Ui.reservas_operations import create_reserva
@@ -26,6 +26,7 @@ class Ui_page_abrir(QWidget):
         # Layout principal
         self.layout_principal = QHBoxLayout(page_abrir)
         self.layout_principal.setObjectName("layout_principal")
+        self.layout_principal.setContentsMargins(0, 0, 0, 0)
 
         # Layout vertical principal
         self.layout_central = QVBoxLayout()
@@ -57,10 +58,10 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableWidget_hospedes.setVisible(False)
         self.tableWidget_hospedes.verticalHeader().setVisible(False)
+        self.tableWidget_hospedes.cellActivated.connect(self.pegar_cpf)
+
         # Adicionar a tabela ao layout
         self.layout_central.addWidget(self.tableWidget_hospedes)
-
-        self.tableWidget_hospedes.cellActivated.connect(self.pegar_cpf)
 
         # Grupo dos dados da reserva
         self.groupBox = QGroupBox(page_abrir)
@@ -105,8 +106,6 @@ class Ui_page_abrir(QWidget):
             if len(cpf) == 14:
                 hospede = procura_hospede_por_cpf(cpf)
                 self.groupBox.setTitle(f"{hospede.nome}" if hospede else "Nenhum encontrado")
-            else:
-                self.groupBox.setTitle("")
 
         # Chamada das funções de atualização do label do CPF 
         self.lineEdit_cpf.focusInEvent = cpf_focus_in_event
@@ -120,14 +119,16 @@ class Ui_page_abrir(QWidget):
         self.dataEntrada_label.setFont(font)
 
         # Data de entrada Input
-        self.dataEtrada_DateTimeEdit = QDateTimeEdit(self.groupBox)
-        self.dataEtrada_DateTimeEdit.setObjectName("dataEtrada_DateTimeEdit")
-        self.dataEtrada_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
-        self.dataEtrada_DateTimeEdit.setDateTime(QDateTime.currentDateTime())
-        self.dataEtrada_DateTimeEdit.setFont(font)
+        self.dataEntrada_DateTimeEdit = QDateTimeEdit(self.groupBox)
+        self.dataEntrada_DateTimeEdit.setObjectName("dataEtrada_DateTimeEdit")
+        self.dataEntrada_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
+        self.dataEntrada_DateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.dataEntrada_DateTimeEdit.setCalendarPopup(True)
+        self.dataEntrada_DateTimeEdit.dateChanged.connect(self.update_quartos)
+        self.dataEntrada_DateTimeEdit.setFont(font)
 
         # Adiciona os widgets ao formulário
-        self.form_layout.addRow(self.dataEntrada_label, self.dataEtrada_DateTimeEdit)
+        self.form_layout.addRow(self.dataEntrada_label, self.dataEntrada_DateTimeEdit)
 
         # Data de saida Label
         self.dataSaida_label = QLabel(self.groupBox)
@@ -140,6 +141,8 @@ class Ui_page_abrir(QWidget):
         self.dataSaida_DateTimeEdit.setObjectName("dataSaidaDateTimeEdit")
         self.dataSaida_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
         self.dataSaida_DateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.dataSaida_DateTimeEdit.setCalendarPopup(True)
+        self.dataSaida_DateTimeEdit.dateChanged.connect(self.update_quartos)
         self.dataSaida_DateTimeEdit.setFont(font)
 
         # Adiciona os widgets ao formulário
@@ -290,7 +293,6 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setText(cpf)
         self.tableWidget_hospedes.setVisible(False)
         self.lineEdit_buscar.setText("")
-        self.groupBox.setTitle("")
 
     def search_hospedes(self):
         self.tableWidget_hospedes.setRowCount(0)
@@ -324,15 +326,27 @@ class Ui_page_abrir(QWidget):
         self.label_quartos.setText(f"Selecione o quarto: {quarto}")
 
     def update_quartos(self):
+        data_entrada = self.dataEntrada_DateTimeEdit.date().toPython()
+        data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+
         self.tableWidget_quartos.setRowCount(0)
-        quartos = listar_quartos_disponiveis()
+        quartos = listar_quartos_por_data(data_entrada, data_saida)
+
+        if not quartos:
+            self.label_quartos.setText("Não há quartos disponíveis para a data selecionada.")
+            return
+        
         for quarto in quartos:
             row = self.tableWidget_quartos.rowCount()
             self.tableWidget_quartos.insertRow(row)
+            
             item_num = QTableWidgetItem(str(quarto.numero))
             item_num.setTextAlignment(Qt.AlignCenter)
             self.tableWidget_quartos.setItem(row, 0, item_num)
-            self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
+
+            item_tipo = QTableWidgetItem(quarto.tipo)
+            item_tipo.setTextAlignment(Qt.AlignCenter)
+            self.tableWidget_quartos.setItem(row, 1, item_tipo)
 
     def _ajustar_altura_tabela(self):
         row_count = self.tableWidget_hospedes.rowCount()
@@ -360,7 +374,7 @@ class Ui_page_abrir(QWidget):
 
         id_hospede = procura_hospede_por_cpf(cpf)
         id_quarto = self.tableWidget_quartos.item(row, 0).text()
-        data_entrada = self.dataEtrada_DateTimeEdit.date().toPython()
+        data_entrada = self.dataEntrada_DateTimeEdit.date().toPython()
         data_saida = self.dataSaida_DateTimeEdit.date().toPython()
         qtd_hospedes = self.spinBox.value()
         acompanhantes = self.acompanhantes_plainTextEdit.toPlainText()
@@ -398,7 +412,7 @@ class Ui_page_abrir(QWidget):
 
     def limpa_campos(self):
         self.lineEdit_cpf.clear()
-        self.dataEtrada_DateTimeEdit.setDate(QDateTime.currentDate() )
+        self.dataEntrada_DateTimeEdit.setDate(QDateTime.currentDate() )
         self.dataSaida_DateTimeEdit.setDate(QDateTime.currentDate())
         self.spinBox.setValue(1)
         self.acompanhantes_plainTextEdit.clear()
