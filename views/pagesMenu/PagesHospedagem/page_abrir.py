@@ -306,9 +306,6 @@ class Ui_page_abrir(QWidget):
             self.label_feedback.setText("Selecione um quarto e preencha o CPF.")
             self.label_feedback.setStyleSheet("color: red;")
             return
-            
-        self.groupBox.setTitle('')
-        self.lineEdit_buscar.setText("")
 
         quarto_num = self.tableWidget_quartos.item(row, 0).text()
         qtd_hospedes = self.spinBox.value()
@@ -413,6 +410,7 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setText("..-")
         self.dataSaida_DateTimeEdit.setDate(QDate.currentDate())
         self.groupBox.setTitle("")
+        self.lineEdit_buscar.setText("")
         self.spinBox.setValue(1)
         self.checkBox.setChecked(False)
         self.label.setText("R$ 100.00")

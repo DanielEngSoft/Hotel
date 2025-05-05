@@ -6,7 +6,13 @@ from PySide6.QtWidgets import (QCheckBox, QDateTimeEdit, QFormLayout,
 
 from styles.styles import style_botao_verde, tabelas
 from operations.Ui.quartos_operations import listar_quartos_disponiveis
+from operations.Ui.produtos_operations import buscar_produto_por_id
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
+from operations.Ui.reservas_operations import create_reserva
+
+# CONSTANTES
+DESCONTO = 0.1  # 10% de desconto
+LABEL_DESCONTO = int(DESCONTO * 100)
 
 class Ui_page_abrir(QWidget):
     def __init__(self, parent=None):
@@ -177,7 +183,6 @@ class Ui_page_abrir(QWidget):
         # Valor da diária
         self.label = QLabel(page_abrir)
         self.label.setObjectName("label")
-        # Arrumar depois
         self.label.setText("R$ 100,00")
         self.label.setFont(font)
 
@@ -197,6 +202,20 @@ class Ui_page_abrir(QWidget):
         self.adiantamentoLineEdit.setFont(font)
 
         self.form_layout.addRow(self.adiantamentoLabel, self.adiantamentoLineEdit)
+
+        # Acompanhantes Label
+        self.acompanhantes_label = QLabel(self.groupBox)
+        self.acompanhantes_label.setObjectName("acompanhantes_label")
+        self.acompanhantes_label.setText("Acompanhantes:")
+        self.acompanhantes_label.setFont(font)
+
+        # Acompanhantes Input
+        self.acompanhantes_plainTextEdit = QPlainTextEdit(page_abrir)
+        self.acompanhantes_plainTextEdit.setObjectName("acompanhantes_plainTextEdit")
+        self.acompanhantes_plainTextEdit.setMaximumSize(QSize(300, 90))
+
+        # Adiciona os widgets ao formulário
+        self.form_layout.addRow(self.acompanhantes_label, self.acompanhantes_plainTextEdit)
 
         # Quartos
         self.label_quartos = QLabel(self.groupBox)
@@ -241,12 +260,21 @@ class Ui_page_abrir(QWidget):
         # Adiciona o groupbox ao layout principal
         self.layout_central.addWidget(self.groupBox)
 
+        # Label de feedback
+        self.label_feedback = QLabel(page_abrir)
+        self.label_feedback.setObjectName("label_feedback")
+        self.label_feedback.setFont(font)
+        self.label_feedback.setVisible(False)
+
+        self.layout_central.addWidget(self.label_feedback)
+
         # Botão "Abrir reserva"
         self.pushButton_abrir = QPushButton(page_abrir)
         self.pushButton_abrir.setObjectName("pushButton")
         self.pushButton_abrir.setText("Abrir reserva")
         self.pushButton_abrir.setFont(font)
         self.pushButton_abrir.setStyleSheet(style_botao_verde())
+        self.pushButton_abrir.clicked.connect(self.abrir_reserva)
 
         self.layout_central.addWidget(self.pushButton_abrir)
         self.layout_central.addStretch()
@@ -262,6 +290,7 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setText(cpf)
         self.tableWidget_hospedes.setVisible(False)
         self.lineEdit_buscar.setText("")
+        self.groupBox.setTitle("")
 
     def search_hospedes(self):
         self.tableWidget_hospedes.setRowCount(0)
@@ -320,6 +349,62 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.setMaximumHeight(desired_height)
         self.tableWidget_hospedes.setVisible(True)
 
+    def abrir_reserva(self):
+        row = self.tableWidget_quartos.currentRow()
+        cpf = self.lineEdit_cpf.text()
+
+        if row == -1 or len(cpf) != 14:
+            self.label_feedback.setText("Selecione um quarto e preencha o CPF.")
+            self.label_feedback.setStyleSheet("color: red;")
+            return
+
+        id_hospede = procura_hospede_por_cpf(cpf)
+        id_quarto = self.tableWidget_quartos.item(row, 0).text()
+        data_entrada = self.dataEtrada_DateTimeEdit.date().toPython()
+        data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+        qtd_hospedes = self.spinBox.value()
+        acompanhantes = self.acompanhantes_plainTextEdit.toPlainText()
+        obs = self.plainTextEdit_obs.toPlainText().strip()
+
+        # Verifica se o hóspede existe no banco de dados
+        if not id_hospede:
+            self.label_feedback.setVisible(True)
+            self.label_feedback.setText("Hóspede não encontrado.")
+            self.label_feedback.setStyleSheet("color: red;")
+            return
+            
+        produto = buscar_produto_por_id(qtd_hospedes)
+        valor_diaria = produto.valor
+
+        # Adicionar condições em caso do checkBox estiver marcado
+        if self.checkBox.isChecked():
+            valor_diaria = produto.valor * (1 - DESCONTO)
+        
+        create_reserva(
+            id_hospede=cpf,
+            id_quarto=id_quarto,
+            data_entrada=data_entrada,
+            data_saida=data_saida,
+            qtd_hospedes=qtd_hospedes,
+            acompanhantes=acompanhantes,
+            valor_diaria=valor_diaria,
+            adiantamento=0,
+            obs=obs,
+        )
+        self.label_feedback.setVisible(True)
+        self.label_feedback.setText(f"Reserva criada para {id_hospede.nome}")
+        self.label_feedback.setStyleSheet("color: green;")
+        self.limpa_campos()
+
+    def limpa_campos(self):
+        self.lineEdit_cpf.clear()
+        self.dataEtrada_DateTimeEdit.setDate(QDateTime.currentDate() )
+        self.dataSaida_DateTimeEdit.setDate(QDateTime.currentDate())
+        self.spinBox.setValue(1)
+        self.acompanhantes_plainTextEdit.clear()
+        self.plainTextEdit_obs.clear()
+        self.checkBox.setChecked(False)
+        self.groupBox.setTitle("")
 
 
 class LineEditMonetario(QLineEdit):
