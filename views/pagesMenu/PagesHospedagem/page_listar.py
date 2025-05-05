@@ -50,8 +50,8 @@ class Ui_page_listar(QWidget):
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setFont(QFont("Calibri", 12))
+        self.table.setAlternatingRowColors(True)
         self.table.setSortingEnabled(False)
-
 
         # Ajuste de largura das colunas
         header = self.table.horizontalHeader()

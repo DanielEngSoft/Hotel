@@ -100,14 +100,16 @@ class Ui_page_ficha(QWidget):
         # Tabela de sugestões com base na descrição
         self.tabela_sugestoes = QTableWidget(0, 2)
         self.tabela_sugestoes.setStyleSheet(tabelas())
-        self.tabela_sugestoes.setHorizontalHeaderLabels(["Preço", "Descrição"])
-        self.tabela_sugestoes.setVisible(False)
-        self.tabela_sugestoes.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tabela_sugestoes.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tabela_sugestoes.setEditTriggers(QTableWidget.NoEditTriggers)
+        # Configurações dos headers da tabela
         self.tabela_sugestoes.verticalHeader().setVisible(False)
         self.tabela_sugestoes.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.tabela_sugestoes.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.tabela_sugestoes.horizontalHeader().setMaximumHeight(25)
+        self.tabela_sugestoes.setHorizontalHeaderLabels(["Preço", "Descrição"])
+        self.tabela_sugestoes.setVisible(False)
+
         group_layout.addWidget(self.tabela_sugestoes)
 
         # Conexões dos sinais com as ações

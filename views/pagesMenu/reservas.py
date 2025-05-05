@@ -9,7 +9,6 @@ from PySide6.QtWidgets import (
 from styles.styles import menu_superior_pages
 
 from views.PagesMenu.PagesReservas.page_abrir import Ui_page_abrir
-from views.PagesMenu.PagesReservas.page_listar import Ui_page_abrir2
 
 class PageReservas(QWidget):
     def __init__(self, parent=None):
@@ -66,7 +65,7 @@ class PageReservas(QWidget):
         # Adicione aqui os widgets da página "Abrir"
         self.pages.addWidget(self.page_abrir)
 
-        self.page_listar = Ui_page_abrir2()
+        self.page_listar = QWidget()
         # Adicione aqui os widgets da página "Listar"
         self.pages.addWidget(self.page_listar)
 

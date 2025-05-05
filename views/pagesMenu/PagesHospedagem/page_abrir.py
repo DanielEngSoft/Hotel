@@ -15,6 +15,7 @@ from styles.styles import style_botao_verde, tabelas
 
 # CONSTANTES
 DESCONTO = 0.1  # 10% de desconto
+LABEL_DESCONTO = int(DESCONTO * 100)
 
 # ====== CLASSE PRINCIPAL DA PÁGINA ABRIR HOSPEDAGEM ======
 class Ui_page_abrir(QWidget):
@@ -39,26 +40,38 @@ class Ui_page_abrir(QWidget):
         font = QFont()
         font.setPointSize(14)
 
-        # Linha de busca
+        # Layout Horizontal para a barra de busca e botão de cadastrar
+        self.layout_buscar = QHBoxLayout()
+
+        # Linha de busca + btn cadastrar
         self.lineEdit_buscar = QLineEdit(page_abrir)
         self.lineEdit_buscar.setObjectName("lineEdit_buscar")
-        self.lineEdit_buscar.setPlaceholderText("Nome do hóspede")
+        self.lineEdit_buscar.setPlaceholderText("Buscar hóspede")
         self.lineEdit_buscar.textChanged.connect(self.search_hospedes)
         self.lineEdit_buscar.setFont(font)
 
-        self.layout_central.addWidget(self.lineEdit_buscar)
+        self.pushButton_Cadastrar = QPushButton(page_abrir)
+        self.pushButton_Cadastrar.setObjectName("pushButton_Cadastrar")
+        self.pushButton_Cadastrar.setMinimumWidth(150)
+        self.pushButton_Cadastrar.setFont(font)
+        self.pushButton_Cadastrar.setStyleSheet(style_botao_verde())
+        self.pushButton_Cadastrar.setText("Cadastrar Hospede")
 
+        self.layout_buscar.addWidget(self.lineEdit_buscar)
+        self.layout_buscar.addWidget(self.pushButton_Cadastrar)
+
+        self.layout_central.addLayout(self.layout_buscar)
         # Adicionar tabela de resultados de busca
         self.tableWidget_hospedes = QTableWidget(0, 3, page_abrir)
-        self.tableWidget_hospedes.setHorizontalHeaderLabels(["Nome", "Empresa", "CPF"])
         self.tableWidget_hospedes.setStyleSheet(tabelas())
+        self.tableWidget_hospedes.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableWidget_hospedes.setSelectionBehavior(QTableWidget.SelectRows)
         self.tableWidget_hospedes.setSelectionMode(QTableWidget.SingleSelection)
         self.tableWidget_hospedes.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.tableWidget_hospedes.setAlternatingRowColors(True)
-        self.tableWidget_hospedes.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableWidget_hospedes.setVisible(False)
         self.tableWidget_hospedes.verticalHeader().setVisible(False)
+        self.tableWidget_hospedes.setAlternatingRowColors(True)
+        self.tableWidget_hospedes.setVisible(False)
+        self.tableWidget_hospedes.setHorizontalHeaderLabels(["Nome", "Empresa", "CPF"])
         # Adicionar a tabela ao layout
         self.layout_central.addWidget(self.tableWidget_hospedes)
 
@@ -125,7 +138,7 @@ class Ui_page_abrir(QWidget):
         self.dataSaida_DateTimeEdit = QDateTimeEdit(self.groupBox)
         self.dataSaida_DateTimeEdit.setObjectName("dataSaidaDateTimeEdit")
         self.dataSaida_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
-        self.dataSaida_DateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.dataSaida_DateTimeEdit.setDateTime(QDateTime.currentDateTime().addDays(1))
         self.dataSaida_DateTimeEdit.setFont(font)
 
         # Adiciona os widgets ao formulário
@@ -165,7 +178,7 @@ class Ui_page_abrir(QWidget):
         self.checkBox = QCheckBox(page_abrir)
         self.checkBox.setObjectName("checkBox")
         self.checkBox.setFont(font)
-        self.checkBox.setText('- 10%')
+        self.checkBox.setText(f'- {LABEL_DESCONTO}% ')
         self.checkBox.stateChanged.connect(self.atualizar_preco)
 
         self.horizontalLayout.addWidget(self.checkBox)
@@ -183,13 +196,13 @@ class Ui_page_abrir(QWidget):
         # Acompanhantes Label
         self.acompanhantes_label = QLabel(self.groupBox)
         self.acompanhantes_label.setObjectName("acompanhantes_label")
-        self.acompanhantes_label.setText("acompanhantes:")
+        self.acompanhantes_label.setText("Acompanhantes:")
         self.acompanhantes_label.setFont(font)
 
         # Acompanhantes Input
         self.acompanhantes_plainTextEdit = QPlainTextEdit(page_abrir)
         self.acompanhantes_plainTextEdit.setObjectName("acompanhantes_plainTextEdit")
-        self.acompanhantes_plainTextEdit.setMaximumSize(QSize(300, 100))
+        self.acompanhantes_plainTextEdit.setMaximumSize(QSize(300, 90))
 
         # Adiciona os widgets ao formulário
         self.form_layout.addRow(self.acompanhantes_label, self.acompanhantes_plainTextEdit)
