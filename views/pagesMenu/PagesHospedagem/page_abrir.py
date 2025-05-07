@@ -52,10 +52,9 @@ class Ui_page_abrir(QWidget):
 
         self.pushButton_Cadastrar = QPushButton(page_abrir)
         self.pushButton_Cadastrar.setObjectName("pushButton_Cadastrar")
-        self.pushButton_Cadastrar.setMinimumWidth(150)
         self.pushButton_Cadastrar.setFont(font)
         self.pushButton_Cadastrar.setStyleSheet(style_botao_verde())
-        self.pushButton_Cadastrar.setText("Cadastrar Hospede")
+        self.pushButton_Cadastrar.setText("Cadastrar")
 
         self.layout_buscar.addWidget(self.lineEdit_buscar)
         self.layout_buscar.addWidget(self.pushButton_Cadastrar)

@@ -1,5 +1,5 @@
 from PySide6.QtCore import QDateTime, QTimer, QMetaObject, Qt, QSize
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QKeyEvent
 from PySide6.QtWidgets import (QCheckBox, QDateTimeEdit, QFormLayout,
     QGroupBox, QHBoxLayout, QLabel,QLineEdit, QPlainTextEdit, QPushButton,
     QSpinBox, QTableWidget, QTableWidgetItem,QVBoxLayout, QWidget, QHeaderView)
@@ -9,6 +9,7 @@ from operations.Ui.quartos_operations import listar_quartos_disponiveis, listar_
 from operations.Ui.produtos_operations import buscar_produto_por_id
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
 from operations.Ui.reservas_operations import create_reserva
+from operations.Ui.hospedagem_operations import diaria
 
 # CONSTANTES
 DESCONTO = 0.1  # 10% de desconto
@@ -78,7 +79,7 @@ class Ui_page_abrir(QWidget):
         self.form_layout = QFormLayout()
         self.form_layout.setObjectName("formLayout")
         self.form_layout.setHorizontalSpacing(35)
-        self.form_layout.setVerticalSpacing(20)
+        self.form_layout.setVerticalSpacing(9)
         
         # CPF Label
         self.label_cpf = QLabel("CPF:", self.groupBox)
@@ -89,8 +90,7 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setInputMask("000.000.000-00;_")
         self.lineEdit_cpf.setPlaceholderText("000.000.000-00")
         self.lineEdit_cpf.setFont(font)
-        self.lineEdit_cpf.setMinimumSize(150, 0)
-        self.lineEdit_cpf.setMaximumSize(150, 25)
+        self.lineEdit_cpf.setMaximumWidth(150)
 
         # Adiciona os widgets ao formulário
         self.form_layout.addRow(self.label_cpf, self.lineEdit_cpf)
@@ -112,41 +112,50 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.textChanged.connect(update_cpf_label)
         self.lineEdit_cpf.editingFinished.connect(update_cpf_label)
 
-        # Data de entrada Label
-        self.dataEntrada_label = QLabel(self.groupBox)
-        self.dataEntrada_label.setObjectName("dataDeEntradaLabel")
-        self.dataEntrada_label.setText("Data de entrada:")
-        self.dataEntrada_label.setFont(font)
+        # Data de entrada/saída
+        self.label_datas = QLabel(self.groupBox)
+        self.label_datas.setObjectName("dataDeEntradaLabel")
+        self.label_datas.setText("Entrada/Saída:")
+        self.label_datas.setFont(font)
+
+        # Widget para seleção de data de entrada e de saída
+        self.widget_datas = QWidget(self.groupBox)
+        self.widget_datas.setObjectName("widget_datas")
+        self.widget_datas.setFont(font)
+        layout_datas = QHBoxLayout(self.widget_datas)
+        layout_datas.setObjectName("layout_datas")
+        layout_datas.setContentsMargins(0, 0, 0, 0)
 
         # Data de entrada Input
-        self.dataEntrada_DateTimeEdit = QDateTimeEdit(self.groupBox)
-        self.dataEntrada_DateTimeEdit.setObjectName("dataEtrada_DateTimeEdit")
-        self.dataEntrada_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
-        self.dataEntrada_DateTimeEdit.setDateTime(QDateTime.currentDateTime())
-        self.dataEntrada_DateTimeEdit.setCalendarPopup(True)
-        self.dataEntrada_DateTimeEdit.dateChanged.connect(self.update_quartos)
-        self.dataEntrada_DateTimeEdit.setFont(font)
+        self.dateTimeEdit_data_entrada = QDateTimeEdit(self.groupBox)
+        self.dateTimeEdit_data_entrada.setObjectName("dataEtrada_DateTimeEdit")
+        self.dateTimeEdit_data_entrada.setMaximumWidth(300)
+        self.dateTimeEdit_data_entrada.setDateTime(QDateTime.currentDateTime().addDays(1))
+        self.dateTimeEdit_data_entrada.setCalendarPopup(True)
+        self.dateTimeEdit_data_entrada.dateChanged.connect(self.update_quartos)
+        self.dateTimeEdit_data_entrada.setFont(font)
 
-        # Adiciona os widgets ao formulário
-        self.form_layout.addRow(self.dataEntrada_label, self.dataEntrada_DateTimeEdit)
+        layout_datas.addWidget(self.dateTimeEdit_data_entrada)
 
-        # Data de saida Label
-        self.dataSaida_label = QLabel(self.groupBox)
-        self.dataSaida_label.setObjectName("dataSaida")
-        self.dataSaida_label.setText("Data de saída:")
-        self.dataSaida_label.setFont(font)
+        # Espaço entre os campos de entrada e saída
+        label_entre_datas = QLabel('/', self.groupBox)
+        label_entre_datas.setObjectName("label_entre_datas")
+
+        layout_datas.addWidget(label_entre_datas)
 
         # Data de saida Input
-        self.dataSaida_DateTimeEdit = QDateTimeEdit(self.groupBox)
-        self.dataSaida_DateTimeEdit.setObjectName("dataSaidaDateTimeEdit")
-        self.dataSaida_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
-        self.dataSaida_DateTimeEdit.setDateTime(QDateTime.currentDateTime())
-        self.dataSaida_DateTimeEdit.setCalendarPopup(True)
-        self.dataSaida_DateTimeEdit.dateChanged.connect(self.update_quartos)
-        self.dataSaida_DateTimeEdit.setFont(font)
+        self.dateTimeEdit_data_saida = QDateTimeEdit(self.groupBox)
+        self.dateTimeEdit_data_saida.setObjectName("dataSaidaDateTimeEdit")
+        self.dateTimeEdit_data_saida.setMaximumWidth(300)
+        self.dateTimeEdit_data_saida.setDateTime(QDateTime.currentDateTime().addDays(2))
+        self.dateTimeEdit_data_saida.setCalendarPopup(True)
+        self.dateTimeEdit_data_saida.dateChanged.connect(self.update_quartos)
+        self.dateTimeEdit_data_saida.setFont(font)
+
+        layout_datas.addWidget(self.dateTimeEdit_data_saida)
 
         # Adiciona os widgets ao formulário
-        self.form_layout.addRow(self.dataSaida_label, self.dataSaida_DateTimeEdit)
+        self.form_layout.addRow(self.label_datas, self.widget_datas)
 
         # Quantidade de pessoas Label
         self.qtd_pessoas_label = QLabel(self.groupBox)
@@ -157,8 +166,7 @@ class Ui_page_abrir(QWidget):
         # Widget de SpinBox + Checkbox + Label de valor
         self.qtd_pessoas_widget = QWidget(self.groupBox)
         self.qtd_pessoas_widget.setObjectName("quantidadeDePessoasWidget")
-        self.qtd_pessoas_widget.setMinimumSize(QSize(0, 30))
-        self.qtd_pessoas_widget.setMaximumSize(QSize(16777215, 50))
+        self.qtd_pessoas_widget.setMaximumWidth(400)
         self.qtd_pessoas_widget.setFont(font)
 
         # Layout horizontal do Widget
@@ -172,6 +180,8 @@ class Ui_page_abrir(QWidget):
         self.spinBox.setObjectName("spinBox")
         self.spinBox.setMinimumSize(QSize(0, 25))
         self.spinBox.setFont(font)
+        self.spinBox.setValue(1)
+        self.spinBox.valueChanged.connect(self.atualizar_preco)
 
         self.horizontalLayout.addWidget(self.spinBox)
 
@@ -180,6 +190,7 @@ class Ui_page_abrir(QWidget):
         self.checkBox.setObjectName("checkBox")
         self.checkBox.setFont(font)
         self.checkBox.setText('Desconto')
+        self.checkBox.stateChanged.connect(self.atualizar_preco)
 
         self.horizontalLayout.addWidget(self.checkBox)
 
@@ -215,7 +226,7 @@ class Ui_page_abrir(QWidget):
         # Acompanhantes Input
         self.acompanhantes_plainTextEdit = QPlainTextEdit(page_abrir)
         self.acompanhantes_plainTextEdit.setObjectName("acompanhantes_plainTextEdit")
-        self.acompanhantes_plainTextEdit.setMaximumSize(QSize(300, 90))
+        self.acompanhantes_plainTextEdit.setMaximumHeight(90)
 
         # Adiciona os widgets ao formulário
         self.form_layout.addRow(self.acompanhantes_label, self.acompanhantes_plainTextEdit)
@@ -252,7 +263,7 @@ class Ui_page_abrir(QWidget):
         # Observações Input
         self.plainTextEdit_obs = QPlainTextEdit(page_abrir)
         self.plainTextEdit_obs.setObjectName("plainTextEdit")
-        self.plainTextEdit_obs.setMaximumSize(QSize(300, 100))
+        self.plainTextEdit_obs.setMaximumHeight(90)
 
         # Adiciona os widgets ao formulário
         self.form_layout.addRow(self.label_obs, self.plainTextEdit_obs)
@@ -267,6 +278,7 @@ class Ui_page_abrir(QWidget):
         self.label_feedback = QLabel(page_abrir)
         self.label_feedback.setObjectName("label_feedback")
         self.label_feedback.setFont(font)
+        self.label_feedback.setAlignment(Qt.AlignCenter)
         self.label_feedback.setVisible(False)
 
         self.layout_central.addWidget(self.label_feedback)
@@ -293,6 +305,15 @@ class Ui_page_abrir(QWidget):
         self.lineEdit_cpf.setText(cpf)
         self.tableWidget_hospedes.setVisible(False)
         self.lineEdit_buscar.setText("")
+        self.dateTimeEdit_data_entrada.setFocus()
+
+    def atualizar_preco(self):
+        qtd = self.spinBox.value()
+        if self.checkBox.isChecked():
+            preco = diaria(qtd) * (1 - DESCONTO)
+        else:
+            preco = diaria(qtd)
+        self.label.setText(f"R$ {preco:.2f}")
 
     def search_hospedes(self):
         self.tableWidget_hospedes.setRowCount(0)
@@ -326,8 +347,8 @@ class Ui_page_abrir(QWidget):
         self.label_quartos.setText(f"Selecione o quarto: {quarto}")
 
     def update_quartos(self):
-        data_entrada = self.dataEntrada_DateTimeEdit.date().toPython()
-        data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+        data_entrada = self.dateTimeEdit_data_entrada.date().toPython()
+        data_saida = self.dateTimeEdit_data_saida.date().toPython()
 
         self.tableWidget_quartos.setRowCount(0)
         quartos = listar_quartos_por_data(data_entrada, data_saida)
@@ -368,14 +389,15 @@ class Ui_page_abrir(QWidget):
         cpf = self.lineEdit_cpf.text()
 
         if row == -1 or len(cpf) != 14:
+            self.label_feedback.setVisible(True)
             self.label_feedback.setText("Selecione um quarto e preencha o CPF.")
             self.label_feedback.setStyleSheet("color: red;")
             return
 
         id_hospede = procura_hospede_por_cpf(cpf)
         id_quarto = self.tableWidget_quartos.item(row, 0).text()
-        data_entrada = self.dataEntrada_DateTimeEdit.date().toPython()
-        data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+        data_entrada = self.dateTimeEdit_data_entrada.date().toPython()
+        data_saida = self.dateTimeEdit_data_saida.date().toPython()
         qtd_hospedes = self.spinBox.value()
         acompanhantes = self.acompanhantes_plainTextEdit.toPlainText()
         obs = self.plainTextEdit_obs.toPlainText().strip()
@@ -408,18 +430,20 @@ class Ui_page_abrir(QWidget):
         self.label_feedback.setVisible(True)
         self.label_feedback.setText(f"Reserva criada para {id_hospede.nome}")
         self.label_feedback.setStyleSheet("color: green;")
-        self.limpa_campos()
+        self.limpar_campos()
 
-    def limpa_campos(self):
+    def limpar_campos(self):
         self.lineEdit_cpf.clear()
-        self.dataEntrada_DateTimeEdit.setDate(QDateTime.currentDate() )
-        self.dataSaida_DateTimeEdit.setDate(QDateTime.currentDate())
+        self.dateTimeEdit_data_entrada.setDateTime(QDateTime.currentDateTime().addDays(1))
+        self.dateTimeEdit_data_saida.setDateTime(QDateTime.currentDateTime().addDays(2))
         self.spinBox.setValue(1)
         self.acompanhantes_plainTextEdit.clear()
         self.plainTextEdit_obs.clear()
         self.checkBox.setChecked(False)
         self.groupBox.setTitle("")
-
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_Escape:
+            self.limpar_campos()
 
 class LineEditMonetario(QLineEdit):
     def __init__(self, total, parent=None):
