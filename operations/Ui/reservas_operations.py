@@ -1,6 +1,7 @@
-from sqlalchemy.orm import Session, sessionmaker
-from models.models import Reserva,Hospedagem, db
+from sqlalchemy.orm import Session, sessionmaker, joinedload
+from models.models import Reserva, db
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime
 
 Session = sessionmaker(bind=db)
 
@@ -25,3 +26,15 @@ def create_reserva(id_hospede, id_quarto, data_entrada, data_saida, qtd_hospedes
         except IntegrityError:
             session.rollback()
             return False
+        
+def reservas_ativas():
+    with Session() as session:
+        # Consulta todas as hospedagens, carregando também os dados relacionados (quarto e hóspede)
+        reservas = session.query(Reserva)\
+            .options(
+                joinedload(Reserva.quarto),   # Carrega automaticamente os dados do quarto
+                joinedload(Reserva.hospede)   # Carrega automaticamente os dados do hóspede
+            ).all()
+
+        # Retorna a lista de objetos Hospedagem
+        return reservas
