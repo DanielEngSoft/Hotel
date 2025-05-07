@@ -34,7 +34,7 @@ def reservas_ativas():
             .options(
                 joinedload(Reserva.quarto),   # Carrega automaticamente os dados do quarto
                 joinedload(Reserva.hospede)   # Carrega automaticamente os dados do hóspede
-            ).all()
+            ).order_by(Reserva.data_entrada).all()
 
         # Retorna a lista de objetos Hospedagem
         return reservas
