@@ -178,7 +178,7 @@ class Ui_page_abrir(QWidget):
         # Spinbox qtd pessoas
         self.spinBox = QSpinBox(page_abrir)
         self.spinBox.setObjectName("spinBox")
-        self.spinBox.setMinimumSize(QSize(0, 25))
+        self.spinBox.setMinimum(1)
         self.spinBox.setFont(font)
         self.spinBox.setValue(1)
         self.spinBox.valueChanged.connect(self.atualizar_preco)
