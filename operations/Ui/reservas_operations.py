@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session, sessionmaker, joinedload
-from models.models import Reserva, db
+from models.models import Reserva,Hospedagem, db
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
+
+from operations.Ui.hospedagem_operations import create_hospedagem, adicionar_adiantamento
+from operations.Ui.produtos_operations import buscar_produto_por_id
 
 Session = sessionmaker(bind=db)
 
@@ -38,3 +41,15 @@ def reservas_ativas():
 
         # Retorna a lista de objetos Hospedagem
         return reservas
+    
+def reserva_para_hospedagem(id_reserva):
+    with Session() as session:
+        reserva = session.query(Reserva).filter_by(id_reserva=id_reserva).first()
+        if reserva:
+            produto = buscar_produto_por_id(reserva.qtd_hospedes)
+            valor_diaria = produto.valor
+
+            create_hospedagem(id_hospede=reserva.id_hospede,id_quarto=reserva.id_quarto, 
+                data_saida=reserva.data_saida, qtd_hospedes=reserva.qtd_hospedes, 
+                valor_diaria=valor_diaria,obs=reserva.obs, acompanhantes=reserva.acompanhantes)
+

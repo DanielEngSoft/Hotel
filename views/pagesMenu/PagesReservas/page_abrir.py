@@ -15,7 +15,7 @@ from operations.Ui.hospedagem_operations import diaria
 DESCONTO = 0.1  # 10% de desconto
 LABEL_DESCONTO = int(DESCONTO * 100)
 
-class Ui_page_abrir(QWidget):
+class Ui_page_abrir_reserva(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)  # Inicializa a interface

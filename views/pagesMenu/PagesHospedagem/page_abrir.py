@@ -18,7 +18,7 @@ DESCONTO = 0.1  # 10% de desconto
 LABEL_DESCONTO = int(DESCONTO * 100)
 
 # ====== CLASSE PRINCIPAL DA PÁGINA ABRIR HOSPEDAGEM ======
-class Ui_page_abrir(QWidget):
+class Ui_page_abrir_hospedagem(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)  # Inicializa a interface
@@ -406,13 +406,16 @@ class Ui_page_abrir(QWidget):
         self.tableWidget_hospedes.setVisible(True)
 
     def limpar_campos(self):
+        self.lineEdit_buscar.setText("")
+        self.groupBox.setTitle("")
         self.lineEdit_cpf.setText("..-")
         self.dataSaida_DateTimeEdit.setDate(QDate.currentDate())
-        self.groupBox.setTitle("")
-        self.lineEdit_buscar.setText("")
         self.spinBox.setValue(1)
         self.checkBox.setChecked(False)
         self.label.setText("R$ 100.00")
+        self.label_quartos.setText("Selecione o quarto:")
+        self.acompanhantes_plainTextEdit.setPlainText("")
+        self.plainTextEdit_obs.setPlainText("")
         self.update_quartos()
 
     def selecionar_quarto(self, row, col):

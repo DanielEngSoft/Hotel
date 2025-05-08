@@ -37,7 +37,7 @@ class LineEditMonetario(QLineEdit):
     def get_valor_float(self):
         return self.valor_cents / 100.0
 
-class Ui_page_cadastrar(QWidget):
+class Ui_page_cadastrar_produto(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

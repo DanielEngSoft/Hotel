@@ -50,7 +50,7 @@ class LineEditMonetario(QLineEdit):
         return self.valor_cents / 100.0
 
 # Janela principal de visualização da hospedagem
-class Ui_page_ficha(QWidget):
+class Ui_page_ficha_hospedagem(QWidget):
     def __init__(self, hospedagem, parent=None):
         super().__init__(parent)
         self.hospedagem = hospedagem

@@ -39,7 +39,7 @@ class LineEditMonetario(QLineEdit):
         return self.valor_cents / 100.0
 
 
-class Ui_page_encerrar(QWidget):
+class Ui_page_encerrar_hospedagem(QWidget):
     def __init__(self, hospedagem, parent=None):
         super().__init__(parent)
         self.hospedagem = hospedagem

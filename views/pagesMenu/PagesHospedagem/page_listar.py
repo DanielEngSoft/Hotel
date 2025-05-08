@@ -11,7 +11,7 @@ from operations.Ui.hospedagem_operations import (hospedagens_ativas, atualiza_di
 
 
 # Página de listagem de hospedagens
-class Ui_page_listar(QWidget):
+class Ui_page_listar_hospedagem(QWidget):
     def __init__(self):
         super().__init__()
         self.page_size = 20

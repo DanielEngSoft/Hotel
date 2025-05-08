@@ -14,7 +14,7 @@ BORDA_ERRO = "border: 1px solid red;"
 BORDA_PADRAO = "border: 1px solid lightgray;"
 
 
-class Ui_page_alterar(QWidget):
+class Ui_page_alterar_quarto(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

@@ -10,7 +10,7 @@ from styles.styles import style_botao_verde, style_groupbox
 from utils.validadores_ui import valida_cpf, formata_nome, valida_telefone
 
 
-class Ui_page_cadastrar(QWidget):
+class Ui_page_cadastrar_hospede(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

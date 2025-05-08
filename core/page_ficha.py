@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QMessageBox
 from PySide6.QtCore import Qt
 from datetime import datetime
 
-from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
+from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha_hospedagem
 
 from operations.Ui.produtos_operations import buscar_produto_por_nome
 from operations.Ui.despesas_operations import create_despesa
@@ -11,7 +11,7 @@ from operations.Ui.despesas_operations import create_despesa
 class Core_page_ficha(QWidget):
     def __init__(self, hospedagem):
         super().__init__()
-        self.ui= Ui_page_ficha()
+        self.ui= Ui_page_ficha_hospedagem()
         self.ui.setupUi(self.ui)
         
         self.hospedagem = hospedagem

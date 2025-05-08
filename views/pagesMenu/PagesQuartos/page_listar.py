@@ -18,7 +18,7 @@ from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
 from operations.Ui.quartos_operations import qtd_disponiveis, qtd_ocupados
 
 
-class Ui_page_listar(QWidget):
+class Ui_page_listar_quarto(QWidget):
     COR_DISPONIVEL = "#05452f"
     COR_OCUPADO = "#A52A2A"
 
@@ -48,7 +48,7 @@ class Ui_page_listar(QWidget):
         self.grid = QGridLayout(self.scroll_content)
         self.grid.setContentsMargins(10, 10, 10, 10)
         self.grid.setHorizontalSpacing(10)
-        self.grid.setVerticalSpacing(10)
+        self.grid.setVerticalSpacing(0)
 
         self.scroll_area.setWidget(self.scroll_content)
         self.layout_principal.addWidget(self.scroll_area)

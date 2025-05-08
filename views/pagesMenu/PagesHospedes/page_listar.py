@@ -10,7 +10,7 @@ from operations.Ui.hospedes_operations import procura_hospedes_por_nome
 from styles.styles import style_botao_verde
 
 
-class Ui_page_listar(QWidget):
+class Ui_page_listar_hospede(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

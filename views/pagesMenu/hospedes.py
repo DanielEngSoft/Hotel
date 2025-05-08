@@ -5,9 +5,9 @@ from PySide6.QtWidgets import (
     QStackedWidget, QSizePolicy, QLabel
 )
 
-from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar
-from views.PagesMenu.PagesHospedes.page_editar import Ui_page_editar
-from views.PagesMenu.PagesHospedes.page_listar import Ui_page_listar
+from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar_hospede
+from views.PagesMenu.PagesHospedes.page_editar import Ui_page_editar_hospede
+from views.PagesMenu.PagesHospedes.page_listar import Ui_page_listar_hospede
 from styles.styles import menu_superior_pages
 
 
@@ -55,13 +55,13 @@ class PageHospedes(QWidget):
         # ========== ÁREA DAS PÁGINAS ==========
         self.pages = QStackedWidget(self)
 
-        self.page_cadastrar = Ui_page_cadastrar()
+        self.page_cadastrar = Ui_page_cadastrar_hospede()
         self.pages.addWidget(self.page_cadastrar)
 
-        self.page_editar = Ui_page_editar()
+        self.page_editar = Ui_page_editar_hospede()
         self.pages.addWidget(self.page_editar)
 
-        self.page_listar = Ui_page_listar()
+        self.page_listar = Ui_page_listar_hospede()
         self.pages.addWidget(self.page_listar)
 
         self.layout_principal.addWidget(self.pages)

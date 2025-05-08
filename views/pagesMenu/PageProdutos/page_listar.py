@@ -10,7 +10,7 @@ from operations.Ui.produtos_operations import buscar_produto_por_nome
 from styles.styles import style_botao_verde
 
 
-class Ui_page_listar(QWidget):
+class Ui_page_listar_produto(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

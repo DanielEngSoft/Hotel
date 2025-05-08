@@ -9,7 +9,7 @@ from datetime import datetime
 from operations.Ui.reservas_operations import reservas_ativas
 
 
-class Ui_page_listar(QWidget):
+class Ui_page_listar_reserva(QWidget):
     def __init__(self):
         super().__init__()
         self.page_size = 20

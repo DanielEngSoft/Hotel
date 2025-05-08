@@ -10,7 +10,7 @@ from operations.Ui.hospedagem_operations import alterar_hospedagem
 
 from styles.styles import style_botao_verde, tabelas
 
-class Ui_page_alterar(QWidget):
+class Ui_page_alterar_hospedagem(QWidget):
     def __init__(self, hospedagem, parent=None):
         super().__init__(parent)
         self.hospedagem = hospedagem

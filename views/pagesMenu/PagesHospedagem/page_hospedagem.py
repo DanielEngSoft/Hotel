@@ -7,10 +7,10 @@ from PySide6.QtWidgets import (
     QStyle, QApplication
 )
 
-from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha
-from views.PagesMenu.PagesHospedagem.page_encerrar import Ui_page_encerrar
-from views.PagesMenu.PagesHospedagem.page_alterar import Ui_page_alterar
-from views.PagesMenu.PagesHospedagem.page_adiantamento import Ui_page_adiantamento
+from views.PagesMenu.PagesHospedagem.page_ficha import Ui_page_ficha_hospedagem
+from views.PagesMenu.PagesHospedagem.page_encerrar import Ui_page_encerrar_hospedagem
+from views.PagesMenu.PagesHospedagem.page_alterar import Ui_page_alterar_hospedagem
+from views.PagesMenu.PagesHospedagem.page_adiantamento import Ui_page_adiantamento_hospedagem
 
 from styles.styles import style_botao_branco, style_botao_vermelho, style_botao_transparente
 
@@ -55,7 +55,7 @@ class Ui_page_hospedagem(QWidget):
 
         self.layout_ficha.addWidget(header_ficha)
 
-        self.ui_page_ficha = Ui_page_ficha(self.hospedagem)
+        self.ui_page_ficha = Ui_page_ficha_hospedagem(self.hospedagem)
         self.layout_ficha.addWidget(self.ui_page_ficha)
 
         self.stacked_widget_hospedagem.addWidget(self.page_ficha)
@@ -73,7 +73,7 @@ class Ui_page_hospedagem(QWidget):
 
         self.layout_encerrar.addWidget(header_encerrar)
 
-        self.ui_page_encerrar = Ui_page_encerrar(self.hospedagem)
+        self.ui_page_encerrar = Ui_page_encerrar_hospedagem(self.hospedagem)
 
         # Recebe a instância da página Hospedagem
         self.ui_page_encerrar.set_page_hospedagem_instance(self)
@@ -95,7 +95,7 @@ class Ui_page_hospedagem(QWidget):
 
         self.layout_alterar.addWidget(header_alterar)
 
-        self.ui_page_alterar = Ui_page_alterar(self.hospedagem)
+        self.ui_page_alterar = Ui_page_alterar_hospedagem(self.hospedagem)
 
         # Recebe a instância da página Hospedagem
         self.ui_page_alterar.set_page_hospedagem_instance(self)
@@ -117,7 +117,7 @@ class Ui_page_hospedagem(QWidget):
 
         self.layout_adiantamento.addWidget(header_adiantamento)
 
-        self.ui_page_adiantamento = Ui_page_adiantamento(self.hospedagem)
+        self.ui_page_adiantamento = Ui_page_adiantamento_hospedagem(self.hospedagem)
 
         # Recebe a instância da página Hospedagem
         self.ui_page_adiantamento.set_page_hospedagem_instance(self)

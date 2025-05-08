@@ -9,7 +9,7 @@ from operations.Ui.hospedes_operations import procura_hospede_completo, procura_
 from styles.styles import style_botao_verde, style_groupbox
 from utils.validadores_ui import formata_nome, valida_telefone
 
-class Ui_page_editar(QWidget):
+class Ui_page_editar_hospede(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

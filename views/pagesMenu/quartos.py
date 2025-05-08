@@ -5,9 +5,9 @@ from PySide6.QtWidgets import (
     QStackedWidget, QSizePolicy, QPushButton, QVBoxLayout
 )
 
-from views.PagesMenu.PagesQuartos.page_cadastrar import Ui_page_cadastrar
-from views.PagesMenu.PagesQuartos.page_listar import Ui_page_listar
-from views.PagesMenu.PagesQuartos.page_alterar import Ui_page_alterar
+from views.PagesMenu.PagesQuartos.page_cadastrar import Ui_page_cadastrar_quarto
+from views.PagesMenu.PagesQuartos.page_listar import Ui_page_listar_quarto
+from views.PagesMenu.PagesQuartos.page_alterar import Ui_page_alterar_quarto
 
 from styles.styles import menu_superior_pages
 
@@ -56,13 +56,13 @@ class PageQuartos(QWidget):
         # ========== ÁREA DAS PÁGINAS ==========
         self.pages = QStackedWidget(self)
 
-        self.page_listar = Ui_page_listar()
+        self.page_listar = Ui_page_listar_quarto()
         self.pages.addWidget(self.page_listar)
 
-        self.page_cadastrar = Ui_page_cadastrar()
+        self.page_cadastrar = Ui_page_cadastrar_quarto()
         self.pages.addWidget(self.page_cadastrar)
 
-        self.page_alterar = Ui_page_alterar()
+        self.page_alterar = Ui_page_alterar_quarto()
         self.pages.addWidget(self.page_alterar)
 
         self.layout_principal.addWidget(self.pages)

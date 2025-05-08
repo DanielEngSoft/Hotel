@@ -5,9 +5,9 @@ from PySide6.QtWidgets import (
     QStackedWidget, QSizePolicy, QLabel
 )
 
-from views.PagesMenu.PageProdutos.page_cadastrar import Ui_page_cadastrar
-from views.PagesMenu.PageProdutos.page_editar import Ui_page_editar
-from views.PagesMenu.PageProdutos.page_listar import Ui_page_listar
+from views.PagesMenu.PageProdutos.page_cadastrar import Ui_page_cadastrar_produto
+from views.PagesMenu.PageProdutos.page_editar import Ui_page_editar_produto
+from views.PagesMenu.PageProdutos.page_listar import Ui_page_listar_produto
 from styles.styles import menu_superior_pages
 
 
@@ -55,13 +55,13 @@ class PageProdutos(QWidget):
         # ========== ÁREA DAS PÁGINAS ==========
         self.pages = QStackedWidget(self)
 
-        self.page_cadastrar = Ui_page_cadastrar()
+        self.page_cadastrar = Ui_page_cadastrar_produto()
         self.pages.addWidget(self.page_cadastrar)
 
-        self.page_editar = Ui_page_editar()
+        self.page_editar = Ui_page_editar_produto()
         self.pages.addWidget(self.page_editar)
 
-        self.page_listar = Ui_page_listar()
+        self.page_listar = Ui_page_listar_produto()
         self.pages.addWidget(self.page_listar)
 
         self.layout_principal.addWidget(self.pages)
