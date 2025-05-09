@@ -439,8 +439,9 @@ class Ui_page_abrir_hospedagem(QWidget):
     def abrir_cadastro_hospede(self):
         if not hasattr(self, 'cadastro_window') or not self.cadastro_window.isVisible():
             self.cadastro_window = CadastrarHospede()
-            self.cadastro_window.setWindowFlags(self.cadastro_window.windowFlags() | Qt.WindowStaysOnTopHint)
-            self.cadastro_window.setFixedSize(780, 570)
+            self.cadastro_window.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)
+            self.cadastro_window.setFixedSize(780, 570)            
+            self.cadastro_window.setWindowModality(Qt.ApplicationModal)
             self.cadastro_window.show()
 
 

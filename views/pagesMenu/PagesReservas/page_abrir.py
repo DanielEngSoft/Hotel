@@ -347,6 +347,9 @@ class Ui_page_abrir_reserva(QWidget):
         self.label_quartos.setText(f"Selecione o quarto: {quarto}")
 
     def update_quartos(self):
+        if self.dateTimeEdit_data_entrada.date() > self.dateTimeEdit_data_saida.date():
+            self.dateTimeEdit_data_saida.setDate(self.dateTimeEdit_data_entrada.date().addDays(1))
+
         data_entrada = self.dateTimeEdit_data_entrada.date().toPython()
         data_saida = self.dateTimeEdit_data_saida.date().toPython()
 
@@ -441,6 +444,7 @@ class Ui_page_abrir_reserva(QWidget):
         self.plainTextEdit_obs.clear()
         self.checkBox.setChecked(False)
         self.groupBox.setTitle("")
+        
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:
             self.limpar_campos()

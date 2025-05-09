@@ -59,6 +59,18 @@ class Ui_page_cadastrar_hospede(QWidget):
             layout.addWidget(error_label)
             return container
 
+        # Nome
+        self.lineEdit_nome = QLineEdit()
+        self.lineEdit_nome.setPlaceholderText("Digite o nome completo")
+        self.lineEdit_nome.setFont(font)
+        self.lineEdit_nome.setMinimumWidth(300)
+
+        self.label_error_nome = QLabel("")
+        self.label_error_nome.setStyleSheet("color: red;")
+        self.label_error_nome.setFont(font)
+
+        self.groupBoxLayout.addRow("Nome:", create_input_with_error(self.lineEdit_nome, self.label_error_nome))
+
         # CPF
         self.lineEdit_cpf = QLineEdit()
         self.lineEdit_cpf.setInputMask("000.000.000-00;_")
@@ -84,18 +96,6 @@ class Ui_page_cadastrar_hospede(QWidget):
         self.label_error_cpf.setFont(font)
 
         self.groupBoxLayout.addRow("CPF:", create_input_with_error(self.lineEdit_cpf, self.label_error_cpf))
-
-        # Nome
-        self.lineEdit_nome = QLineEdit()
-        self.lineEdit_nome.setPlaceholderText("Digite o nome completo")
-        self.lineEdit_nome.setFont(font)
-        self.lineEdit_nome.setMinimumWidth(300)
-
-        self.label_error_nome = QLabel("")
-        self.label_error_nome.setStyleSheet("color: red;")
-        self.label_error_nome.setFont(font)
-
-        self.groupBoxLayout.addRow("Nome:", create_input_with_error(self.lineEdit_nome, self.label_error_nome))
 
         # Telefone
         self.lineEdit_telefone = QLineEdit()
