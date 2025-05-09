@@ -19,6 +19,8 @@ class Ui_page_cadastrar_hospede(QWidget):
         if not page_cadastrar.objectName():
             page_cadastrar.setObjectName("page_cadastrar")
 
+        self.ok = False
+
         # Layout principal vertical para centralizar o conteúdo
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -224,6 +226,8 @@ class Ui_page_cadastrar_hospede(QWidget):
             self.lineEdit_telefone.clear()
             self.lineEdit_cidade.clear()
             self.lineEdit_empresa.clear()
+
+            self.ok = True
 
         except Exception as e:
             QMessageBox.warning(self, "Erro ao cadastrar", "Tente novamente")

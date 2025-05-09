@@ -5,13 +5,15 @@ from PySide6.QtWidgets import *
 # Modelos e operações do sistema
 from operations.Ui.hospedagem_operations import create_hospedagem, buscar_hospedagem_por_quarto, diaria
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
-from operations.Ui.quartos_operations import listar_quartos_disponiveis
+from operations.Ui.quartos_operations import listar_quartos_por_data
 from operations.Ui.despesas_operations import create_despesa
 from operations.Ui.produtos_operations import buscar_produto_por_id
 from datetime import datetime
 
 # Estilo personalizado
 from styles.styles import style_botao_verde, tabelas
+
+from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar_hospede as CadastrarHospede
 
 # CONSTANTES
 DESCONTO = 0.1  # 10% de desconto
@@ -55,6 +57,7 @@ class Ui_page_abrir_hospedagem(QWidget):
         self.pushButton_Cadastrar.setFont(font)
         self.pushButton_Cadastrar.setStyleSheet(style_botao_verde())
         self.pushButton_Cadastrar.setText("Cadastrar")
+        self.pushButton_Cadastrar.clicked.connect(self.abrir_cadastro_hospede)
 
         self.layout_buscar.addWidget(self.lineEdit_buscar)
         self.layout_buscar.addWidget(self.pushButton_Cadastrar)
@@ -138,6 +141,7 @@ class Ui_page_abrir_hospedagem(QWidget):
         self.dataSaida_DateTimeEdit.setObjectName("dataSaidaDateTimeEdit")
         self.dataSaida_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
         self.dataSaida_DateTimeEdit.setDateTime(QDateTime.currentDateTime().addDays(1))
+        self.dataSaida_DateTimeEdit.dateChanged.connect(self.update_quartos)
         self.dataSaida_DateTimeEdit.setFont(font)
 
         # Adiciona os widgets ao formulário
@@ -284,7 +288,9 @@ class Ui_page_abrir_hospedagem(QWidget):
 
     def update_quartos(self):
         self.tableWidget_quartos.setRowCount(0)
-        quartos = listar_quartos_disponiveis()
+        data_entrada = datetime.today()
+        data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+        quartos = listar_quartos_por_data(data_entrada, data_saida)
         for quarto in quartos:
             row = self.tableWidget_quartos.rowCount()
             self.tableWidget_quartos.insertRow(row)
@@ -360,18 +366,23 @@ class Ui_page_abrir_hospedagem(QWidget):
             if self.lineEdit_buscar.text() == "":
                 self.lineEdit_buscar.setPlaceholderText("Nome do hóspede")
                 self.tableWidget_hospedes.setVisible(False)
+                self.groupBox.setVisible(True)
             else:
                 self.tableWidget_hospedes.setVisible(True)
+                self.groupBox.setVisible(False)
                 for hospede in hospedes:
                     row = self.tableWidget_hospedes.rowCount()
                     self.tableWidget_hospedes.insertRow(row)
                     self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
                     self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
                     self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
+        else:
+            self.groupBox.setVisible(True)
         self._ajustar_altura_tabela()
 
     # Preenche o campo CPF ao clicar em um hóspede da lista
     def pegar_cpf(self, row):
+        self.groupBox.setVisible(True)
         cpf = self.tableWidget_hospedes.item(row, 2).text()
         self.lineEdit_buscar.clear()
         self.lineEdit_cpf.setText(cpf)
@@ -400,9 +411,8 @@ class Ui_page_abrir_hospedagem(QWidget):
         desired_height = row_count * row_height + header_height + scrollbar_height + 2
 
         self.tableWidget_hospedes.setMaximumHeight(desired_height)
-        self.tableWidget_hospedes.setMinimumHeight(desired_height)
-        if desired_height > 250:
-            self.tableWidget_hospedes.setMaximumHeight(250)
+        # if desired_height > 250:
+        #     self.tableWidget_hospedes.setMaximumHeight(250)
         self.tableWidget_hospedes.setVisible(True)
 
     def limpar_campos(self):
@@ -424,7 +434,15 @@ class Ui_page_abrir_hospedagem(QWidget):
             quarto = item.text()
         else:
             quarto = ''
-        self.label_quartos.setText(f"Selecione o quarto: [{quarto}]")
+        self.label_quartos.setText(f"Selecione o quarto: {quarto}")
+
+    def abrir_cadastro_hospede(self):
+        if not hasattr(self, 'cadastro_window') or not self.cadastro_window.isVisible():
+            self.cadastro_window = CadastrarHospede()
+            self.cadastro_window.setWindowFlags(self.cadastro_window.windowFlags() | Qt.WindowStaysOnTopHint)
+            self.cadastro_window.setFixedSize(780, 570)
+            self.cadastro_window.show()
+
 
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:

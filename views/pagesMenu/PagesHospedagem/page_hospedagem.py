@@ -164,12 +164,14 @@ class Ui_page_hospedagem(QWidget):
             QMessageBox.information(
                 self,
                 "Informações do Hóspede",
+                f"------------------------------------------------------------\n"
                 f"- Nome: \n{hospede.nome}\n"
                 f"- CPF: \n{hospede.cpf}\n"
                 f"- Telefone: \n{hospede.telefone}\n"
                 f"- Endereço: \n{hospede.endereco}\n"
                 f"- Acompanhantes: \n{self.hospedagem.acompanhantes}\n"
-                f"- Observações: \n{self.hospedagem.obs}"     
+                f"- Observações: \n{self.hospedagem.obs}"    
+                f"\n------------------------------------------------------------\n" 
             )   
         else:
             QMessageBox.warning(self, "Erro", "Nenhuma informação de hóspede disponível.")

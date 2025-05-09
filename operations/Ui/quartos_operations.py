@@ -110,7 +110,8 @@ def listar_quartos_por_data(data_entrada, data_saida):
             # Quartos com hospedagens no período
             quartos_hospedados = session.query(Quarto).join(Hospedagem).filter(
                 Hospedagem.data_entrada <= data_saida,
-                Hospedagem.data_saida >= data_entrada
+                Hospedagem.data_saida >= data_entrada,
+                Hospedagem.aberta == True
             ).all()
 
             # IDs dos quartos ocupados (por reserva ou hospedagem)

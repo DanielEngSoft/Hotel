@@ -45,6 +45,9 @@ class Ui_MainWindow(object):
         # Widget central da janela principal
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        # Tamanho fixo da janela central, para evitar redimensionamento quando a tabelas ocultas aparecerem
+        MainWindow.setFixedSize(MainWindow.size()) 
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         # Layout vertical principal (topo + conteúdo)
