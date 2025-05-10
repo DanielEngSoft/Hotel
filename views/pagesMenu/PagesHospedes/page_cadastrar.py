@@ -1,5 +1,5 @@
-from PySide6.QtCore import QSize, Qt, QTimer
-from PySide6.QtGui import QFont
+from PySide6.QtCore import Qt, QTimer, Signal
+from PySide6.QtGui import QFont, QKeyEvent
 from PySide6.QtWidgets import (
     QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QGroupBox
@@ -11,16 +11,18 @@ from utils.validadores_ui import valida_cpf, formata_nome, valida_telefone
 
 
 class Ui_page_cadastrar_hospede(QWidget):
-    def __init__(self, parent=None):
+    cpf_cadastrado = Signal(str)
+    def __init__(self, pode_fechar = False, parent=None):
+        self.pode_fechar = pode_fechar
         super().__init__(parent)
         self.setupUi(self)
 
     def setupUi(self, page_cadastrar):
         if not page_cadastrar.objectName():
             page_cadastrar.setObjectName("page_cadastrar")
-
-        self.ok = False
-
+            
+        self.ok = self.pode_fechar
+            
         # Layout principal vertical para centralizar o conteúdo
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -227,7 +229,15 @@ class Ui_page_cadastrar_hospede(QWidget):
             self.lineEdit_cidade.clear()
             self.lineEdit_empresa.clear()
 
-            self.ok = True
+            self.cpf_cadastrado.emit(cpf)
+            if self.ok == True:
+                self.close()
+            else:
+                self.lineEdit_nome.setFocus()
 
         except Exception as e:
             QMessageBox.warning(self, "Erro ao cadastrar", "Tente novamente")
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape and self.ok == True:
+            self.close()

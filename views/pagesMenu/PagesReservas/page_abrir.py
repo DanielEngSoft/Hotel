@@ -11,6 +11,8 @@ from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_h
 from operations.Ui.reservas_operations import create_reserva
 from operations.Ui.hospedagem_operations import diaria
 
+from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar_hospede as CadastrarHospede
+
 # CONSTANTES
 DESCONTO = 0.1  # 10% de desconto
 LABEL_DESCONTO = int(DESCONTO * 100)
@@ -37,6 +39,8 @@ class Ui_page_abrir_reserva(QWidget):
         # Fonte padrão para o texto
         font = QFont()
         font.setPointSize(14)
+        # Layout Buscar
+        self.layout_buscar = QHBoxLayout()
 
         # Linha de busca
         self.lineEdit_buscar = QLineEdit(page_abrir)
@@ -45,7 +49,17 @@ class Ui_page_abrir_reserva(QWidget):
         self.lineEdit_buscar.textChanged.connect(self.search_hospedes)
         self.lineEdit_buscar.setFont(font)
 
-        self.layout_central.addWidget(self.lineEdit_buscar)
+        self.pushButton_Cadastrar = QPushButton(page_abrir)
+        self.pushButton_Cadastrar.setObjectName("pushButton_Cadastrar")
+        self.pushButton_Cadastrar.setFont(font)
+        self.pushButton_Cadastrar.setStyleSheet(style_botao_verde())
+        self.pushButton_Cadastrar.setText("+")
+        self.pushButton_Cadastrar.clicked.connect(self.abrir_cadastro_hospede)
+
+        self.layout_buscar.addWidget(self.lineEdit_buscar)
+        self.layout_buscar.addWidget(self.pushButton_Cadastrar)
+
+        self.layout_central.addLayout(self.layout_buscar)
 
         # Adicionar tabela de resultados de busca
         self.tableWidget_hospedes = QTableWidget(0, 3, page_abrir)
@@ -436,6 +450,8 @@ class Ui_page_abrir_reserva(QWidget):
         self.limpar_campos()
 
     def limpar_campos(self):
+        self.lineEdit_buscar.clear()
+        self.lineEdit_buscar.setFocus()
         self.lineEdit_cpf.clear()
         self.dateTimeEdit_data_entrada.setDateTime(QDateTime.currentDateTime().addDays(1))
         self.dateTimeEdit_data_saida.setDateTime(QDateTime.currentDateTime().addDays(2))
@@ -448,6 +464,19 @@ class Ui_page_abrir_reserva(QWidget):
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:
             self.limpar_campos()
+
+    def abrir_cadastro_hospede(self):
+        if not hasattr(self, 'cadastro_window') or not self.cadastro_window.isVisible():
+            self.cadastro_window = CadastrarHospede(pode_fechar=True)
+            self.cadastro_window.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)
+            self.cadastro_window.setFixedSize(780, 570)            
+            self.cadastro_window.setWindowModality(Qt.ApplicationModal)
+            self.cadastro_window.show()
+            self.cadastro_window.cpf_cadastrado.connect(self.atualizar_tabela_hospedes)
+
+    def atualizar_tabela_hospedes(self, cpf):
+        self.lineEdit_cpf.setText(cpf)
+        self.dateTimeEdit_data_entrada.setFocus()
 
 class LineEditMonetario(QLineEdit):
     def __init__(self, total, parent=None):

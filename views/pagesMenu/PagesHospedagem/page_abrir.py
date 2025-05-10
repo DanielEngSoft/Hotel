@@ -56,7 +56,7 @@ class Ui_page_abrir_hospedagem(QWidget):
         self.pushButton_Cadastrar.setObjectName("pushButton_Cadastrar")
         self.pushButton_Cadastrar.setFont(font)
         self.pushButton_Cadastrar.setStyleSheet(style_botao_verde())
-        self.pushButton_Cadastrar.setText("Cadastrar")
+        self.pushButton_Cadastrar.setText("+")
         self.pushButton_Cadastrar.clicked.connect(self.abrir_cadastro_hospede)
 
         self.layout_buscar.addWidget(self.lineEdit_buscar)
@@ -417,9 +417,10 @@ class Ui_page_abrir_hospedagem(QWidget):
 
     def limpar_campos(self):
         self.lineEdit_buscar.setText("")
+        self.lineEdit_buscar.setFocus()
         self.groupBox.setTitle("")
         self.lineEdit_cpf.setText("..-")
-        self.dataSaida_DateTimeEdit.setDate(QDate.currentDate())
+        self.dataSaida_DateTimeEdit.setDate(QDate.currentDate().addDays(1))
         self.spinBox.setValue(1)
         self.checkBox.setChecked(False)
         self.label.setText("R$ 100.00")
@@ -438,12 +439,16 @@ class Ui_page_abrir_hospedagem(QWidget):
 
     def abrir_cadastro_hospede(self):
         if not hasattr(self, 'cadastro_window') or not self.cadastro_window.isVisible():
-            self.cadastro_window = CadastrarHospede()
+            self.cadastro_window = CadastrarHospede(pode_fechar=True)
             self.cadastro_window.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)
             self.cadastro_window.setFixedSize(780, 570)            
             self.cadastro_window.setWindowModality(Qt.ApplicationModal)
             self.cadastro_window.show()
+            self.cadastro_window.cpf_cadastrado.connect(self.atualizar_tabela_hospedes)
 
+    def atualizar_tabela_hospedes(self, cpf):
+        self.lineEdit_cpf.setText(cpf)
+        self.dataSaida_DateTimeEdit.setFocus()
 
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:
