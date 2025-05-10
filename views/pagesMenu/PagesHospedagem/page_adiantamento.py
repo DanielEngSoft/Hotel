@@ -1,4 +1,6 @@
-from PySide6.QtCore import Qt, QDateTime, QTimer
+# Janela de Adiantamento, não é uma pagina, é uma janela que abre ao clicar no botão "Adiantamento"
+
+from PySide6.QtCore import QDateTime, QTimer, Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QComboBox, QDateTimeEdit, QFormLayout, QGroupBox,
@@ -49,69 +51,88 @@ class Ui_page_adiantamento_hospedagem(QWidget):
         font.setPointSize(14)
         self.total = 0
 
+        self.layout_principal = QVBoxLayout(self)
+
+        # Grupo de campos de entrada
         self.groupBox = QGroupBox("Dados do pagamento", self)
         self.groupBox.setObjectName("groupBox")
-        self.groupBox.setMaximumWidth(600)
+        self.groupBox.setFixedSize(450, 350)
 
-        self.verticalLayout_groupBox = QVBoxLayout(self.groupBox)
+        self.layout_groupBox = QVBoxLayout(self.groupBox)
         self.formLayout = QFormLayout()
 
+        # Data Label
         self.label_data = QLabel("Data:")
         self.label_data.setFont(font)
-        self.dateTimeEdit = QDateTimeEdit(QDateTime.currentDateTime())
-        self.dateTimeEdit.setFont(font)
-        self.dateTimeEdit.setObjectName("dateTimeEdit")
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_data)
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.dateTimeEdit)
 
+        # Data Input
+        self.dateTimeEdit_data = QDateTimeEdit(QDateTime.currentDateTime())
+        self.dateTimeEdit_data.setFont(font)
+        self.dateTimeEdit_data.setObjectName("dateTimeEdit")
+
+        # Adicionar campos ao layout
+        self.formLayout.addRow(self.label_data, self.dateTimeEdit_data)
+
+        # Pagamento Label
         self.label_pagamento = QLabel("Método de pagamento:")
         self.label_pagamento.setFont(font)
+
+        # Pagamento Input
         self.comboBox_pagamento = QComboBox()
         self.comboBox_pagamento.setFont(font)
         self.comboBox_pagamento.setObjectName("comboBox_pagamento")
         self.comboBox_pagamento.addItems(["Crédito", "Débito", "PIX", "Dinheiro", "Faturar"])
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_pagamento)
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.comboBox_pagamento)
 
+        # Adicionar campos ao layout
+        self.formLayout.addRow(self.label_pagamento, self.comboBox_pagamento)
+
+        # Valor recebido Label
         self.label_recebido = QLabel("Valor recebido:")
         self.label_recebido.setFont(font)
+
+        # Valor recebido Input
         self.lineEdit_recebido = LineEditMonetario(f'R$ 0.00')
         self.lineEdit_recebido.setFont(font)
         self.lineEdit_recebido.setObjectName("lineEdit_recebido")
-        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.label_recebido)
-        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.lineEdit_recebido)
 
+        # Adicionar campos ao layout
+        self.formLayout.addRow(self.label_recebido, self.lineEdit_recebido)
+
+        # Descrição Label
         self.label_descricao = QLabel("Descrição:")
         self.label_descricao.setFont(font)
+
+        # Descrição Input
         self.lineEdit_descricao = QLineEdit('PAGAMENTO')
         self.lineEdit_descricao.setFont(font)
         self.lineEdit_descricao.setObjectName("lineEdit_descricao")
-        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_descricao)
-        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.lineEdit_descricao)
 
-        self.verticalLayout_groupBox.addLayout(self.formLayout)
+        # Adicionar campos ao layout
+        self.formLayout.addRow(self.label_descricao, self.lineEdit_descricao)
 
+        # Adicionar formLayout ao layout_groupBox
+        self.layout_groupBox.addLayout(self.formLayout)
+
+        # Botão "Adicionar"
         self.button_adicionar = QPushButton("Adicionar")
         self.button_adicionar.setFont(font)
         self.button_adicionar.setObjectName("button_encerrar")
         self.button_adicionar.setStyleSheet(style_botao_verde())
         self.button_adicionar.clicked.connect(self.button_adicionar_clicked)
-        self.verticalLayout_groupBox.addWidget(self.button_adicionar)
 
-        self.outer_layout = QVBoxLayout(self)
-        self.inner_layout = QHBoxLayout()
-        self.inner_layout.addStretch(1)
-        self.inner_layout.addWidget(self.groupBox)
-        self.inner_layout.addStretch(1)
-        self.outer_layout.addLayout(self.inner_layout)
+        # Adicionar botão ao layout
+        self.layout_groupBox.addWidget(self.button_adicionar)
 
+        self.layout_principal.addWidget(self.groupBox, alignment=Qt.AlignCenter)
         self.page_hospedagem_instance = None
 
+    # Função para definir a instância da página de hospedagem
     def set_page_hospedagem_instance(self, instance):
         self.page_hospedagem_instance = instance
 
+    # Função para adicionar o pagamento
     def button_adicionar_clicked(self):
-        data = self.dateTimeEdit.dateTime().toPython()
+        data = self.dateTimeEdit_data.dateTime().toPython()
         descricao = self.lineEdit_descricao.text()
         valor = self.lineEdit_recebido.get_valor_float()
         metodo_pagamento = self.comboBox_pagamento.currentText()
@@ -123,13 +144,15 @@ class Ui_page_adiantamento_hospedagem(QWidget):
             if self.page_hospedagem_instance:
                 self.page_hospedagem_instance.close()
 
+    # Função para atualizar as informações
     def atualizar_informacoes(self):
         """Atualiza os dados da tela com base nas despesas da hospedagem."""
         self.total = somar_despesas(self.hospedagem.id) - somar_adiantamentos(self.hospedagem.id)
 
-        self.lineEdit_recebido.setText(f"R$ {str(self.total)}0")
+        self.lineEdit_recebido.setText(f"R$ {self.total:.2f}")
         self.lineEdit_recebido.valor_cents = int(self.total * 100)
 
+    # Função para atualizar as informações
     def showEvent(self, event):
         self.atualizar_informacoes()
         super().showEvent(event)

@@ -64,20 +64,20 @@ class Ui_page_abrir_hospedagem(QWidget):
 
         self.layout_central.addLayout(self.layout_buscar)
         # Adicionar tabela de resultados de busca
-        self.tableWidget_hospedes = QTableWidget(0, 3, page_abrir)
-        self.tableWidget_hospedes.setStyleSheet(tabelas())
-        self.tableWidget_hospedes.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableWidget_hospedes.setSelectionBehavior(QTableWidget.SelectRows)
-        self.tableWidget_hospedes.setSelectionMode(QTableWidget.SingleSelection)
-        self.tableWidget_hospedes.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.tableWidget_hospedes.verticalHeader().setVisible(False)
-        self.tableWidget_hospedes.setAlternatingRowColors(True)
-        self.tableWidget_hospedes.setVisible(False)
-        self.tableWidget_hospedes.setHorizontalHeaderLabels(["Nome", "Empresa", "CPF"])
+        self.table_hospedes = QTableWidget(0, 3, page_abrir)
+        self.table_hospedes.setStyleSheet(tabelas())
+        self.table_hospedes.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_hospedes.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table_hospedes.setSelectionMode(QTableWidget.SingleSelection)
+        self.table_hospedes.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table_hospedes.verticalHeader().setVisible(False)
+        self.table_hospedes.setAlternatingRowColors(True)
+        self.table_hospedes.setVisible(False)
+        self.table_hospedes.setHorizontalHeaderLabels(["Nome", "Empresa", "CPF"])
         # Adicionar a tabela ao layout
-        self.layout_central.addWidget(self.tableWidget_hospedes)
+        self.layout_central.addWidget(self.table_hospedes)
 
-        self.tableWidget_hospedes.cellActivated.connect(self.pegar_cpf)
+        self.table_hospedes.cellActivated.connect(self.pegar_cpf)
 
         # Grupo dos dados da reserva
         self.groupBox = QGroupBox(page_abrir)
@@ -131,37 +131,37 @@ class Ui_page_abrir_hospedagem(QWidget):
         self.lineEdit_cpf.editingFinished.connect(update_cpf_label)
 
         # Data de saida Label
-        self.dataSaida_label = QLabel(self.groupBox)
-        self.dataSaida_label.setObjectName("dataSaida")
-        self.dataSaida_label.setText("Data de saída:")
-        self.dataSaida_label.setFont(font)
+        self.label_data_saida = QLabel(self.groupBox)
+        self.label_data_saida.setObjectName("dataSaida")
+        self.label_data_saida.setText("Data de saída:")
+        self.label_data_saida.setFont(font)
 
         # Data de saida Input
-        self.dataSaida_DateTimeEdit = QDateTimeEdit(self.groupBox)
-        self.dataSaida_DateTimeEdit.setObjectName("dataSaidaDateTimeEdit")
-        self.dataSaida_DateTimeEdit.setMaximumSize(QSize(300, 16777215))
-        self.dataSaida_DateTimeEdit.setDateTime(QDateTime.currentDateTime().addDays(1))
-        self.dataSaida_DateTimeEdit.dateChanged.connect(self.update_quartos)
-        self.dataSaida_DateTimeEdit.setFont(font)
+        self.dateTimeEdit_data_saida = QDateTimeEdit(self.groupBox)
+        self.dateTimeEdit_data_saida.setObjectName("dataSaidaDateTimeEdit")
+        self.dateTimeEdit_data_saida.setMaximumSize(QSize(300, 16777215))
+        self.dateTimeEdit_data_saida.setDateTime(QDateTime.currentDateTime().addDays(1))
+        self.dateTimeEdit_data_saida.dateChanged.connect(self.update_quartos)
+        self.dateTimeEdit_data_saida.setFont(font)
 
         # Adiciona os widgets ao formulário
-        self.form_layout.addRow(self.dataSaida_label, self.dataSaida_DateTimeEdit)
+        self.form_layout.addRow(self.label_data_saida, self.dateTimeEdit_data_saida)
         
         # Quantidade de pessoas Label
-        self.qtd_pessoas_label = QLabel(self.groupBox)
-        self.qtd_pessoas_label.setObjectName("quantidadeDePessoasLabel")
-        self.qtd_pessoas_label.setText("Quantidade de pessoas:")
-        self.qtd_pessoas_label.setFont(font)
+        self.label_qtd_pessoas = QLabel(self.groupBox)
+        self.label_qtd_pessoas.setObjectName("quantidadeDePessoasLabel")
+        self.label_qtd_pessoas.setText("Quantidade de pessoas:")
+        self.label_qtd_pessoas.setFont(font)
 
         # Widget de SpinBox + Checkbox + Label de valor
-        self.qtd_pessoas_widget = QWidget(self.groupBox)
-        self.qtd_pessoas_widget.setObjectName("quantidadeDePessoasWidget")
-        self.qtd_pessoas_widget.setMinimumSize(QSize(0, 30))
-        self.qtd_pessoas_widget.setMaximumSize(QSize(16777215, 50))
-        self.qtd_pessoas_widget.setFont(font)
+        self.widget_qtd_pessoas = QWidget(self.groupBox)
+        self.widget_qtd_pessoas.setObjectName("quantidadeDePessoasWidget")
+        self.widget_qtd_pessoas.setMinimumSize(QSize(0, 30))
+        self.widget_qtd_pessoas.setMaximumSize(QSize(16777215, 50))
+        self.widget_qtd_pessoas.setFont(font)
 
         # Layout horizontal do Widget
-        self.horizontalLayout = QHBoxLayout(self.qtd_pessoas_widget)
+        self.horizontalLayout = QHBoxLayout(self.widget_qtd_pessoas)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("verticalLayout_4")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -187,49 +187,49 @@ class Ui_page_abrir_hospedagem(QWidget):
         self.horizontalLayout.addWidget(self.checkBox)
 
         # Valor da diária
-        self.label = QLabel(page_abrir)
-        self.label.setText("R$ 100.00")
-        self.label.setObjectName("label")
-        self.label.setFont(font)
+        self.label_diaria = QLabel(page_abrir)
+        self.label_diaria.setText("R$ 100.00")
+        self.label_diaria.setObjectName("label")
+        self.label_diaria.setFont(font)
 
-        self.horizontalLayout.addWidget(self.label)
+        self.horizontalLayout.addWidget(self.label_diaria)
 
-        self.form_layout.addRow(self.qtd_pessoas_label, self.qtd_pessoas_widget)
+        self.form_layout.addRow(self.label_qtd_pessoas, self.widget_qtd_pessoas)
 
         # Acompanhantes Label
-        self.acompanhantes_label = QLabel(self.groupBox)
-        self.acompanhantes_label.setObjectName("acompanhantes_label")
-        self.acompanhantes_label.setText("Acompanhantes:")
-        self.acompanhantes_label.setFont(font)
+        self.label_acompanhantes = QLabel(self.groupBox)
+        self.label_acompanhantes.setObjectName("acompanhantes_label")
+        self.label_acompanhantes.setText("Acompanhantes:")
+        self.label_acompanhantes.setFont(font)
 
         # Acompanhantes Input
-        self.acompanhantes_plainTextEdit = QPlainTextEdit(page_abrir)
-        self.acompanhantes_plainTextEdit.setObjectName("acompanhantes_plainTextEdit")
-        self.acompanhantes_plainTextEdit.setMaximumSize(QSize(300, 90))
+        self.plainTextEdit_acompanhantes = QPlainTextEdit(page_abrir)
+        self.plainTextEdit_acompanhantes.setObjectName("acompanhantes_plainTextEdit")
+        self.plainTextEdit_acompanhantes.setMaximumSize(QSize(300, 90))
 
         # Adiciona os widgets ao formulário
-        self.form_layout.addRow(self.acompanhantes_label, self.acompanhantes_plainTextEdit)
+        self.form_layout.addRow(self.label_acompanhantes, self.plainTextEdit_acompanhantes)
 
         # Quantidade de quartos disponíveis
         self.label_quartos = QLabel("Selecione o quarto:", self.groupBox)
         self.label_quartos.setFont(font)
 
         # Tabela de quartos disponíveis
-        self.tableWidget_quartos = QTableWidget(0, 2, self.groupBox)
-        self.tableWidget_quartos.setHorizontalHeaderLabels(["Nº", "Tipo"])
-        self.tableWidget_quartos.setStyleSheet(tabelas())
-        self.tableWidget_quartos.setSelectionBehavior(QTableWidget.SelectRows)
-        self.tableWidget_quartos.setSelectionMode(QTableWidget.SingleSelection)
-        self.tableWidget_quartos.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.tableWidget_quartos.setAlternatingRowColors(True)
-        self.tableWidget_quartos.setMinimumHeight(200)
-        self.tableWidget_quartos.setColumnWidth(0, 50)
-        self.tableWidget_quartos.horizontalHeader().setStretchLastSection(True)
-        self.tableWidget_quartos.verticalHeader().setVisible(False)
-        self.tableWidget_quartos.currentCellChanged.connect(self.selecionar_quarto)
+        self.table_quartos = QTableWidget(0, 2, self.groupBox)
+        self.table_quartos.setHorizontalHeaderLabels(["Nº", "Tipo"])
+        self.table_quartos.setStyleSheet(tabelas())
+        self.table_quartos.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table_quartos.setSelectionMode(QTableWidget.SingleSelection)
+        self.table_quartos.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table_quartos.setAlternatingRowColors(True)
+        self.table_quartos.setMinimumHeight(200)
+        self.table_quartos.setColumnWidth(0, 50)
+        self.table_quartos.horizontalHeader().setStretchLastSection(True)
+        self.table_quartos.verticalHeader().setVisible(False)
+        self.table_quartos.currentCellChanged.connect(self.selecionar_quarto)
 
         # Adiciona os widgets ao formulário
-        self.form_layout.addRow(self.label_quartos, self.tableWidget_quartos)
+        self.form_layout.addRow(self.label_quartos, self.table_quartos)
         self.update_quartos()
 
         # Observações Label
@@ -267,12 +267,7 @@ class Ui_page_abrir_hospedagem(QWidget):
         self.pushButton_abrir.setStyleSheet(style_botao_verde())
         self.pushButton_abrir.clicked.connect(self.button_abrir_clicked)
 
-        self.abrir_layout = QHBoxLayout()
-        self.abrir_layout.addStretch()
-        self.abrir_layout.addWidget(self.pushButton_abrir)
-        self.abrir_layout.addStretch()
-
-        self.layout_central.addLayout(self.abrir_layout)
+        self.layout_central.addWidget(self.pushButton_abrir)
         self.layout_central.addStretch()
 
         self.layout_principal.addStretch()
@@ -281,28 +276,28 @@ class Ui_page_abrir_hospedagem(QWidget):
 
         QMetaObject.connectSlotsByName(page_abrir)
 
-    # Atualiza a tabela de quartos disponíveis
     def showEvent(self, event):
         self.update_quartos()
         super().showEvent(event)
 
+    # Atualiza a tabela de quartos disponíveis
     def update_quartos(self):
-        self.tableWidget_quartos.setRowCount(0)
+        self.table_quartos.setRowCount(0)
         data_entrada = datetime.today()
-        data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+        data_saida = self.dateTimeEdit_data_saida.date().toPython()
         quartos = listar_quartos_por_data(data_entrada, data_saida)
         for quarto in quartos:
-            row = self.tableWidget_quartos.rowCount()
-            self.tableWidget_quartos.insertRow(row)
+            row = self.table_quartos.rowCount()
+            self.table_quartos.insertRow(row)
             item_num = QTableWidgetItem(str(quarto.numero))
             item_num.setTextAlignment(Qt.AlignCenter)
-            self.tableWidget_quartos.setItem(row, 0, item_num)
-            self.tableWidget_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
+            self.table_quartos.setItem(row, 0, item_num)
+            self.table_quartos.setItem(row, 1, QTableWidgetItem(quarto.tipo))
 
 
     # Lógica ao clicar no botão "Abrir"
     def button_abrir_clicked(self):
-        row = self.tableWidget_quartos.currentRow()
+        row = self.table_quartos.currentRow()
         cpf = self.lineEdit_cpf.text()
 
         self.label_feedback.setText("")
@@ -312,11 +307,11 @@ class Ui_page_abrir_hospedagem(QWidget):
             self.label_feedback.setStyleSheet("color: red;")
             return
 
-        quarto_num = self.tableWidget_quartos.item(row, 0).text()
+        quarto_num = self.table_quartos.item(row, 0).text()
         qtd_hospedes = self.spinBox.value()
-        data_saida = self.dataSaida_DateTimeEdit.date().toPython()
+        data_saida = self.dateTimeEdit_data_saida.date().toPython()
         obs = self.plainTextEdit_obs.toPlainText().strip()
-        acompanhantes = self.acompanhantes_plainTextEdit.toPlainText()
+        acompanhantes = self.plainTextEdit_acompanhantes.toPlainText()
 
         # Verifica se o hóspede existe no banco de dados
         hospede = procura_hospede_por_cpf(cpf)
@@ -333,14 +328,25 @@ class Ui_page_abrir_hospedagem(QWidget):
             valor_diaria = produto.valor * (1 - DESCONTO)
         
         # Cria a hospedagem no banco de dados
-        create_hospedagem(id_hospede=cpf, id_quarto=quarto_num, data_saida=data_saida, qtd_hospedes=qtd_hospedes, valor_diaria=valor_diaria, obs=obs, acompanhantes=acompanhantes) # vALOR DA DIÁRIA = VALOR DO PRODUTO
+        create_hospedagem(
+            id_hospede=cpf, 
+            id_quarto=quarto_num, 
+            data_saida=data_saida, 
+            qtd_hospedes=qtd_hospedes, 
+            valor_diaria=valor_diaria, # vALOR DA DIÁRIA = VALOR DO PRODUTO
+            obs=obs, 
+            acompanhantes=acompanhantes
+            ) 
+        
+        # Atualiza Label de feedback
         self.label_feedback.setText(f"Hospedagem criada para {hospede.nome}")
         self.label_feedback.setStyleSheet("color: green;")
 
-        hospedagem = buscar_hospedagem_por_quarto(quarto_num)
 
         # Adicionando a despesa de Diária no hospede, de acordo com a quantidade de hóspedes. 
         # Considerando que os produtos das diárias foram criados de acordo com o arquvo de OBSERVAÇÕES.txt
+        hospedagem = buscar_hospedagem_por_quarto(quarto_num)
+
         create_despesa(
             id_hospedagem=hospedagem.id,
             id_produto=qtd_hospedes,  # Despesas de diárias tem o id do produto igual à quantidade de hóspedes
@@ -349,45 +355,46 @@ class Ui_page_abrir_hospedagem(QWidget):
         )
         # Limpa os campos após sucesso
         self.limpar_campos()
-
+        
+        # Limpa a label de feedback depois de 4 segundos
         QTimer.singleShot(4000, lambda: self.label_feedback.setText(""))
 
     # Busca hóspedes por nome e preenche a tabela
     def search_hospedes(self):
-        self.tableWidget_hospedes.setRowCount(0)
+        self.table_hospedes.setRowCount(0)
         nome = self.lineEdit_buscar.text()
         
         if self.lineEdit_buscar.text() == "":
             self.lineEdit_buscar.setPlaceholderText("Nome do hóspede")
-            self.tableWidget_hospedes.setVisible(False)
+            self.table_hospedes.setVisible(False)
 
         hospedes = procura_hospedes_por_nome(nome)
         if hospedes:
             if self.lineEdit_buscar.text() == "":
                 self.lineEdit_buscar.setPlaceholderText("Nome do hóspede")
-                self.tableWidget_hospedes.setVisible(False)
+                self.table_hospedes.setVisible(False)
                 self.groupBox.setVisible(True)
             else:
-                self.tableWidget_hospedes.setVisible(True)
+                self.table_hospedes.setVisible(True)
                 self.groupBox.setVisible(False)
                 for hospede in hospedes:
-                    row = self.tableWidget_hospedes.rowCount()
-                    self.tableWidget_hospedes.insertRow(row)
-                    self.tableWidget_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
-                    self.tableWidget_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
-                    self.tableWidget_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
+                    row = self.table_hospedes.rowCount()
+                    self.table_hospedes.insertRow(row)
+                    self.table_hospedes.setItem(row, 0, QTableWidgetItem(hospede.nome))
+                    self.table_hospedes.setItem(row, 1, QTableWidgetItem(hospede.empresa))
+                    self.table_hospedes.setItem(row, 2, QTableWidgetItem(hospede.cpf))
         else:
             self.groupBox.setVisible(True)
         self._ajustar_altura_tabela()
 
     # Preenche o campo CPF ao clicar em um hóspede da lista
     def pegar_cpf(self, row):
+        self.table_hospedes.setVisible(False)
         self.groupBox.setVisible(True)
-        cpf = self.tableWidget_hospedes.item(row, 2).text()
         self.lineEdit_buscar.clear()
+        cpf = self.table_hospedes.item(row, 2).text()
         self.lineEdit_cpf.setText(cpf)
-        self.dataSaida_DateTimeEdit.setFocus()
-        self.tableWidget_hospedes.setVisible(False)
+        self.dateTimeEdit_data_saida.setFocus()
 
     # Atualiza o preço de acordo com a quantidade de hóspedes
     def atualizar_preco(self):
@@ -396,48 +403,54 @@ class Ui_page_abrir_hospedagem(QWidget):
             preco = diaria(qtd) * (1 - DESCONTO)
         else:
             preco = diaria(qtd)
-        self.label.setText(f"R$ {preco:.2f}")
+        
+        self.label_diaria.setText(f"R$ {preco:.2f}")
     
+    # Ajusta a altura da tabela de acordo com o número de hóspedes, para nãão ficar muito grande
     def _ajustar_altura_tabela(self):
-        row_count = self.tableWidget_hospedes.rowCount()
+        row_count = self.table_hospedes.rowCount()
         if row_count == 0:
-            self.tableWidget_hospedes.setVisible(False)
+            self.table_hospedes.setVisible(False)
             return
-        row_height = self.tableWidget_hospedes.verticalHeader().defaultSectionSize()
-        header_height = self.tableWidget_hospedes.horizontalHeader().height()
-        scrollbar_height = self.tableWidget_hospedes.horizontalScrollBar().height() if self.tableWidget_hospedes.horizontalScrollBar().isVisible() else 0
+        row_height = self.table_hospedes.verticalHeader().defaultSectionSize()
+        header_height = self.table_hospedes.horizontalHeader().height()
+        scrollbar_height = self.table_hospedes.horizontalScrollBar().height() if self.table_hospedes.horizontalScrollBar().isVisible() else 0
 
         # Calcula a altura desejada com base no número de linhas
         desired_height = row_count * row_height + header_height + scrollbar_height + 2
 
-        self.tableWidget_hospedes.setMaximumHeight(desired_height)
+        self.table_hospedes.setMaximumHeight(desired_height)
         # if desired_height > 250:
         #     self.tableWidget_hospedes.setMaximumHeight(250)
-        self.tableWidget_hospedes.setVisible(True)
+        self.table_hospedes.setVisible(True)
 
+    # Limpa os campos
     def limpar_campos(self):
-        self.lineEdit_buscar.setText("")
         self.lineEdit_buscar.setFocus()
+        self.lineEdit_buscar.setText("")
         self.groupBox.setTitle("")
         self.lineEdit_cpf.setText("..-")
-        self.dataSaida_DateTimeEdit.setDate(QDate.currentDate().addDays(1))
+        self.dateTimeEdit_data_saida.setDate(QDate.currentDate().addDays(1))
         self.spinBox.setValue(1)
         self.checkBox.setChecked(False)
-        self.label.setText("R$ 100.00")
+        self.label_diaria.setText("R$ 100.00")
         self.label_quartos.setText("Selecione o quarto:")
-        self.acompanhantes_plainTextEdit.setPlainText("")
+        self.plainTextEdit_acompanhantes.setPlainText("")
         self.plainTextEdit_obs.setPlainText("")
         self.update_quartos()
 
+    # Seleciona o quarto ao clicar na tabela
     def selecionar_quarto(self, row, col):
-        item = self.tableWidget_quartos.item(row, 0)
+        item = self.table_quartos.item(row, 0)
         if item is not None:
             quarto = item.text()
         else:
             quarto = ''
         self.label_quartos.setText(f"Selecione o quarto: {quarto}")
 
+    # Abre a tela de cadastro de hóspedes
     def abrir_cadastro_hospede(self):
+        # Verifica se a janela de cadastro de hóspedes já está aberta
         if not hasattr(self, 'cadastro_window') or not self.cadastro_window.isVisible():
             self.cadastro_window = CadastrarHospede(pode_fechar=True)
             self.cadastro_window.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)
@@ -446,10 +459,12 @@ class Ui_page_abrir_hospedagem(QWidget):
             self.cadastro_window.show()
             self.cadastro_window.cpf_cadastrado.connect(self.atualizar_tabela_hospedes)
 
+    # Pega o CPF cadastrado e atualiza a tabela de hóspedes
     def atualizar_tabela_hospedes(self, cpf):
         self.lineEdit_cpf.setText(cpf)
-        self.dataSaida_DateTimeEdit.setFocus()
+        self.dateTimeEdit_data_saida.setFocus()
 
+    # Função para limpar os campos de entrada
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:
             self.limpar_campos()

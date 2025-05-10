@@ -76,22 +76,22 @@ class Ui_page_editar_produto(QWidget):
         self.verticalLayout.addLayout(busca_layout)
 
         # Tabela de resultados da busca
-        self.tabela_resultados = QTableWidget()
-        self.tabela_resultados.setVisible(False)
-        self.tabela_resultados.setMaximumHeight(150)
-        self.tabela_resultados.setMinimumWidth(800)
-        self.tabela_resultados.setColumnCount(2)
-        self.tabela_resultados.setHorizontalHeaderLabels(["Descrição", "Valor"])
-        self.tabela_resultados.setEditTriggers(QTableWidget.NoEditTriggers)  # impede edição direta
-        self.tabela_resultados.setAlternatingRowColors(True)
-        self.tabela_resultados.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.tabela_resultados.cellClicked.connect(self.carregar_dados_produto)
+        self.table_resultados = QTableWidget()
+        self.table_resultados.setVisible(False)
+        self.table_resultados.setMaximumHeight(150)
+        self.table_resultados.setMinimumWidth(800)
+        self.table_resultados.setColumnCount(2)
+        self.table_resultados.setHorizontalHeaderLabels(["Descrição", "Valor"])
+        self.table_resultados.setEditTriggers(QTableWidget.NoEditTriggers)  # impede edição direta
+        self.table_resultados.setAlternatingRowColors(True)
+        self.table_resultados.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.table_resultados.cellClicked.connect(self.carregar_dados_produto)
 
         # Faz o cabeçalho se ajustar ao tamanho da tabela
-        self.tabela_resultados.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_resultados.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         # Adiciona a tabela centralizada
-        self.verticalLayout.addWidget(self.tabela_resultados, alignment=Qt.AlignCenter)
+        self.verticalLayout.addWidget(self.table_resultados, alignment=Qt.AlignCenter)
 
         # Linha separadora entre colunas
         self.line_separador = QFrame(self.widget)
@@ -153,25 +153,25 @@ class Ui_page_editar_produto(QWidget):
 
     def buscar_produto(self):
         descricao = self.lineEdit_busca.text()
-        self.tabela_resultados.setRowCount(0)
+        self.table_resultados.setRowCount(0)
 
         produtos = buscar_produto_por_nome(descricao)
         if produtos:
             if self.lineEdit_busca.text() == "":
-                self.tabela_resultados.setVisible(False)
+                self.table_resultados.setVisible(False)
             else:
-                self.tabela_resultados.setVisible(True)
+                self.table_resultados.setVisible(True)
                 for i, h in enumerate(produtos):
-                    self.tabela_resultados.insertRow(i)
+                    self.table_resultados.insertRow(i)
                     for j, val in enumerate([h.descricao, h.valor]):
-                        self.tabela_resultados.setItem(i, j, QTableWidgetItem(str(val)))
+                        self.table_resultados.setItem(i, j, QTableWidgetItem(str(val)))
         else:
-            self.tabela_resultados.setVisible(False)
+            self.table_resultados.setVisible(False)
         self._ajustar_altura_tabela()
 
     def carregar_dados_produto(self, row, column):
-        descricao = self.tabela_resultados.item(row, 0).text()
-        valor = self.tabela_resultados.item(row, 1).text()
+        descricao = self.table_resultados.item(row, 0).text()
+        valor = self.table_resultados.item(row, 1).text()
 
         self.lineEdit_descricao.setText(descricao)
         self.lineEdit_valor.setText(valor)
@@ -211,16 +211,16 @@ class Ui_page_editar_produto(QWidget):
         self.produto_selecionado = None
     
     def _ajustar_altura_tabela(self):
-        row_count = self.tabela_resultados.rowCount()
+        row_count = self.table_resultados.rowCount()
         if row_count == 0:
-            self.tabela_resultados.setVisible(False)
+            self.table_resultados.setVisible(False)
             return
-        row_height = self.tabela_resultados.verticalHeader().defaultSectionSize()
-        header_height = self.tabela_resultados.horizontalHeader().height()
-        scrollbar_height = self.tabela_resultados.horizontalScrollBar().height() if self.tabela_resultados.horizontalScrollBar().isVisible() else 0
+        row_height = self.table_resultados.verticalHeader().defaultSectionSize()
+        header_height = self.table_resultados.horizontalHeader().height()
+        scrollbar_height = self.table_resultados.horizontalScrollBar().height() if self.table_resultados.horizontalScrollBar().isVisible() else 0
 
         # Calcula a altura desejada com base no número de linhas
         desired_height = row_count * row_height + header_height + scrollbar_height + 2
 
-        self.tabela_resultados.setMaximumHeight(desired_height)
-        self.tabela_resultados.setVisible(True)
+        self.table_resultados.setMaximumHeight(desired_height)
+        self.table_resultados.setVisible(True)
