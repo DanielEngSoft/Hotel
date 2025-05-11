@@ -389,11 +389,11 @@ class Ui_page_abrir_hospedagem(QWidget):
 
     # Preenche o campo CPF ao clicar em um hóspede da lista
     def pegar_cpf(self, row):
-        self.table_hospedes.setVisible(False)
         self.groupBox.setVisible(True)
-        self.lineEdit_buscar.clear()
         cpf = self.table_hospedes.item(row, 2).text()
+        self.table_hospedes.setVisible(False)
         self.lineEdit_cpf.setText(cpf)
+        self.lineEdit_buscar.clear()
         self.dateTimeEdit_data_saida.setFocus()
 
     # Atualiza o preço de acordo com a quantidade de hóspedes

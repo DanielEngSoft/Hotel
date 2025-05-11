@@ -301,6 +301,7 @@ class Ui_page_ficha_hospedagem(QWidget):
                         item.setBackground(QColor("#05452f"))
         self.atualizar_totais()
     
+    # Ajusta a altura da tabela de sugestões
     def _ajustar_altura_tabela_sugestao(self):
         row_count = self.tabela_sugestoes.rowCount()
         if row_count == 0:
@@ -318,7 +319,8 @@ class Ui_page_ficha_hospedagem(QWidget):
         else:
             self.tabela_sugestoes.setMaximumHeight(desired_height)
         self.tabela_sugestoes.setVisible(True)
-        
+    
+    # Função de teclas pressionadas
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Down:
             self.tabela_sugestoes.setFocus()

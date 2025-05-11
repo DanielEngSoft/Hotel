@@ -19,32 +19,44 @@ class Ui_page_alterar_hospedagem(QWidget):
         font = QFont()
         font.setPointSize(14)
 
+        # Layout principal
+        self.layout_principal = QVBoxLayout(self)
+
+        # Criação do grupo de campos para a hospedagem
         self.groupBox = QGroupBox("Alterar dados da hospedagem", self)
         self.groupBox.setObjectName("groupBox")
-        self.groupBox.setMaximumWidth(600)
+        self.groupBox.setFixedSize(550, 400)
 
-        self.verticalLayout_groupBox = QVBoxLayout(self.groupBox)
+        self.layout_groupBox = QVBoxLayout(self.groupBox)
         self.formLayout = QFormLayout()
 
+        # Label data de entrada
         self.label_data_entrada = QLabel("Data de entrada:")
         self.label_data_entrada.setFont(font)
+
+        # Data de entrada input
         self.dateTimeEdit_entrada = QDateTimeEdit(hospedagem.data_entrada)
         self.dateTimeEdit_entrada.setFont(font)
         self.dateTimeEdit_entrada.setObjectName("dateTimeEdit_entrada")
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_data_entrada)
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.dateTimeEdit_entrada)
 
+        # Adicionar campos ao layout
+        self.formLayout.addRow(self.label_data_entrada, self.dateTimeEdit_entrada)
+
+        # Label data de saída
         self.label_data_saida = QLabel("Previsão de saída:")
         self.label_data_saida.setFont(font)
+
+        # Data de saída input
         self.dateEdit_saida = QDateEdit(hospedagem.data_saida)
         self.dateEdit_saida.setFont(font)
         self.dateEdit_saida.setObjectName("dateTimeEdit_saida")
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.label_data_saida)
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.dateEdit_saida)
 
+        # Adicionar campos ao layout
+        self.formLayout.addRow(self.label_data_saida, self.dateEdit_saida)
+
+        # Label quarto
         self.label_novo_quarto = QLabel("Número do quarto:")
         self.label_novo_quarto.setFont(font)
-        self.quartos = listar_quartos_disponiveis()
 
         # Tabela de quartos disponíveis
         self.tableWidget_quartos = QTableWidget()
@@ -55,33 +67,36 @@ class Ui_page_alterar_hospedagem(QWidget):
         self.tableWidget_quartos.setSelectionMode(QTableWidget.SingleSelection)
         self.tableWidget_quartos.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tableWidget_quartos.setAlternatingRowColors(True)
-        self.tableWidget_quartos.setMinimumHeight(200)
+        self.tableWidget_quartos.setMaximumHeight(200)
         self.tableWidget_quartos.setColumnWidth(0, 50)
         self.tableWidget_quartos.horizontalHeader().setStretchLastSection(True)
         self.tableWidget_quartos.verticalHeader().setVisible(False)
         self.tableWidget_quartos.itemSelectionChanged.connect(self.on_quarto_selected)
 
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_novo_quarto)
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.tableWidget_quartos)
-
+        # Adicionar campos ao layout
+        self.formLayout.addRow(self.label_novo_quarto, self.tableWidget_quartos)
+        
+        # Funçoes para atualizar a tabela de quartos disponíveis
+        self.quartos = listar_quartos_disponiveis()
         self.update_quartos()
 
-        self.verticalLayout_groupBox.addLayout(self.formLayout)
+        # Adiciona FormLayout ao layout do grupo
+        self.layout_groupBox.addLayout(self.formLayout)
 
+        # Botão de alterar
         self.button_alterar = QPushButton("Alterar")
         self.button_alterar.setFont(font)
         self.button_alterar.setObjectName("button_confirmar")
         self.button_alterar.setStyleSheet(style_botao_verde())
         self.button_alterar.clicked.connect(self.button_alterar_clicked)
-        self.verticalLayout_groupBox.addWidget(self.button_alterar)
 
-        self.outer_layout = QVBoxLayout(self)
-        self.inner_layout = QHBoxLayout()
-        self.inner_layout.addStretch(1)
-        self.inner_layout.addWidget(self.groupBox)
-        self.inner_layout.addStretch(1)
-        self.outer_layout.addLayout(self.inner_layout)
+        # Adiciona botão ao layout do grupo
+        self.layout_groupBox.addWidget(self.button_alterar)
 
+        # Adiciona grupo ao layout principal
+        self.layout_principal.addWidget(self.groupBox, alignment=Qt.AlignCenter)
+
+        # Variáveis de controle para acesso às instâncias
         self.page_alterar_instance = None
         self.novo_quarto = None
 

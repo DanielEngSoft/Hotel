@@ -134,23 +134,29 @@ class Ui_page_adiantamento_hospedagem(QWidget):
     def button_adicionar_clicked(self):
         data = self.dateTimeEdit_data.dateTime().toPython()
         descricao = self.lineEdit_descricao.text()
-        valor = self.lineEdit_recebido.get_valor_float()
         metodo_pagamento = self.comboBox_pagamento.currentText()
-        reply = QMessageBox.warning(self, "Atenção", "Deseja realmente incluir esse pagamento", QMessageBox.Yes | QMessageBox.No)
+        valor = self.lineEdit_recebido.get_valor_float()
 
-        if reply == QMessageBox.Yes:
-            adicionar_adiantamento(data, self.hospedagem.id, valor, descricao, metodo_pagamento)
-            QMessageBox.information(self, "Sucesso", "Pagamento adicionado com sucesso!")
-            if self.page_hospedagem_instance:
-                self.page_hospedagem_instance.close()
+        if valor > 0:
+            reply = QMessageBox.warning(self, "Atenção", "Deseja realmente incluir esse pagamento", QMessageBox.Yes | QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                adicionar_adiantamento(data, self.hospedagem.id, valor, descricao, metodo_pagamento)
+                QMessageBox.information(self, "Sucesso", "Pagamento adicionado com sucesso!")
+                if self.page_hospedagem_instance:
+                    self.page_hospedagem_instance.close()
 
     # Função para atualizar as informações
     def atualizar_informacoes(self):
         """Atualiza os dados da tela com base nas despesas da hospedagem."""
         self.total = somar_despesas(self.hospedagem.id) - somar_adiantamentos(self.hospedagem.id)
 
-        self.lineEdit_recebido.setText(f"R$ {self.total:.2f}")
-        self.lineEdit_recebido.valor_cents = int(self.total * 100)
+        if self.total > 0:
+            self.lineEdit_recebido.setText(f"R$ {self.total:.2f}")
+            self.lineEdit_recebido.valor_cents = int(self.total * 100)
+        else:
+            self.lineEdit_recebido.setText("R$ 0.00")
+            self.lineEdit_recebido.valor_cents = 0
 
     # Função para atualizar as informações
     def showEvent(self, event):
