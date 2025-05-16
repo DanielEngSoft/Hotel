@@ -86,7 +86,8 @@ class Ui_page_encerrar_hospedagem(QWidget):
 
         self.label_recebido = QLabel("Valor recebido:")
         self.label_recebido.setFont(font)
-        self.lineEdit_recebido = QLineEdit(f'R$ {str(self.total)}0')
+
+        self.lineEdit_recebido = QLineEdit(f"R$ {self.total:.2f}")        
         self.lineEdit_recebido.setReadOnly(True)
         self.lineEdit_recebido.setFont(font)
         self.lineEdit_recebido.setObjectName("lineEdit_recebido")
@@ -137,8 +138,8 @@ class Ui_page_encerrar_hospedagem(QWidget):
         self.a_pagar = self.total - self.recebido
 
         self.lineEdit_total.setText(f"R$ {self.total:.2f}")
-        self.lineEdit_recebido.setText(f"R$ {str(self.recebido)}0")
-        self.lineEdit_recebido.valor_cents = int(self.total * 100)
+        self.lineEdit_recebido.setText(f"R$ {self.recebido:.2f}")
+        self.lineEdit_recebido.valor_cents = int(self.recebido * 100)
         self.lineEdit_a_pagar.setText(f"R$ {str(self.a_pagar)}0")
 
     def showEvent(self, event):

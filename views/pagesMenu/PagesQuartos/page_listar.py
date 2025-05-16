@@ -82,7 +82,7 @@ class Ui_page_listar_quarto(QWidget):
         # 2. Recriar e adicionar todos os botões ao grid
         for i, quarto in enumerate(quartos):
             btn = QPushButton(f"{quarto.numero}\n{quarto.tipo}")
-            btn.setFixedSize(220, 80)
+            btn.setMinimumSize(QSize(120, 100))
             btn.setFont(QFont("Segoe UI", 10))
 
             if quarto.disponivel:
