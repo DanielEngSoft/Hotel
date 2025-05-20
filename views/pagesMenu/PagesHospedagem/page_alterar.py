@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QMessageBox, QTableWidget, QTableWidgetItem,
 )
 from operations.Ui.despesas_operations import buscar_despesas_por_id_hospedagem
-from operations.Ui.quartos_operations import listar_quartos_disponiveis, quarto_por_id_hospedagem
+from operations.Ui.quartos_operations import listar_quartos_disponiveis, quarto_por_id_hospedagem, listar_quartos_por_data
 from operations.Ui.hospedagem_operations import alterar_hospedagem
 
 from styles.styles import style_botao_verde, tabelas
@@ -50,6 +50,7 @@ class Ui_page_alterar_hospedagem(QWidget):
         self.dateEdit_saida = QDateEdit(hospedagem.data_saida)
         self.dateEdit_saida.setFont(font)
         self.dateEdit_saida.setObjectName("dateTimeEdit_saida")
+        self.dateEdit_saida.dateChanged.connect(self.update_quartos)
 
         # Adicionar campos ao layout
         self.formLayout.addRow(self.label_data_saida, self.dateEdit_saida)
@@ -77,7 +78,7 @@ class Ui_page_alterar_hospedagem(QWidget):
         self.formLayout.addRow(self.label_novo_quarto, self.tableWidget_quartos)
         
         # Funçoes para atualizar a tabela de quartos disponíveis
-        self.quartos = listar_quartos_disponiveis()
+        self.quartos = listar_quartos_por_data(hospedagem.data_entrada, self.dateEdit_saida.date().toPython())
         self.update_quartos()
 
         # Adiciona FormLayout ao layout do grupo
@@ -152,7 +153,7 @@ class Ui_page_alterar_hospedagem(QWidget):
 
     def update_quartos(self):
         self.tableWidget_quartos.setRowCount(0)
-        quartos = listar_quartos_disponiveis()
+        quartos = listar_quartos_por_data(self.hospedagem.data_entrada , self.dateEdit_saida.date().toPython())
         for quarto in quartos:
             row = self.tableWidget_quartos.rowCount()
             self.tableWidget_quartos.insertRow(row)

@@ -100,15 +100,6 @@ class Ui_page_listar_quarto(QWidget):
         self.scroll_area.updateGeometry() # Atualiza a geometria do scroll_area
 
     def abrir_janela_hospedagem(self, hospedagem):
-        # Verifica se uma janela para esta hospedagem já está aberta
-        for janela_existente in self.janelas_abertas:
-            # Assumindo que o objeto 'hospedagem' na janela tem um atributo 'id' ou similar
-            # e que o objeto 'hospedagem' passado como argumento também tem.
-            if hasattr(janela_existente, 'hospedagem') and janela_existente.hospedagem.id == hospedagem.id:
-                janela_existente.raise_()
-                janela_existente.activateWindow()
-                return
-
         try:
             janela = Ui_page_hospedagem(hospedagem) # Passa o objeto hospedagem
             janela.setAttribute(Qt.WA_DeleteOnClose) # Garante que a janela seja deletada ao fechar
@@ -116,14 +107,13 @@ class Ui_page_listar_quarto(QWidget):
             # Adiciona à lista ANTES de conectar ao destroyed, para evitar problemas se a janela fechar rapidamente
             self.janelas_abertas.append(janela)
             
-            # Conecta o sinal destroyed para remover da lista quando a janela for fechada
-            # Usar uma função lambda que captura a 'janela' específica é mais seguro
-            janela.destroyed.connect(lambda obj=janela: self.remover_janela_da_lista(obj))
-            
             janela.setWindowModality(Qt.ApplicationModal) # Ou NonModal, dependendo do comportamento desejado
             janela.show()
-            janela.raise_()
+            janela.raise_() 
             janela.activateWindow()
+
+            # Conecta ao destroyed para remover a janela da lista quando fechar
+            janela.destroyed.connect(lambda: self.remover_janela_da_lista(janela))
 
         except Exception as e:
             print(f"Erro ao abrir ficha de hospedagem: {e}")
