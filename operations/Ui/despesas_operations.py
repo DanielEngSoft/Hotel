@@ -9,12 +9,12 @@ def create_despesa(id_hospedagem, id_produto, quantidade, valor_produto, data=No
             hospedagem = session.query(Hospedagem).filter_by(id=id_hospedagem).first()
             if not hospedagem:
                 print(f"Hospedagem com ID {id_hospedagem} não encontrada.")
-                return False
+                return []
 
             produto = session.query(Produto).filter_by(id=id_produto).first()
             if not produto:
                 print(f"Produto com ID {id_produto} não encontrado.")
-                return False
+                return []
 
             valor_total = quantidade * valor_produto
             if data is None:
@@ -37,12 +37,12 @@ def create_despesa(id_hospedagem, id_produto, quantidade, valor_produto, data=No
         except IntegrityError:
             session.rollback()
             print("Erro de integridade ao criar a despesa.")
-            return False
+            return []
 
         except Exception as e:
             session.rollback()
             print(f"Erro ao criar despesa: {e}")
-            return False
+            return []
 
         finally:
             session.close()

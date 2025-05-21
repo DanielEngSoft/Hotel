@@ -21,14 +21,14 @@ def create_hospedagem(id_hospede, id_quarto, data_saida, qtd_hospedes, valor_dia
                 
                 # Verifica se o quarto existe e está disponível
                 if not quarto or not quarto.disponivel:
-                    return False
+                    return []
 
                 # Busca o hóspede com base no CPF
                 hospede = session.query(Hospede).filter_by(cpf=id_hospede).first()
 
                 # Verifica se o hóspede existe
                 if not hospede:
-                    return False
+                    return []
 
                 # Cria o objeto Hospedagem com os dados fornecidos
                 hospedagem = Hospedagem(
@@ -82,7 +82,7 @@ def buscar_hospedagem_por_quarto(id_quarto):
             return hospedagem
         else:
             print(f"Hospedagem não encontrada para o quarto {id_quarto}.")
-            return None
+            return []
 
 def hospedagens_ativas():
     with Session() as session:

@@ -27,7 +27,7 @@ def procura_hospede_completo(nome, empresa, telefone, endereco):
         if hospede:
             return hospede
         else:
-            return None
+            return []
         
 def procura_hospedes_por_nome(nome):
     with Session() as session:
@@ -35,7 +35,7 @@ def procura_hospedes_por_nome(nome):
         if hospedes:
             return hospedes
         else:
-            return None
+            return []
         
 def procura_hospede_por_cpf(cpf):
     with Session() as session:
@@ -43,7 +43,7 @@ def procura_hospede_por_cpf(cpf):
         if hospede:
             return hospede
         else:
-            return None
+            return []
         
 def atualiza_hospede(cpf, nome, telefone, endereco, empresa):
     with Session() as session:

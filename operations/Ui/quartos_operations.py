@@ -23,11 +23,11 @@ def cadastra_quarto(num, tipo):
 def listar_quartos():
     with Session() as session:
         try:
-                quartos = session.query(Quarto).all()
-                return quartos
+            quartos = session.query(Quarto).all()
+            return quartos
         except Exception as e:
             print(f"Erro ao listar quartos: {e}")
-            return False
+            return []
     
 def listar_quartos_disponiveis():
     with Session() as session:
@@ -36,7 +36,7 @@ def listar_quartos_disponiveis():
             return quartos
         except Exception as e:
             print(f"Erro ao listar quartos disponíveis: {e}")
-            return False
+            return []
 
 
 def qtd_disponiveis():
@@ -46,7 +46,7 @@ def qtd_disponiveis():
             return quartos
         except Exception as e:
             print(f"Erro ao listar quartos disponíveis: {e}")
-            return False
+            return 0
 
 
 def qtd_ocupados():
@@ -56,7 +56,7 @@ def qtd_ocupados():
             return quartos
         except Exception as e:
             print(f"Erro ao listar quartos ocupados: {e}")
-            return False
+            return 0
 
 
 def listar_quartos_ocupados():
@@ -66,7 +66,7 @@ def listar_quartos_ocupados():
             return quartos
         except Exception as e:
             print(f"Erro ao listar quartos ocupados: {e}")
-            return False
+            return []
 
 def verifica_quarto_existe(numero):
     with Session() as session:
@@ -79,7 +79,7 @@ def quarto_por_id_hospedagem(id_hospedagem):
             return quarto
         except Exception as e:
             print(f"Erro ao buscar quarto por ID da hospedagem: {e}")
-            return None
+            return []
     
 def alterar_quarto(numero, tipo):
     with Session() as session:
@@ -125,4 +125,4 @@ def listar_quartos_por_data(data_entrada, data_saida):
 
         except Exception as e:
             print(f"Erro ao listar quartos disponíveis por data: {e}")
-            return 0
+            return []

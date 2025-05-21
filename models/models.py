@@ -1,12 +1,47 @@
+import os
+import sys
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float, DateTime, Boolean
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 import datetime
 
-# Configuração do banco
-db = create_engine('sqlite:///data/hp-prime.db')
+# --- Início do novo código para caminho dinâmico ---
+def get_base_path():
+    """
+    Determina o caminho base do aplicativo.
+    Retorna o diretório temporário do PyInstaller se for um executável,
+    caso contrário, retorna o diretório do script atual.
+    """
+    if getattr(sys, 'frozen', False):
+        # Estamos rodando como um executável PyInstaller
+        # sys._MEIPASS é o diretório temporário onde o PyInstaller extrai os arquivos
+        return sys._MEIPASS
+    else:
+        # Estamos rodando como um script Python normal
+        # Retorna o diretório do script atual
+        return os.path.dirname(os.path.abspath(__file__))
+
+# Define o caminho para o arquivo do banco de dados usando a função get_base_path()
+# ATENÇÃO: Ajuste a parte ('..', 'data', 'hp-prime.db') conforme a sua estrutura de pastas.
+# Exemplos:
+# 1. Se 'hp-prime.db' está na mesma pasta do executável/script:
+# DATABASE_FILE_PATH = os.path.join(get_base_path(), 'hp-prime.db')
+# 2. Se 'hp-prime.db' está na pasta 'data' DENTRO do diretório base:
+# DATABASE_FILE_PATH = os.path.join(get_base_path(), 'data', 'hp-prime.db')
+# 3. Se 'hp-prime.db' está na pasta 'data' UM NÍVEL ACIMA do diretório base (como no seu código original):
+DATABASE_FILE_PATH = os.path.join(get_base_path(), '..', 'data', 'hp-prime.db')
+
+# Imprime o caminho para depuração (útil para verificar se o caminho está correto)
+print(f"Tentando conectar ao banco de dados em: {DATABASE_FILE_PATH}")
+
+# A URI do SQLAlchemy agora aponta para o caminho dinâmico
+db = create_engine(f'sqlite:///{DATABASE_FILE_PATH}')
+# --- Fim do novo código para caminho dinâmico ---
+
+
 Base = declarative_base()
 Session = sessionmaker(bind=db)
 
+# --- Classes de Modelo (mantidas como no seu código original) ---
 
 class Hospedagem(Base):
     __tablename__ = 'hospedagens'
@@ -19,7 +54,7 @@ class Hospedagem(Base):
     acompanhantes = Column(String)
     valor_diaria = Column(Float)
     obs = Column(String)
-    aberta = Column(Boolean, default=True)  # True se a hospedagem estiver aberta, False se já tiver sido encerrada
+    aberta = Column(Boolean, default=True)
 
     hospede = relationship("Hospede", back_populates="hospedagens")
     quarto = relationship("Quarto", back_populates="hospedagens")
@@ -41,19 +76,17 @@ class Reserva(Base):
     hospede = relationship("Hospede", back_populates="reservas")
     quarto = relationship("Quarto", back_populates="reservas")
 
-
 class Hospede(Base):
     __tablename__ = 'hospedes'
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String)
     cpf = Column(String, unique=True)
     telefone = Column(String)
-    endereco = Column(String)  # 'Estado [PI], cidade [Picos]'
+    endereco = Column(String)
     empresa = Column(String, default="------")
 
     hospedagens = relationship("Hospedagem", back_populates="hospede")
     reservas = relationship("Reserva", back_populates="hospede")
-
 
 class Quarto(Base):
     __tablename__ = 'quartos'
@@ -64,14 +97,12 @@ class Quarto(Base):
     hospedagens = relationship("Hospedagem", back_populates="quarto")
     reservas = relationship("Reserva", back_populates="quarto")
 
-
 class Usuario(Base):
     __tablename__ = 'usuarios'
     id = Column(Integer, primary_key=True, autoincrement=True)
     usuario = Column(String, unique=True)
     senha = Column(String)
     tipo = Column(String)
-
 
 class Despesa(Base):
     __tablename__ = 'despesas'
@@ -105,15 +136,18 @@ class Produto(Base):
 
     despesas = relationship("Despesa", back_populates="produto")
 
-
-# Função para iniciar o banco
+# --- Função para iniciar o banco ---
 def init_db():
     """Cria as tabelas no banco de dados se não existirem."""
-    Base.metadata.create_all(bind=db)
-    print("Banco de dados inicializado/verificado.")
+    try:
+        Base.metadata.create_all(bind=db)
+        print("Banco de dados inicializado/verificado com sucesso.")
+    except Exception as e:
+        print(f"Erro ao inicializar o banco de dados: {e}")
+        print("Por favor, verifique o caminho do arquivo do banco de dados e as permissões.")
 
 
 if __name__ == "__main__":
-    print("Inicializando o banco de dados...")
+    print("Iniciando o processo de inicialização do banco de dados...")
     init_db()
-    print("Processo concluído.")
+    print("Processo de inicialização do banco de dados concluído.")

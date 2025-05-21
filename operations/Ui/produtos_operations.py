@@ -66,4 +66,4 @@ def selecionar_produto(descricao):
             return produto
         except IntegrityError:
             session.rollback()
-            return False
+            return []
