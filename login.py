@@ -80,7 +80,7 @@ class Ui_Form(QWidget):
         # Spinner de carregamento
         self.label_spinner = QLabel("", self.groupBox)
         self.label_spinner.setAlignment(Qt.AlignCenter)
-        self.movie = QMovie("spinner.gif")
+        self.movie = QMovie("imgs/spinner.gif")
         self.movie.setScaledSize(QSize(32, 32))
         self.label_spinner.setMovie(self.movie)
         self.label_spinner.hide()
