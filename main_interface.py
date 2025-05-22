@@ -40,7 +40,7 @@ class Ui_MainWindow(object):
         # MainWindow.resize(1108, 706)
         MainWindow.showFullScreen()
         MainWindow.setWindowTitle("Horizonte Prime")
-        MainWindow.setWindowIcon(QIcon("imgs/icons/hotel.png"))  # Ícone da janela
+        MainWindow.setWindowIcon(QIcon("imgs/hotel.png"))  # Ícone da janela
 
         # Widget central da janela principal
         self.centralwidget = QWidget(MainWindow)

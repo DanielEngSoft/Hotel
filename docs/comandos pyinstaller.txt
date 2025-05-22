@@ -1,0 +1,10 @@
+Comando para criar executável:
+
+pyinstaller --onefile --noconsole --icon=icon.ico --name=nome_do_executavel nome_do_arquivo.py
+
+--onefile cria um único arquivo executável, mais lento, mas mais fácil de distribuir
+--noconsole desabilita a janela de console, tornando o executável mais limpo
+--icon=icon.ico define o ícone do executável
+
+Em caso de banco de dados:
+--add-data "caminho_do_banco_de_dados;." adiciona o banco de dados ao executável

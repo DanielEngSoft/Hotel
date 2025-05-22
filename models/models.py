@@ -14,21 +14,13 @@ def get_base_path():
     if getattr(sys, 'frozen', False):
         # Estamos rodando como um executável PyInstaller
         # sys._MEIPASS é o diretório temporário onde o PyInstaller extrai os arquivos
-        return sys._MEIPASS
+        return os.path.join(sys._MEIPASS, 'hp-prime.db')
     else:
         # Estamos rodando como um script Python normal
         # Retorna o diretório do script atual
-        return os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'hp-prime.db')
 
-# Define o caminho para o arquivo do banco de dados usando a função get_base_path()
-# ATENÇÃO: Ajuste a parte ('..', 'data', 'hp-prime.db') conforme a sua estrutura de pastas.
-# Exemplos:
-# 1. Se 'hp-prime.db' está na mesma pasta do executável/script:
-# DATABASE_FILE_PATH = os.path.join(get_base_path(), 'hp-prime.db')
-# 2. Se 'hp-prime.db' está na pasta 'data' DENTRO do diretório base:
-# DATABASE_FILE_PATH = os.path.join(get_base_path(), 'data', 'hp-prime.db')
-# 3. Se 'hp-prime.db' está na pasta 'data' UM NÍVEL ACIMA do diretório base (como no seu código original):
-DATABASE_FILE_PATH = os.path.join(get_base_path(), '..', 'data', 'hp-prime.db')
+DATABASE_FILE_PATH = get_base_path()
 
 # Imprime o caminho para depuração (útil para verificar se o caminho está correto)
 print(f"Tentando conectar ao banco de dados em: {DATABASE_FILE_PATH}")
