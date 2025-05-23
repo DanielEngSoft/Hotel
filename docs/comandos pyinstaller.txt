@@ -1,6 +1,6 @@
 Comando para criar executável:
 
-pyinstaller --onefile --noconsole --icon=icon.ico --name=nome_do_executavel nome_do_arquivo.py
+pyinstaller --noconfirm --windowed --add-data "data/hp-prime.db;." --hidden-import "sqlalchemy.dialects.sqlite" --icon "imgs/hotel.png" login.py 
 
 --onefile cria um único arquivo executável, mais lento, mas mais fácil de distribuir
 --noconsole desabilita a janela de console, tornando o executável mais limpo

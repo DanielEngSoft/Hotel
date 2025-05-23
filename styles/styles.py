@@ -1,34 +1,54 @@
+# PALETA DE CORES
+
+#----- MENUS -----#
+verde_escuro = "#05452f"
+azul_escuro = "#2c3e50"
+
+#----- BOTÕES -----#
+btn_verde = "#4E9A06"
+btn_vermelho = "#A52A2A"
+btn_branco = "#ffffff"
+btn_transparente = "#ffffff00"
+
+#----- BTN HOVER -----#
+btn_verde_hover = "#27ae60"
+btn_vermelho_hover = "#800000"
+btn_branco_hover = "#e0e0e0"
+btn_transparente_hover = "#3d566e"
+
+
+
 def style_label_menu_lateral():
-    return """
-    QListWidget {
-        background-color: #2c3e50;
+    return f"""
+    QListWidget {{
+        background-color: {azul_escuro};
         color: white;
         border: none;
         padding: 10px;
         font-size: 16px;
         outline: 0;
-    }
+    }}
 
-    QListWidget::item {
+    QListWidget::item {{
         background-color: transparent;
         padding: 10px;
         margin: 5px 0;
         border-radius: 10px;
-    }
+    }}
 
-    QListWidget::item:hover {
+    QListWidget::item:hover {{
         background-color: #3d566e;
-    }
-    QListWidget::item:selected {
-        background-color: #05452f;
+    }}
+    QListWidget::item:selected {{
+        background-color: {verde_escuro};
         border-bottom: 2px solid #4E9A06;
         color: white;
         border-radius: 0px;
         padding: 5px;
         outline: 0;
-    }
+    }}
     """
-# #05452f é a cor do menu superior da MainWindows, como é so esse style que a página usa não criei nenhuma função aqui
+# {verde_escuro} é a cor do menu superior da MainWindows, como é so esse style que a página usa não criei nenhuma função aqui
 # fica na linha 54 de main_interface.py
 
 def nome_menu_superior():
@@ -130,21 +150,21 @@ def style_botao_vermelho():
     """
 
 def style_botao_transparente():
-    return """
-        QPushButton {
+    return f"""
+        QPushButton {{
             background-color: transparent;
             color: white;
             border: none;
             border-radius: 10px;
             padding: 5px 15px;
             font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #032c1f;
-        }
-        QPushButton:pressed {
+        }}
+        QPushButton:hover {{
+            background-color: {verde_escuro};
+        }}
+        QPushButton:pressed {{
             background-color: #021b14;
-        }
+        }}
     """
 
 def style_groupbox():
@@ -166,48 +186,48 @@ def style_groupbox():
     """
 
 def menu_superior_pages():
-    return """
-            QListWidget {
-                background-color: #2c3e50;
+    return f"""
+            QListWidget {{
+                background-color: {azul_escuro};
                 border: none;
                 padding-left: 10px;
                 outline: 0;
-            }
-            QListWidget::item {
+            }}
+            QListWidget::item {{
                 color: #ffffff;
                 padding: 0px 28px;
                 border-bottom: 2px solid transparent;
-            }
-            QListWidget::item:hover {
+            }}
+            QListWidget::item:hover {{
                 background-color: #3d566e;
-            }
-            QListWidget::item:selected {
+            }}
+            QListWidget::item:selected {{
                 border-bottom: 2px solid #4E9A06;
-            }
+            }}
         """
 
 def tabelas():
-    return """
-        QTableWidget{
+    return f"""
+        QTableWidget{{
             outline: 0;
-            background-color: #2c3e50;
-        }
-        QTableWidget::item{
-            background-color: #05452f;
-        }
-        QTableWidget::item:selected {
+            background-color: {azul_escuro};
+        }}
+        QTableWidget::item{{
+            background-color: {verde_escuro};
+        }}
+        QTableWidget::item:selected {{
             background-color: #3d566e;
-        }
-        QTableWidget::item:hover {
+        }}
+        QTableWidget::item:hover {{
             background-color: #3d566e;
             color: white; 
-        }
-        QHeaderView::section {
-            background-color: #2c3e50;
+        }}
+        QHeaderView::section {{
+            background-color: {azul_escuro};
             color: white;
             font-size: 14px;
             border: none;
-        }
+        }}
     """
 
 def tabela_listar():
