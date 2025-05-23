@@ -245,17 +245,22 @@ class Ui_page_listar_hospedagem(QWidget):
             btn_abrir.setStyleSheet(style_botao_verde())
             msg_box.addButton(btn_abrir, QMessageBox.AcceptRole)
 
-            # Exibir o QMessageBox e capturar a resposta
-            resposta = msg_box.exec()
+            # Botão "Fechar" (padrão)
+            btn_fechar = QPushButton("Fechar")
+            msg_box.addButton(btn_fechar, QMessageBox.NoRole)
+            msg_box.setDefaultButton(btn_fechar)
+            msg_box.setEscapeButton(btn_fechar)
+            btn_fechar.setVisible(False)
+
+            # Exibir o QMessageBox
+            msg_box.exec()
 
             if msg_box.clickedButton() == btn_abrir:
                 reserva_para_hospedagem(id_reserva)
                 deletar_reserva(id_reserva)
-                print(f"Reserva ID {id_reserva} aberta como hospedagem.")
                 self.ler_dados()
             elif msg_box.clickedButton() == btn_cancelar:
                 deletar_reserva(id_reserva)
-                print(f"Reserva ID {id_reserva} cancelada.")
                 self.ler_dados()
         except Exception as e:
             print("Erro ao gerenciar reserva:", e)

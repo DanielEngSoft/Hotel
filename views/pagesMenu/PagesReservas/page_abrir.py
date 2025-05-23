@@ -460,6 +460,7 @@ class Ui_page_abrir_reserva(QWidget):
         self.plainTextEdit_obs.clear()
         self.checkBox.setChecked(False)
         self.groupBox.setTitle("")
+        QTimer.singleShot(3000, lambda: self.label_feedback.setVisible(False))        
         
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:

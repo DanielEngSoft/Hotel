@@ -8,13 +8,19 @@ azul_escuro = "#2c3e50"
 btn_verde = "#4E9A06"
 btn_vermelho = "#A52A2A"
 btn_branco = "#ffffff"
-btn_transparente = "#ffffff00"
+btn_transparente = "transparent"
 
 #----- BTN HOVER -----#
-btn_verde_hover = "#27ae60"
+btn_verde_hover = "#09572a"
 btn_vermelho_hover = "#800000"
 btn_branco_hover = "#e0e0e0"
 btn_transparente_hover = "#3d566e"
+
+#----- BTN PRESSED -----#
+btn_verde_pressed = "#219653"
+btn_vermelho_pressed = "#a93226"
+btn_branco_pressed = "#A9A9A9"
+btn_transparente_pressed = "#021b14"
 
 
 
@@ -37,19 +43,17 @@ def style_label_menu_lateral():
     }}
 
     QListWidget::item:hover {{
-        background-color: #3d566e;
+        background-color: {btn_transparente_hover};
     }}
     QListWidget::item:selected {{
         background-color: {verde_escuro};
-        border-bottom: 2px solid #4E9A06;
+        border-bottom: 2px solid {btn_verde};
         color: white;
         border-radius: 0px;
         padding: 5px;
         outline: 0;
     }}
     """
-# {verde_escuro} é a cor do menu superior da MainWindows, como é so esse style que a página usa não criei nenhuma função aqui
-# fica na linha 54 de main_interface.py
 
 def nome_menu_superior():
     return """
@@ -80,79 +84,81 @@ def hora_menu_superior():
     }
     """
 def style_botao_sair():
-    return """
-        QPushButton {
-            background-color: #e74c3c;
+    return f"""
+        QPushButton {{
+            background-color: {btn_vermelho};
             color: white;
             border: none;
             border-radius: 10px;
             padding: 5px 15px;
             font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #c0392b;
-        }
-        QPushButton:pressed {
-            background-color: #a93226;
-        }
+        }}
+        QPushButton:hover {{
+            background-color: {btn_vermelho_hover};
+        }}
+        QPushButton:pressed {{
+            background-color: {btn_vermelho_pressed};
+        }}
     """
 
 def style_botao_verde():
-    return """
-        QPushButton {
-            background-color: #2ecc71;
+    return f"""
+        QPushButton {{
+            background-color: {btn_verde};
             color: white;
             border: none;
             border-radius: 10px;
             padding: 5px 15px;
             font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #27ae60;
-        }
-        QPushButton:pressed {
-            background-color: #219653;
-        }
+        }}
+        QPushButton:hover {{
+            background-color: {btn_verde_hover};
+        }}
+        QPushButton:pressed {{
+            background-color: {btn_verde_pressed};
+        }}
     """
+
 def style_botao_branco():
-    return """
-        QPushButton {
-            background-color: #fff;
+    return f"""
+        QPushButton {{
+            background-color: {btn_branco};
             color: black;
             border: none;
             border-radius: 10px;
             padding: 5px 15px;
             font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #A9A9A9;
-        }
-        QPushButton:pressed {
-            background-color: #e0e0e0;
-        }
+        }}
+        QPushButton:hover {{
+            background-color: {btn_branco_hover};
+        }}
+        QPushButton:pressed {{
+            background-color: {btn_branco_pressed};
+        }}
     """
+
 def style_botao_vermelho():
-    return """
-        QPushButton {
-            background-color: #A52A2A;
+    return f"""
+        QPushButton {{
+            background-color: {btn_vermelho};
             color: white;
             border: none;
             border-radius: 10px;
             padding: 5px 15px;
             font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #800000;
-        }
-        QPushButton:pressed {
-            background-color: #4d0000;
-        }
+        }}
+        QPushButton:hover {{
+            background-color: {btn_vermelho_hover};
+        }}
+        QPushButton:pressed {{
+            background-color: {btn_vermelho_pressed};
+        }}
     """
 
 def style_botao_transparente():
     return f"""
         QPushButton {{
-            background-color: transparent;
+            background-color: {btn_transparente};
             color: white;
             border: none;
             border-radius: 10px;
@@ -163,7 +169,7 @@ def style_botao_transparente():
             background-color: {verde_escuro};
         }}
         QPushButton:pressed {{
-            background-color: #021b14;
+            background-color: {btn_transparente_pressed};
         }}
     """
 
@@ -194,15 +200,15 @@ def menu_superior_pages():
                 outline: 0;
             }}
             QListWidget::item {{
-                color: #ffffff;
+                color: {btn_branco};
                 padding: 0px 28px;
                 border-bottom: 2px solid transparent;
             }}
             QListWidget::item:hover {{
-                background-color: #3d566e;
+                background-color: {btn_transparente_hover};
             }}
             QListWidget::item:selected {{
-                border-bottom: 2px solid #4E9A06;
+                border-bottom: 2px solid {btn_verde};
             }}
         """
 
@@ -216,10 +222,10 @@ def tabelas():
             background-color: {verde_escuro};
         }}
         QTableWidget::item:selected {{
-            background-color: #3d566e;
+            background-color: {btn_transparente_hover};
         }}
         QTableWidget::item:hover {{
-            background-color: #3d566e;
+            background-color: {btn_transparente_hover};
             color: white; 
         }}
         QHeaderView::section {{
@@ -231,15 +237,51 @@ def tabelas():
     """
 
 def tabela_listar():
-    return """
-        QTableWidget{
+    return f"""
+        QTableWidget{{
             outline: 0;
-        }
-        QTableWidget::item:hover {
-            background-color: #3d566e;
+        }}
+        QTableWidget::item:hover {{
+            background-color: {btn_transparente_hover};
             color: white;    
-        }
-        QTableWidget::item:selected {
-            background-color: #3d566e;
-        }
+        }}
+        QTableWidget::item:selected {{
+            background-color: {btn_transparente_hover};
+        }}
         """
+
+def btn_quarto_livre():
+    return f"""
+        QPushButton {{
+            background-color: {verde_escuro};
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 15px;
+            font-weight: bold;
+        }}
+        QPushButton:hover {{
+            background-color: {btn_verde_hover};
+        }}
+        QPushButton:pressed {{
+            background-color: {btn_verde_pressed};
+        }}
+    """
+
+def btn_quarto_ocupado():
+    return f"""
+        QPushButton {{
+            background-color: {btn_vermelho};
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 15px;
+            font-weight: bold;
+        }}
+        QPushButton:hover {{
+            background-color: {btn_vermelho_hover};
+        }}
+        QPushButton:pressed {{
+            background-color: {btn_vermelho_pressed};
+        }}
+    """

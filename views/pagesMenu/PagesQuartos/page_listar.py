@@ -16,11 +16,10 @@ from operations.Ui.hospedagem_operations import hospedagens_ativas
 # Importação da janela de ficha de hospedagem
 from views.PagesMenu.PagesHospedagem.page_hospedagem import Ui_page_hospedagem
 from operations.Ui.quartos_operations import qtd_disponiveis, qtd_ocupados
+from styles.styles import btn_quarto_livre, btn_quarto_ocupado
 
 
 class Ui_page_listar_quarto(QWidget):
-    COR_DISPONIVEL = "#05452f"
-    COR_OCUPADO = "#A52A2A"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -86,11 +85,11 @@ class Ui_page_listar_quarto(QWidget):
             btn.setFont(QFont("Segoe UI", 10))
 
             if quarto.disponivel:
-                btn.setStyleSheet(f"background-color: {self.COR_DISPONIVEL}; color: white;") # Adicionado color para melhor leitura
+                btn.setStyleSheet(btn_quarto_livre()) # Adicionado color para melhor leitura
                 # Depois adicionar uma ação para quartos disponíveis, se necessário
 
             else:
-                btn.setStyleSheet(f"background-color: {self.COR_OCUPADO}; color: white;") # Adicionado color
+                btn.setStyleSheet(btn_quarto_ocupado()) # Adicionado color
                 hospedagem_quarto = hospedagens_por_quarto.get(quarto.numero) # Assumindo que quarto.numero é o id_quarto
                 if hospedagem_quarto:
                     btn.clicked.connect(partial(self.abrir_janela_hospedagem, hospedagem_quarto))
