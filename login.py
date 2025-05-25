@@ -1,10 +1,11 @@
 from PySide6.QtCore import QMetaObject, QRect, Qt, QThread, Signal, QSize, QTimer
-from PySide6.QtGui import QFont, QMovie, QKeyEvent
+from PySide6.QtGui import QFont, QMovie, QKeyEvent, QIcon, QPixmap
 from PySide6.QtWidgets import (QApplication, QFormLayout, QGroupBox, QHBoxLayout,
-    QLabel, QLineEdit, QPushButton, QMainWindow, QVBoxLayout, QWidget)
+    QLabel, QLineEdit, QPushButton, QMainWindow, QVBoxLayout, QWidget, QStyleFactory)
 import sys
 import time
 import traceback
+import qt_material
 
 from main_interface import Ui_MainWindow  # Interface da janela principal
 
@@ -37,6 +38,8 @@ class Ui_Form(QWidget):
 
         Form.setFixedSize(571, 376)
         Form.setWindowTitle("Login")
+        Form.setWindowIcon(QIcon("imgs/login.png"))
+        
 
         font = QFont()
         font.setPointSize(14)
@@ -56,26 +59,26 @@ class Ui_Form(QWidget):
         # Layout de formulário para campos de login
         self.formLayout = QFormLayout()
 
-        self.label_usuario = QLabel("Usuário:", self.groupBox)
-        self.label_usuario.setFont(font)
+        # Usuário Icon
+        self.label_usuario = QLabel("", self.groupBox)
+        self.icon_usuario = QIcon("imgs/usuario.png")
+        self.label_usuario.setPixmap(self.icon_usuario.pixmap(32, 32))
+        # Usuário input
         self.lineEdit__usuario = QLineEdit(self.groupBox)
         self.lineEdit__usuario.setFont(font)
         self.formLayout.addRow(self.label_usuario, self.lineEdit__usuario)
 
-        self.label_senha = QLabel("Senha:", self.groupBox)
-        self.label_senha.setFont(font)
+        # Senha Icon
+        self.label_senha = QLabel("", self.groupBox)
+        self.icon_senha = QIcon("imgs/senha.png")
+        self.label_senha.setPixmap(self.icon_senha.pixmap(32, 32))
+        # Senha input
         self.lineEdit_senha = QLineEdit(self.groupBox)
         self.lineEdit_senha.setFont(font)
         self.lineEdit_senha.setEchoMode(QLineEdit.EchoMode.Password)
         self.formLayout.addRow(self.label_senha, self.lineEdit_senha)
 
         self.layout_groupbox.addLayout(self.formLayout)
-
-        # Mensagem de feedback (erro ou sucesso)
-        self.label_feedbeck = QLabel("", self.groupBox)
-        self.label_feedbeck.setAlignment(Qt.AlignCenter)
-        self.label_feedbeck.setFont(font)
-        self.layout_groupbox.addWidget(self.label_feedbeck)
 
         # Spinner de carregamento
         self.label_spinner = QLabel("", self.groupBox)
@@ -85,6 +88,12 @@ class Ui_Form(QWidget):
         self.label_spinner.setMovie(self.movie)
         self.label_spinner.hide()
         self.layout_groupbox.addWidget(self.label_spinner)
+
+        # Mensagem de feedback (erro ou sucesso)
+        self.label_feedbeck = QLabel("", self.groupBox)
+        self.label_feedbeck.setAlignment(Qt.AlignCenter)
+        self.label_feedbeck.setFont(font)
+        self.layout_groupbox.addWidget(self.label_feedbeck)
 
         # Botões de ação
         self.horizontalLayout = QHBoxLayout()
@@ -168,6 +177,8 @@ if __name__ == "__main__":
     Inicializa e executa a aplicação.
     """
     app = QApplication(sys.argv)
+    app.setStyle("Windows11")
+
     window = Ui_Form()
     window.show()
     sys.exit(app.exec())

@@ -180,8 +180,8 @@ def style_groupbox():
             font-size: 16px;
             font-weight: bold;
             color: #fff;
-            border: 1px solid #bdc3c7;
-            border-radius: 10px;
+            border: 1px solid white;
+            border-radius: 0px;
             padding: 50px;
             margin-top: 10px;
         }
