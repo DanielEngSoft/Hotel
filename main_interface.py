@@ -64,7 +64,12 @@ class Ui_MainWindow(object):
         # Layout horizontal do frame superior
         self.layout_frame_superior = QHBoxLayout(self.frame_superior)
         self.layout_frame_superior.setObjectName("layout_frame_superior")
-
+        # Logo do sistema
+        self.label_logo = QLabel(self.frame_superior)
+        self.label_logo.setObjectName("label_logo")
+        self.label_logo.setMaximumHeight(45)
+        self.label_logo.setPixmap(QIcon("imgs/icon.png").pixmap(QSize(45, 45)))
+        self.layout_frame_superior.addWidget(self.label_logo)
         # Nome do sistema
         self.label_horizonte_prime = QLabel("Horizonte Prime", self.frame_superior)
         self.label_horizonte_prime.setObjectName("label_horizonte_prime")

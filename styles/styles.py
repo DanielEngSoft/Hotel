@@ -59,12 +59,13 @@ def nome_menu_superior():
     return """
     QLabel {
         font-size: 22px;
+        color: black;
         font-weight: bold;
-        color: #ecf0f1;
         padding-left: 20px;
     }
     """
 
+        # color: #ecf0f1;
 
 def data_menu_superior():
     return """
