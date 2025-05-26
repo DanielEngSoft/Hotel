@@ -22,7 +22,9 @@ btn_vermelho_pressed = "#a93226"
 btn_branco_pressed = "#A9A9A9"
 btn_transparente_pressed = "#0000007F"
 
-
+#----- GROUPBOX -----#
+borda_groupbox = "#ffffff"
+title_groupbox = "#ffffff"
 
 def style_label_menu_lateral():
     return f"""
@@ -175,59 +177,62 @@ def style_botao_transparente():
     """
 
 def style_groupbox():
-    return """
-        QGroupBox {
+    return F"""
+        QGroupBox {{
             font-size: 16px;
             font-weight: bold;
-            color: #fff;
+            color: {title_groupbox};
             border: 1px solid white;
             border-radius: 0px;
+            border-color: {borda_groupbox};
             padding: 50px;
             margin-top: 10px;
-        }
-        QGroupBox::title {
+        }}
+        QGroupBox::title {{
             subcontrol-origin: margin;
             left: 10px;
             padding: 0 5px;
-        }
+        }}
     """
 
 def style_groupbox_abrir():
-    return """
-        QGroupBox {
+    return f"""
+        QGroupBox {{
             font-size: 16px;
             font-weight: bold;
-            color: #fff;
+            color: {title_groupbox};
             border: 1px solid white;
+            border-color: {borda_groupbox};
             border-radius: 0px;
             padding: 10px;
             margin-top: 10px;
-        }
-        QGroupBox::title {
+        }}
+        QGroupBox::title {{
             subcontrol-origin: margin;
             left: 10px;
             padding: 0 5px;
-        }
+        }}
     """
 
 def style_groupbox_login():
-    return """
-        QGroupBox {
+    return f"""
+        QGroupBox {{
             font-size: 16px;
             font-weight: bold;
-            color: #fff;
+            color: {title_groupbox};
             border: 1px solid white;
             border-radius: 0px;
+            border-color: {borda_groupbox};
             padding: 10px;
             margin-left: 50px;
             margin-right: 50px;
             margin-top: 50px;
-        }
-        QGroupBox::title {
+        }}
+        QGroupBox::title{{
             subcontrol-origin: margin;
             top: 40px;
             left: 60px;
-        }
+        }}
     """
 
 def menu_superior_pages():

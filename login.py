@@ -152,7 +152,6 @@ class Ui_Form(QWidget):
 
         if usuario == "admin" and senha == "admin":
             self.label_feedbeck.setText("Login realizado com sucesso!")
-            self.label_feedbeck.setStyleSheet("color: green;")
             self.pushButton__entrar.setEnabled(False)
             self.movie.start()
             self.label_spinner.show()

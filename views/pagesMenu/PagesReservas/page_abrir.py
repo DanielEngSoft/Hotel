@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (QCheckBox, QDateTimeEdit, QFormLayout,
     QSpinBox, QTableWidget, QTableWidgetItem,QVBoxLayout, QWidget, QHeaderView)
 
 from styles.styles import style_botao_verde, tabelas, style_groupbox_abrir
+
 from operations.Ui.quartos_operations import listar_quartos_disponiveis, listar_quartos_por_data
 from operations.Ui.produtos_operations import buscar_produto_por_id
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
