@@ -59,7 +59,7 @@ def nome_menu_superior():
     return """
     QLabel {
         font-size: 22px;
-        color: black;
+        color: white;
         font-weight: bold;
         padding-left: 20px;
     }
