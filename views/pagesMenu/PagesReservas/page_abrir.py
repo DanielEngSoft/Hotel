@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (QCheckBox, QDateTimeEdit, QFormLayout,
     QGroupBox, QHBoxLayout, QLabel,QLineEdit, QPlainTextEdit, QPushButton,
     QSpinBox, QTableWidget, QTableWidgetItem,QVBoxLayout, QWidget, QHeaderView)
 
-from styles.styles import style_botao_verde, tabelas
+from styles.styles import style_botao_verde, tabelas, style_groupbox_abrir
 from operations.Ui.quartos_operations import listar_quartos_disponiveis, listar_quartos_por_data
 from operations.Ui.produtos_operations import buscar_produto_por_id
 from operations.Ui.hospedes_operations import procura_hospede_por_cpf, procura_hospedes_por_nome
@@ -80,6 +80,7 @@ class Ui_page_abrir_reserva(QWidget):
 
         # Grupo dos dados da reserva
         self.groupBox = QGroupBox(page_abrir)
+        self.groupBox.setStyleSheet(style_groupbox_abrir())
         self.groupBox.setObjectName("groupBox")
         self.groupBox.setFont(font)
         self.groupBox.setAlignment(Qt.AlignCenter)

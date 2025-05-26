@@ -11,7 +11,7 @@ from operations.Ui.produtos_operations import buscar_produto_por_id
 from datetime import datetime
 
 # Estilo personalizado
-from styles.styles import style_botao_verde, tabelas
+from styles.styles import style_botao_verde, tabelas, style_groupbox_abrir
 
 from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar_hospede as CadastrarHospede
 
@@ -81,6 +81,7 @@ class Ui_page_abrir_hospedagem(QWidget):
 
         # Grupo dos dados da reserva
         self.groupBox = QGroupBox(page_abrir)
+        self.groupBox.setStyleSheet(style_groupbox_abrir())
         self.groupBox.setMaximumWidth(550)
         self.groupBox.setMaximumHeight(700)
         self.groupBox.setObjectName("groupBox")

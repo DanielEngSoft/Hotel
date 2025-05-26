@@ -2,6 +2,8 @@ from PySide6.QtCore import QMetaObject, QRect, Qt, QThread, Signal, QSize, QTime
 from PySide6.QtGui import QFont, QMovie, QKeyEvent, QIcon, QPixmap
 from PySide6.QtWidgets import (QApplication, QFormLayout, QGroupBox, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QMainWindow, QVBoxLayout, QWidget, QStyleFactory)
+
+from styles.styles import style_groupbox_login, style_botao_verde, style_botao_vermelho
 import sys
 import time
 import traceback
@@ -38,17 +40,21 @@ class Ui_Form(QWidget):
 
         Form.setFixedSize(571, 376)
         Form.setWindowTitle("Login")
-        Form.setWindowIcon(QIcon("imgs/login.png"))
+        Form.setWindowIcon(QIcon("imgs/login_white.png"))
         
 
         font = QFont()
         font.setPointSize(14)
 
+        # Layout principal
+        self.layout_principal = QVBoxLayout(Form)
+
         # Caixa principal com título
         self.groupBox = QGroupBox(Form)
-        self.groupBox.setObjectName("groupBox")
-        self.groupBox.setGeometry(QRect(80, 50, 411, 260))
+        self.groupBox.setStyleSheet(style_groupbox_login())
+        self.groupBox.setObjectName("groupBox")  
         self.groupBox.setTitle("Horizonte Prime")
+        self.groupBox.setMaximumHeight(250)
         self.groupBox.setFont(font)
 
         # Layout principal da caixa
@@ -61,7 +67,7 @@ class Ui_Form(QWidget):
 
         # Usuário Icon
         self.label_usuario = QLabel("", self.groupBox)
-        self.icon_usuario = QIcon("imgs/usuario.png")
+        self.icon_usuario = QIcon("imgs/usuario_white.png")
         self.label_usuario.setPixmap(self.icon_usuario.pixmap(32, 32))
         # Usuário input
         self.lineEdit__usuario = QLineEdit(self.groupBox)
@@ -70,7 +76,7 @@ class Ui_Form(QWidget):
 
         # Senha Icon
         self.label_senha = QLabel("", self.groupBox)
-        self.icon_senha = QIcon("imgs/senha.png")
+        self.icon_senha = QIcon("imgs/senha_white.png")
         self.label_senha.setPixmap(self.icon_senha.pixmap(32, 32))
         # Senha input
         self.lineEdit_senha = QLineEdit(self.groupBox)
@@ -80,37 +86,48 @@ class Ui_Form(QWidget):
 
         self.layout_groupbox.addLayout(self.formLayout)
 
-        # Spinner de carregamento
-        self.label_spinner = QLabel("", self.groupBox)
-        self.label_spinner.setAlignment(Qt.AlignCenter)
-        self.movie = QMovie("imgs/spinner.gif")
-        self.movie.setScaledSize(QSize(32, 32))
-        self.label_spinner.setMovie(self.movie)
-        self.label_spinner.hide()
-        self.layout_groupbox.addWidget(self.label_spinner)
-
         # Mensagem de feedback (erro ou sucesso)
         self.label_feedbeck = QLabel("", self.groupBox)
         self.label_feedbeck.setAlignment(Qt.AlignCenter)
         self.label_feedbeck.setFont(font)
         self.layout_groupbox.addWidget(self.label_feedbeck)
 
+        # Adiciona o groupbox ao layout principal
+        self.layout_principal.addWidget(self.groupBox)
+
         # Botões de ação
         self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setContentsMargins(50, 5, 50, 0)
 
         self.pushButton_sair = QPushButton("Sair", self.groupBox)
         self.pushButton_sair.setFont(font)
-        self.pushButton_sair.setStyleSheet("background-color: rgb(170, 0, 0);")
+        self.pushButton_sair.setStyleSheet(style_botao_vermelho())
         self.pushButton_sair.clicked.connect(self.button_sair_clicked)
         self.horizontalLayout.addWidget(self.pushButton_sair)
 
         self.pushButton__entrar = QPushButton("Entrar", self.groupBox)
         self.pushButton__entrar.setFont(font)
-        self.pushButton__entrar.setStyleSheet("background-color: rgb(0, 85, 0);")
+        self.pushButton__entrar.setStyleSheet(style_botao_verde())
         self.pushButton__entrar.clicked.connect(self.button_entrar_clicked)
         self.horizontalLayout.addWidget(self.pushButton__entrar)
 
-        self.layout_groupbox.addLayout(self.horizontalLayout)
+        # Adiciona os botões ao layout principal
+        self.layout_principal.addLayout(self.horizontalLayout)
+        self.layout_principal.addStretch()
+        
+        # Spinner de carregamento
+        self.label_spinner = QLabel("", self.groupBox)
+        self.label_spinner.setAlignment(Qt.AlignCenter)
+        self.movie = QMovie("imgs/spinner.gif")
+        self.movie.setScaledSize(QSize(55, 55))
+        self.label_spinner.setMovie(self.movie)
+        self.label_spinner.hide()
+
+        # Adiciona o spinner ao layout principal
+        self.layout_principal.addWidget(self.label_spinner)
+
+        # Adicionando espaço 
+        self.layout_principal.addStretch()
 
         QMetaObject.connectSlotsByName(Form)
 

@@ -60,7 +60,7 @@ class Ui_page_listar_reserva(QWidget):
     def setup_timer(self):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.load_data)
-        self.timer.start(2000)
+        self.timer.start(4000)
 
     def showEvent(self, event):
         self.load_data()

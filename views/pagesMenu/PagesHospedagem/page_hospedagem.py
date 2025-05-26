@@ -1,5 +1,5 @@
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import  QKeyEvent
+from PySide6.QtGui import  QKeyEvent, QIcon, QPixmap
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QPushButton, QStackedWidget,
@@ -12,7 +12,7 @@ from views.PagesMenu.PagesHospedagem.page_encerrar import Ui_page_encerrar_hospe
 from views.PagesMenu.PagesHospedagem.page_alterar import Ui_page_alterar_hospedagem
 from views.PagesMenu.PagesHospedagem.page_adiantamento import Ui_page_adiantamento_hospedagem
 
-from styles.styles import style_botao_branco, style_botao_vermelho, style_botao_transparente
+from styles.styles import style_botao_branco, style_botao_vermelho, style_botao_transparente, style_botao_verde
 
 
 INDEX_FICHA = 0
@@ -45,13 +45,29 @@ class Ui_page_hospedagem(QWidget):
             self.hospedagem.hospede.nome,
             self.hospedagem.quarto.numero
         )
-
-        self.button_encerrar = QPushButton("Encerrar")
+        header_ficha.layout().addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        
+        # Botão de adiantamento
+        self.button_adiantamento = QPushButton()
+        self.button_adiantamento.setStyleSheet(style_botao_verde())
+        self.button_adiantamento.setIcon(QIcon("imgs/dinheiro.png"))
+        self.button_adiantamento.setMaximumWidth(150)
+        self.button_adiantamento.clicked.connect(self.mostrar_pagina_adiantamento)
+        header_ficha.layout().addWidget(self.button_adiantamento)
+        # Botão de encerrar
+        self.button_encerrar = QPushButton()
         self.button_encerrar.setStyleSheet(style_botao_vermelho())
+        self.button_encerrar.setIcon(QIcon("imgs/finalizar_white.png"))
         self.button_encerrar.setMaximumWidth(150)
         self.button_encerrar.clicked.connect(self.mostrar_pagina_encerrar)
-        header_ficha.layout().addSpacerItem(QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         header_ficha.layout().addWidget(self.button_encerrar)
+        # Botão de editar
+        self.button_editar = QPushButton()
+        self.button_editar.setStyleSheet(style_botao_branco())
+        self.button_editar.setIcon(QIcon("imgs/editar.png"))
+        self.button_editar.setMaximumWidth(150)
+        self.button_editar.clicked.connect(self.mostrar_pagina_alterar)
+        header_ficha.layout().addWidget(self.button_editar)
 
         self.layout_ficha.addWidget(header_ficha)
 
@@ -143,8 +159,9 @@ class Ui_page_hospedagem(QWidget):
             layout.addWidget(botao)
             layout.addItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
 
-        button_nome = QPushButton(titulo_hospede)
+        button_nome = QPushButton('  ' + titulo_hospede)
         button_nome.setStyleSheet(style_botao_transparente())
+        button_nome.setIcon(QIcon("imgs/usuario.png"))
         button_nome.clicked.connect(self.mostrar_informacoes_hospede)
         layout.addWidget(button_nome)
 
@@ -153,8 +170,12 @@ class Ui_page_hospedagem(QWidget):
         separador.setFrameShadow(QFrame.Shadow.Sunken)
         layout.addWidget(separador)
 
-        label_quarto = QLabel(f"Quarto: {numero_quarto}")
-        layout.addWidget(label_quarto)
+        icon_quarto = QIcon("imgs/quarto.png")
+        button_quarto = QPushButton()
+        button_quarto.setStyleSheet(style_botao_transparente())
+        button_quarto.setIcon(icon_quarto)
+        button_quarto.setText(f"  Quarto: {numero_quarto}")
+        layout.addWidget(button_quarto)
 
         return header
 
