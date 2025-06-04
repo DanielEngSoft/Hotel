@@ -88,9 +88,9 @@ class Ui_page_listar_hospedagem(QWidget):
         self.label_total_hospedes.setContentsMargins(0, 0, 30, 0)
         self.label_total_hospedes.setFont(self.fonte_rodape)
 
-        self.label_total_itens = QLabel("Total de itens: 0")  # Label genérico para total de itens
-        self.label_total_itens.setContentsMargins(0, 0, 30, 0)
-        self.label_total_itens.setFont(self.fonte_rodape)
+        self.label_total_quartos = QLabel("Quartos ocupados: 0")  # Label genérico para total de itens
+        self.label_total_quartos.setContentsMargins(0, 0, 30, 0)
+        self.label_total_quartos.setFont(self.fonte_rodape)
 
         self.label_saidas_amanha = QLabel()
         self.label_saidas_amanha.setContentsMargins(0, 0, 30, 0)
@@ -101,7 +101,7 @@ class Ui_page_listar_hospedagem(QWidget):
         self.label_chegadas_amanha.setFont(self.fonte_rodape)
 
         self.rodape_layout.addWidget(self.label_total_hospedes)
-        self.rodape_layout.addWidget(self.label_total_itens)
+        self.rodape_layout.addWidget(self.label_total_quartos)
         self.rodape_layout.addStretch()
         self.rodape_layout.addWidget(self.label_saidas_amanha)
         self.rodape_layout.addWidget(self.label_chegadas_amanha)
@@ -163,10 +163,10 @@ class Ui_page_listar_hospedagem(QWidget):
 
         # Atualiza os rótulos de rodapé
         total_pessoas = total_pessoas_hospedadas()
-        total_itens = len(itens)
+        total_quartos = len(itens)
         saidas = saidas_amanha()
         self.label_total_hospedes.setText(f"Total de hospedes: {total_pessoas}")
-        self.label_total_itens.setText(f"Total de itens: {total_itens}")
+        self.label_total_quartos.setText(f"Quartos ocupados: {total_quartos}")
         self.label_saidas_amanha.setText(f"Saidas amanhã: {saidas}")
         self.label_chegadas_amanha.setText(f"Chegadas amanhã: {len([r for r in reservas if r.data_entrada.date() == (datetime.now().date() + timedelta(days=1))])}")
 

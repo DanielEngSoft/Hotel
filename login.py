@@ -161,7 +161,6 @@ class Ui_Form(QWidget):
             self.thread.start()
         else:
             self.label_feedbeck.setText("Usuário ou senha inválidos!")
-            self.label_feedbeck.setStyleSheet("color: red;")
             QTimer.singleShot(2000, lambda: self.label_feedbeck.setText(""))
 
     def abrir_tela_principal(self):

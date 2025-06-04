@@ -13,7 +13,7 @@ btn_transparente = "transparent"
 #----- BTN HOVER -----#
 btn_verde_hover = "#09572a"
 btn_vermelho_hover = "#800000"
-btn_branco_hover = "#e0e0e0"
+btn_branco_hover = "#7b7b7b"
 btn_transparente_hover = "#3d566e"
 
 #----- BTN PRESSED -----#
@@ -193,6 +193,31 @@ def style_groupbox():
             left: 10px;
             padding: 0 5px;
         }}
+        QGroupBox QLabel {{
+            font-size: 16px;
+            font-weight: bold;
+        }}
+        QGroupBox QLineEdit {{
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            padding: 5px;
+        }}
+        QGroupBox QLineEdit:focus {{
+            border: 1px solid {btn_verde};
+            border-radius: 0px;
+            padding: 5px;
+        }}
+        QGroupBox QComboBox {{
+            font-size: 16px;
+            width: 50%;
+            height: 35px;
+            border: 1px solid #ccc;
+            border-radius: 0px;
+        }}
+        QGroupBox QComboBox:focus {{
+            border: 1px solid {btn_verde};
+            border-radius: 0px;
+        }}
     """
 
 def style_groupbox_abrir():
@@ -211,6 +236,34 @@ def style_groupbox_abrir():
             subcontrol-origin: margin;
             left: 10px;
             padding: 0 5px;
+        }}
+        QGroupBox QLabel {{
+            font-size: 16px;
+            font-weight: bold;
+        }}
+        QGroupBox QLineEdit {{
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            padding: 5px;
+        }}
+        QGroupBox QLineEdit:focus {{
+            border: 1px solid {btn_verde};
+            border-radius: 0px;
+            padding: 5px;
+        }}
+        QGroupBox QComboBox {{
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 0px;
+        }}
+        QGroupBox QComboBox:focus {{
+            border: 1px solid {btn_verde};
+            border-radius: 0px;
+        }}
+        QGroupBox QComboBox::drop-down {{
+            subcontrol-origin: margin;
+            right: 0;
+            width: 15px;
         }}
     """
 
@@ -232,6 +285,16 @@ def style_groupbox_login():
             subcontrol-origin: margin;
             top: 40px;
             left: 60px;
+        }}
+        QGroupBox QLineEdit {{
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            padding: 5px;
+        }}
+        QGroupBox QLineEdit:focus {{
+            border: 1px solid {btn_verde};
+            border-radius: 0px;
+            padding: 5px;
         }}
     """
 
