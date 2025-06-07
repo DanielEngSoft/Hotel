@@ -27,8 +27,9 @@ class Ui_page_hospedagem(QWidget):
         self.hospedagem = hospedagem
         self.setupUi()
         self.setGeometry(QStyle.alignedRect(Qt.LeftToRight, Qt.AlignCenter,\
-                        QSize(900, 750), QApplication.primaryScreen().availableGeometry()))    
-        self.setWindowTitle("Ficha de Hospedagem")
+                        QSize(900, 750), QApplication.primaryScreen().availableGeometry())) 
+        self.setWindowIcon(QIcon("imgs/ficha_white.png"))   
+        
 
     def setupUi(self):
         self.layout = QVBoxLayout(self)
@@ -201,25 +202,29 @@ class Ui_page_hospedagem(QWidget):
         self.stacked_widget_hospedagem.setCurrentIndex(INDEX_FICHA)
         self.setGeometry(QStyle.alignedRect(Qt.LeftToRight, Qt.AlignCenter,\
                         QSize(800, 750), QApplication.primaryScreen().availableGeometry()))  
-        self.setWindowTitle("Ficha de Hospedagem")
+        self.setWindowTitle("Ficha da Hospedagem")
+        self.setWindowIcon(QIcon("imgs/ficha_white.png"))
 
     def mostrar_pagina_encerrar(self):
         self.stacked_widget_hospedagem.setCurrentIndex(INDEX_ENCERRAR)
         self.setGeometry(QStyle.alignedRect(Qt.LeftToRight, Qt.AlignCenter,\
                         QSize(600, 450), QApplication.primaryScreen().availableGeometry()))     
         self.setWindowTitle("Encerramento")      
+        self.setWindowIcon(QIcon("imgs/finalizar_white.png"))
 
     def mostrar_pagina_alterar(self):
         self.stacked_widget_hospedagem.setCurrentIndex(INDEX_ALTERAR)
         self.setGeometry(QStyle.alignedRect(Qt.LeftToRight, Qt.AlignCenter,\
                         QSize(600, 450), QApplication.primaryScreen().availableGeometry()))  
         self.setWindowTitle("Alterar Hospedagem")
+        self.setWindowIcon(QIcon("imgs/editar_white.png"))
 
     def mostrar_pagina_adiantamento(self):
         self.stacked_widget_hospedagem.setCurrentIndex(INDEX_ADIANTAMENTO)
         self.setGeometry(QStyle.alignedRect(Qt.LeftToRight, Qt.AlignCenter,\
                         QSize(600, 450), QApplication.primaryScreen().availableGeometry()))  
         self.setWindowTitle("Adicionar pagamento")
+        self.setWindowIcon(QIcon("imgs/dinheiro_white.png"))
 
     def close_page_hospedagem(self):
         self.close()
