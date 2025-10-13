@@ -201,22 +201,12 @@ class Ui_page_abrir_reserva(QWidget):
 
         self.horizontalLayout.addWidget(self.spinBox)
 
-        # Checkbox desconto
-        self.checkBox = QCheckBox(page_abrir)
-        self.checkBox.setObjectName("checkBox")
-        self.checkBox.setFont(font)
-        self.checkBox.setText('Desconto')
-        self.checkBox.stateChanged.connect(self.atualizar_preco)
-
-        self.horizontalLayout.addWidget(self.checkBox)
-
         # Valor da diária
-        self.label = QLabel(page_abrir)
-        self.label.setObjectName("label")
-        self.label.setText("R$ 100,00")
-        self.label.setFont(font)
+        self.line_edit_diaria = LineEditMonetario("R$ 100.00", page_abrir)
+        self.line_edit_diaria.setObjectName("line_edit_diaria")
+        self.line_edit_diaria.setFont(font)
 
-        self.horizontalLayout.addWidget(self.label)
+        self.horizontalLayout.addWidget(self.line_edit_diaria)
 
         # Adiciona os widgets ao formulário
         self.form_layout.addRow(self.qtd_pessoas_label, self.qtd_pessoas_widget)
@@ -325,11 +315,9 @@ class Ui_page_abrir_reserva(QWidget):
 
     def atualizar_preco(self):
         qtd = self.spinBox.value()
-        if self.checkBox.isChecked():
-            preco = diaria(qtd) * (1 - DESCONTO)
-        else:
-            preco = diaria(qtd)
-        self.label.setText(f"R$ {preco:.2f}")
+        preco = diaria(qtd)
+
+        self.line_edit_diaria.setText(f"R$ {preco:.2f}")
 
     def search_hospedes(self):
         self.tableWidget_hospedes.setRowCount(0)
@@ -428,12 +416,9 @@ class Ui_page_abrir_reserva(QWidget):
             self.label_feedback.setStyleSheet("color: red;")
             return
             
-        produto = buscar_produto_por_id(qtd_hospedes)
-        valor_diaria = produto.valor
-
-        # Adicionar condições em caso do checkBox estiver marcado
-        if self.checkBox.isChecked():
-            valor_diaria = produto.valor * (1 - DESCONTO)
+        valor_diaria = self.line_edit_diaria.text()
+        valor_diaria = float(valor_diaria.replace("R$ ", "").replace(",", ".").replace(".", "", valor_diaria.count(".") - 1))
+        print(valor_diaria)
         
         create_reserva(
             id_hospede=cpf,
@@ -443,7 +428,7 @@ class Ui_page_abrir_reserva(QWidget):
             qtd_hospedes=qtd_hospedes,
             acompanhantes=acompanhantes,
             valor_diaria=valor_diaria,
-            adiantamento=0,
+            adiantamento=self.adiantamentoLineEdit.get_valor_float(),
             obs=obs,
         )
         self.label_feedback.setVisible(True)
@@ -460,7 +445,6 @@ class Ui_page_abrir_reserva(QWidget):
         self.spinBox.setValue(1)
         self.acompanhantes_plainTextEdit.clear()
         self.plainTextEdit_obs.clear()
-        self.checkBox.setChecked(False)
         self.groupBox.setTitle("")
         QTimer.singleShot(3000, lambda: self.label_feedback.setVisible(False))        
         

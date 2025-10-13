@@ -48,16 +48,31 @@ def reserva_para_hospedagem(id_reserva):
         reserva = session.query(Reserva).filter_by(id=id_reserva).first()
         if reserva:
             produto = buscar_produto_por_id(reserva.qtd_hospedes)
-            valor_diaria = produto.valor
+            valor_diaria = reserva.valor_diaria
 
-            create_hospedagem(id_hospede=reserva.id_hospede,id_quarto=reserva.id_quarto, 
-                data_saida=reserva.data_saida, qtd_hospedes=reserva.qtd_hospedes, 
-                valor_diaria=valor_diaria,obs=reserva.obs, acompanhantes=reserva.acompanhantes)
+            create_hospedagem(id_hospede=reserva.id_hospede,
+                            id_quarto=reserva.id_quarto, 
+                            data_saida=reserva.data_saida,
+                            qtd_hospedes=reserva.qtd_hospedes, 
+                            valor_diaria=valor_diaria,
+                            obs=reserva.obs, 
+                            acompanhantes=reserva.acompanhantes)
             
             hospedagem = buscar_hospedagem_por_quarto(id_quarto=reserva.id_quarto)
-            create_despesa(id_hospedagem=hospedagem.id, id_produto=produto.id,quantidade=1 ,valor_produto=produto.valor, data=datetime.now())
+            create_despesa(id_hospedagem=hospedagem.id, 
+                        id_produto=produto.id,
+                        quantidade=1,
+                        valor_produto=reserva.valor_diaria,
+                        data=datetime.now())
+
         if reserva.adiantamento:
-            adiantamento = reserva.adiantamento
+            adicionar_adiantamento(
+                data=datetime.now(),
+                id_hospedagem=hospedagem.id, 
+                valor=reserva.adiantamento,
+                descricao="Adiantamento via reserva",
+                metodo_pagamento="Na reserva"
+                )
             
         
 

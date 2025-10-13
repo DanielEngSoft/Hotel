@@ -19,6 +19,36 @@ from views.PagesMenu.PagesHospedes.page_cadastrar import Ui_page_cadastrar_hospe
 DESCONTO = 0.1  # 10% de desconto
 LABEL_DESCONTO = int(DESCONTO * 100)
 
+# Campo de entrada monetária customizado com formatação automática
+class LineEditMonetario(QLineEdit):
+    def __init__(self, total, parent=None):
+        super().__init__(parent)
+        self.setText(total)
+        self.valor_cents = 0
+        self.textEdited.connect(self.formatar_valor_monetario)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        QTimer.singleShot(0, lambda: self.setCursorPosition(len(self.text())))
+
+    def formatar_valor_monetario(self, _):
+        texto = self.text()
+        apenas_numeros = ''.join(filter(str.isdigit, texto))
+        self.valor_cents = int(apenas_numeros) if apenas_numeros else 0
+
+        reais = self.valor_cents // 100
+        centavos = self.valor_cents % 100
+        texto_formatado = f"R$ {reais}.{centavos:02d}"
+
+        self.blockSignals(True)
+        self.setText(texto_formatado)
+        self.blockSignals(False)
+        self.setCursorPosition(len(texto_formatado))
+
+    def get_valor_float(self):
+        return self.valor_cents / 100.0
+
+
 # ====== CLASSE PRINCIPAL DA PÁGINA ABRIR HOSPEDAGEM ======
 class Ui_page_abrir_hospedagem(QWidget):
     def __init__(self, parent=None):
@@ -178,22 +208,12 @@ class Ui_page_abrir_hospedagem(QWidget):
 
         self.horizontalLayout.addWidget(self.spinBox)
 
-        # Checkbox desconto
-        self.checkBox = QCheckBox(page_abrir)
-        self.checkBox.setObjectName("checkBox")
-        self.checkBox.setFont(font)
-        self.checkBox.setText(f'- {LABEL_DESCONTO}% ')
-        self.checkBox.stateChanged.connect(self.atualizar_preco)
-
-        self.horizontalLayout.addWidget(self.checkBox)
-
         # Valor da diária
-        self.label_diaria = QLabel(page_abrir)
-        self.label_diaria.setText("R$ 100.00")
-        self.label_diaria.setObjectName("label")
-        self.label_diaria.setFont(font)
+        self.input_label_diaria = LineEditMonetario("R$ 100.00", page_abrir)
+        self.input_label_diaria.setObjectName("input_label_diaria")
+        self.input_label_diaria.setFont(font)
 
-        self.horizontalLayout.addWidget(self.label_diaria)
+        self.horizontalLayout.addWidget(self.input_label_diaria)
 
         self.form_layout.addRow(self.label_qtd_pessoas, self.widget_qtd_pessoas)
 
@@ -320,13 +340,11 @@ class Ui_page_abrir_hospedagem(QWidget):
             self.label_feedback.setText("Hóspede não encontrado.")
             self.label_feedback.setStyleSheet("color: red;")
             return
-            
-        produto = buscar_produto_por_id(qtd_hospedes)
-        valor_diaria = produto.valor
-
-        # Adicionar condições em caso do checkBox estiver marcado
-        if self.checkBox.isChecked():
-            valor_diaria = produto.valor * (1 - DESCONTO)
+        
+        # Pega o valor da diária e converte para float
+        valor_diaria = self.input_label_diaria.text()
+        valor_diaria = float(valor_diaria.replace("R$ ", "").replace(",", ".").replace(".", "", valor_diaria.count(".") - 1))
+        # print(valor_diaria)
         
         # Cria a hospedagem no banco de dados
         create_hospedagem(
@@ -400,12 +418,9 @@ class Ui_page_abrir_hospedagem(QWidget):
     # Atualiza o preço de acordo com a quantidade de hóspedes
     def atualizar_preco(self):
         qtd = self.spinBox.value()
-        if self.checkBox.isChecked():
-            preco = diaria(qtd) * (1 - DESCONTO)
-        else:
-            preco = diaria(qtd)
+        preco = diaria(qtd)
         
-        self.label_diaria.setText(f"R$ {preco:.2f}")
+        self.input_label_diaria.setText(f"R$ {preco:.2f}")
     
     # Ajusta a altura da tabela de acordo com o número de hóspedes, para nãão ficar muito grande
     def _ajustar_altura_tabela(self):
@@ -433,8 +448,7 @@ class Ui_page_abrir_hospedagem(QWidget):
         self.lineEdit_cpf.setText("..-")
         self.dateTimeEdit_data_saida.setDate(QDate.currentDate().addDays(1))
         self.spinBox.setValue(1)
-        self.checkBox.setChecked(False)
-        self.label_diaria.setText("R$ 100.00")
+        self.input_label_diaria.setText("R$ 100.00")
         self.label_quartos.setText("Selecione o quarto:")
         self.plainTextEdit_acompanhantes.setPlainText("")
         self.plainTextEdit_obs.setPlainText("")
